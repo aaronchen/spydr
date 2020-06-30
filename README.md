@@ -6,10 +6,10 @@ Selenium Webdriver (Python binding) wrapper with Selenium IDE-like functionality
 ```python
 from spydr.webdriver import Spydr
 
-sp = Spydr()
-sp.maximize_window()
-sp.get('https://www.google.com/')
-sp.send_keys('name=q', 'webdriver', sp.keys.ENTER)
-sp.save_screenshot('sample_shot')
-sp.quit()
+s = Spydr()
+s.maximize_window()
+s.get('https://www.google.com/')
+s.send_keys('name=q', 'webdriver', sp.keys.ENTER)
+s.save_screenshot('sample_shot')
+s.quit()
 ```

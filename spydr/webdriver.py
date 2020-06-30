@@ -38,7 +38,7 @@ class Spydr:
         self.screen_root = screen_root
         self.timeout = timeout
         self.window_size = window_size
-        self.driver = self.__get_webdriver()
+        self.driver = self._get_webdriver()
 
         self.implicitly_wait(self.timeout)
         self.set_page_load_timeout(self.timeout)
@@ -64,9 +64,9 @@ class Spydr:
 
         if isinstance(locator, WebElement):
             element = locator
-            self.wait_until(lambda wd: element.is_enabled())
+            self.wait_until(lambda _: element.is_enabled())
         else:
-            how, what = self.__parse_locator(locator)
+            how, what = self._parse_locator(locator)
             element = self.wait_until(
                 self.ec.element_to_be_clickable((how, what)))
 
@@ -101,12 +101,12 @@ class Spydr:
         if isinstance(locator, WebElement):
             return locator
 
-        how, what = self.__parse_locator(locator)
+        how, what = self._parse_locator(locator)
         element = self.driver.find_element(how, what)
         return element
 
     def find_elements(self, locator):
-        how, what = self.__parse_locator(locator)
+        how, what = self._parse_locator(locator)
         elements = self.driver.find_elements(how, what)
         return elements
 
@@ -122,8 +122,8 @@ class Spydr:
     def is_selected(self, locator):
         return self.find_element(locator).is_selected()
 
-    def is_element_located(self, locator, seconds=1):
-        how, what = self.__parse_locator(locator)
+    def is_element_located(self, locator, seconds=2):
+        how, what = self._parse_locator(locator)
 
         self.implicitly_wait(seconds)
 
@@ -150,7 +150,7 @@ class Spydr:
         return self.driver.get_screenshot_as_base64()
 
     def get_screenshot_as_file(self, filename):
-        return self.driver.get_screenshot_as_file(self.__abs_filename(filename))
+        return self.driver.get_screenshot_as_file(self._abs_filename(filename))
 
     def get_screenshot_as_png(self):
         return self.driver.get_screenshot_as_png()
@@ -191,10 +191,10 @@ class Spydr:
         return self.find_element(locator).rect
 
     def save_screenshot(self, filename):
-        return self.driver.save_screenshot(self.__abs_filename(filename))
+        return self.driver.save_screenshot(self._abs_filename(filename))
 
     def screenshot(self, locator, filename):
-        return self.find_element(locator).screenshot(self.__abs_filename(filename))
+        return self.find_element(locator).screenshot(self._abs_filename(filename))
 
     def screenshot_as_base64(self, locator):
         return self.find_element(locator).screenshot_as_base64
@@ -256,16 +256,46 @@ class Spydr:
     def wait_until(self, method):
         return self.wait(self.driver, self.timeout).until(method)
 
-    def wait_until_element_visible(self, locator):
-        return self.wait_until(lambda wd: self.is_displayed(locator))
+    def wait_until_alert_present(self):
+        return self.wait_until(self.ec.alert_is_present)
 
-    def wait_until_element_not_visible(self, locator):
-        if not isinstance(locator, WebElement):
-            locator = self.__parse_locator(locator)
-        return self.wait_until(self.ec.invisibility_of_element_located(locator))
+    def wait_until_attribute_contains(self, locator, attribute, value):
+        return self.wait_until(lambda _: value in self.find_element(locator).get_attribute(attribute))
+
+    def wait_until_frame_available_and_switch(self, frame_locator):
+        return self.wait_until(lambda _: self.switch_to_frame(self.find_element(frame_locator)))
+
+    def wait_until_elment_found_in_frame_and_switch(self, frame_locator, element_locator):
+        self.switch_to_frame(self.find_element(frame_locator))
+        return self.wait_until(lambda _: self.find_element(element_locator))
+
+    def wait_until_enabled(self, locator):
+        return self.wait_until(lambda _: self.is_enabled(locator))
 
     def wait_until_not(self, method):
         return self.wait(self.driver, self.timeout).until_not(method)
+
+    def wait_until_not_visible(self, locator, seconds=2):
+        self.implicitly_wait(seconds)
+
+        try:
+            return self.wait(self.driver, seconds).until(lambda _: not self.find_element(locator))
+        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
+            return True
+        finally:
+            self.implicitly_wait(self.timeout)
+
+    def wait_until_number_of_windows_to_be(self, number):
+        return self.wait_until(self.ec.number_of_windows_to_be(number))
+
+    def wait_until_selected(self, locator):
+        return self.wait_until(lambda _: self.is_selected(locator))
+
+    def wait_until_selection_to_be(self, locator, is_selected):
+        return self.wait_until(lambda _: self.is_selected(locator) == is_selected)
+
+    def wait_until_text_contains(self, locator, text):
+        return self.wait_until(lambda _: text in self.find_element(locator).text)
 
     def wait_until_title_contains(self, title):
         return self.wait_until(self.ec.title_contains(title))
@@ -273,14 +303,13 @@ class Spydr:
     def wait_until_url_contains(self, url):
         return self.wait_until(self.ec.url_contains(url))
 
-    def wait_until_attribute_contains(self, locator, attribute, css_class):
-        element = self.find_element(locator)
-        return self.wait_until(lambda wd: css_class in element.get_attribute(attribute))
+    def wait_until_visible(self, locator):
+        return self.wait_until(lambda _: self.is_displayed(locator))
 
     def window_handles(self):
         return self.driver.window_handles
 
-    def __abs_filename(self, filename, suffix='.png'):
+    def _abs_filename(self, filename, suffix='.png'):
         if not filename.lower().endswith(suffix):
             filename += suffix
 
@@ -292,7 +321,7 @@ class Spydr:
 
         return abspath
 
-    def __chrome_options(self):
+    def _chrome_options(self):
         options = webdriver.ChromeOptions()
         options.add_experimental_option(
             "excludeSwitches", ['enable-automation'])
@@ -304,7 +333,7 @@ class Spydr:
 
         return options
 
-    def __firefox_options(self):
+    def _firefox_options(self):
         options = webdriver.FirefoxOptions()
 
         if self.headless:
@@ -312,25 +341,25 @@ class Spydr:
 
         return options
 
-    def __get_webdriver(self):
+    def _get_webdriver(self):
         if self.browser not in self.browsers:
             raise WebDriverException(
                 'Unsupported browser: {browser}'.format(browser=self.browser))
 
         if self.browser == 'chrome':
             return webdriver.Chrome(
-                executable_path=ChromeDriverManager().install(), options=self.__chrome_options())
+                executable_path=ChromeDriverManager().install(), options=self._chrome_options())
         elif self.browser == 'edge':
             return webdriver.Edge(EdgeChromiumDriverManager().install())
         elif self.browser == 'firefox':
             return webdriver.Firefox(
-                executable_path=GeckoDriverManager().install(), options=self.__firefox_options())
+                executable_path=GeckoDriverManager().install(), options=self._firefox_options())
         elif self.browser == 'ie':
-            return webdriver.Ie(executable_path=IEDriverManager().install(), options=self.__ie_options())
+            return webdriver.Ie(executable_path=IEDriverManager().install(), options=self._ie_options())
         elif self.browser == 'safari':
             return webdriver.Safari()
 
-    def __ie_options(self):
+    def _ie_options(self):
         options = webdriver.IeOptions()
         options.ensure_clean_session = True
         options.full_page_screenshot = True
@@ -339,7 +368,7 @@ class Spydr:
         options.native_events = False
         return options
 
-    def __parse_locator(self, locator):
+    def _parse_locator(self, locator):
         how = what = None
         matched = re.search('^([A-Za-z]+)=(.+)', locator)
 
