@@ -1,13 +1,21 @@
+import base64
+import json
 import os
 import re
+import urllib.parse
+import zipfile
 
-from os import path, makedirs
+from io import BytesIO
 from selenium import webdriver
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
@@ -17,7 +25,7 @@ from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManag
 
 class Spydr:
     browsers = ('chrome', 'edge', 'firefox', 'ie', 'safari')
-    by = webdriver.common.by.By
+    by = By
     ec = EC
     hows = {
         'css': by.CSS_SELECTOR,
@@ -32,26 +40,57 @@ class Spydr:
     keys = webdriver.common.keys.Keys
     wait = webdriver.support.ui.WebDriverWait
 
-    def __init__(self, browser='chrome', headless=False, screen_root='./screens', timeout=30, window_size='1280,720'):
-        self.browser = browser
+    def __init__(self,
+                 auth_username=None,
+                 auth_password=None,
+                 browser='chrome',
+                 extension_root='./extensions',
+                 headless=False,
+                 screen_root='./screens',
+                 timeout=30,
+                 window_size='1280,720'):
+        self.auth_username = auth_username
+        self.auth_password = auth_password
+        self.browser = browser.lower()
+        self.extension_root = extension_root
         self.headless = headless
         self.screen_root = screen_root
-        self.timeout = timeout
         self.window_size = window_size
         self.driver = self._get_webdriver()
-
-        self.implicitly_wait(self.timeout)
-        self.set_page_load_timeout(self.timeout)
-        self.set_script_timeout(self.timeout)
+        self.timeout = timeout
 
     def add_cookie(self, cookie):
         self.driver.add_cookie(cookie)
+
+    def alert_accept(self, alert=None):
+        if isinstance(alert, Alert):
+            alert.accept()
+        else:
+            self.switch_to_alert().accept()
+
+    def alert_dismiss(self, alert=None):
+        if isinstance(alert, Alert):
+            alert.dismiss()
+        else:
+            self.switch_to_alert().dismiss()
+
+    def alert_sendkeys(self, keys_to_send, alert=None):
+        if isinstance(alert, Alert):
+            alert.send_keys(keys_to_send)
+        else:
+            self.switch_to_alert().send_keys(keys_to_send)
+
+    def alert_text(self, alert=None):
+        if isinstance(alert, Alert):
+            alert.text
+        else:
+            self.switch_to_alert().text
 
     def back(self):
         self.driver.back()
 
     def blank(self):
-        self.get('about:blank')
+        self.open('about:blank')
 
     def css_property(self, locator, name):
         return self.find_element(locator).value_of_css_property(name)
@@ -64,23 +103,18 @@ class Spydr:
 
         if isinstance(locator, WebElement):
             element = locator
-            self.wait_until(lambda _: element.is_enabled())
         else:
-            how, what = self._parse_locator(locator)
-            element = self.wait_until(
-                self.ec.element_to_be_clickable((how, what)))
+            element = self.find_element(locator)
 
         if element:
-            element.click()
+            self.wait_until(lambda _: self._is_element_clicked(element))
 
     def close(self):
         self.driver.close()
 
+    @property
     def current_url(self):
         return self.driver.current_url
-
-    def current_window_handle(self):
-        return self.driver.current_window_handle
 
     def delete_all_cookies(self):
         self.driver.delete_all_cookies()
@@ -88,6 +122,7 @@ class Spydr:
     def delete_cookie(self, name):
         self.driver.delete_cookie(name)
 
+    @property
     def desired_capabilities(self):
         return self.driver.desired_capabilities
 
@@ -101,8 +136,16 @@ class Spydr:
         if isinstance(locator, WebElement):
             return locator
 
+        element = None
         how, what = self._parse_locator(locator)
-        element = self.driver.find_element(how, what)
+
+        if how == self.hows['css']:
+            matched = re.search(r'(.*):eq\((\d+)\)', what)
+            if matched:
+                new_what, nth = matched.group(1, 2)
+                element = self.find_elements(f'css={new_what}')[int(nth)]
+
+        element = element or self.driver.find_element(how, what)
         return element
 
     def find_elements(self, locator):
@@ -125,17 +168,14 @@ class Spydr:
     def is_element_located(self, locator, seconds=2):
         how, what = self._parse_locator(locator)
 
-        self.implicitly_wait(seconds)
+        self.implicitly_wait = seconds
 
         try:
             return self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what))
-        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
+        except (NoSuchElementException, NoSuchWindowException, StaleElementReferenceException, TimeoutException):
             return False
         finally:
-            self.implicitly_wait(self.timeout)
-
-    def get(self, url):
-        self.driver.get(url)
+            self.implicitly_wait = self.timeout
 
     def get_attribute(self, locator, name):
         return self.find_element(locator).get_attribute(name)
@@ -164,7 +204,13 @@ class Spydr:
     def get_window_size(self, window_handle='current'):
         return self.driver.get_window_size(window_handle)
 
+    @property
+    def implicitly_wait(self):
+        return self.__implicitly_wait
+
+    @implicitly_wait.setter
     def implicitly_wait(self, seconds):
+        self.__implicitly_wait = seconds
         self.driver.implicitly_wait(seconds)
 
     def location(self, locator):
@@ -178,6 +224,37 @@ class Spydr:
         if not self.headless:
             self.driver.minimize_window()
 
+    def open(self, url):
+        self.driver.get(url)
+
+    def open_with_auth(self, url, username=None, password=None):
+        username = username or self.auth_username
+        password = password or self.auth_password
+
+        if username and password and self.browser != 'chrome':
+            encoded_username = urllib.parse.quote(username)
+            encoded_password = urllib.parse.quote(password)
+
+            split_result = urllib.parse.urlsplit(url)
+            split_result_with_auth = split_result._replace(
+                netloc=f'{encoded_username}:{encoded_password}@{split_result.netloc}')
+
+            url_with_auth = urllib.parse.urlunsplit(split_result_with_auth)
+
+            self.open(url_with_auth)
+        else:
+            self.open(url)
+
+    @property
+    def page_load_timeout(self):
+        return self.__page_load_timeout
+
+    @page_load_timeout.setter
+    def page_load_timeout(self, seconds):
+        self.__page_load_timeout = seconds
+        self.driver.set_page_load_timeout(seconds)
+
+    @property
     def page_source(self):
         self.driver.page_source
 
@@ -193,6 +270,9 @@ class Spydr:
     def save_screenshot(self, filename):
         return self.driver.save_screenshot(self._abs_filename(filename))
 
+    def select(self, option_locator):
+        self.click(option_locator)
+
     def screenshot(self, locator, filename):
         return self.find_element(locator).screenshot(self._abs_filename(filename))
 
@@ -205,10 +285,13 @@ class Spydr:
     def send_keys(self, locator, *keys):
         self.find_element(locator).send_keys(*keys)
 
-    def set_page_load_timeout(self, seconds):
-        self.driver.set_page_load_timeout(seconds)
+    @property
+    def script_timeout(self):
+        return self.__script_timeout
 
-    def set_script_timeout(self, seconds):
+    @script_timeout.setter
+    def script_timeout(self, seconds):
+        self.__script_timeout = seconds
         self.driver.set_script_timeout(seconds)
 
     def set_window_position(self, x, y, window_handle='current'):
@@ -226,14 +309,16 @@ class Spydr:
     def submit(self, locator):
         self.find_element(locator).submit()
 
+    @property
     def switch_to_active_element(self):
         return self.driver.switch_to.active_element
 
+    @property
     def switch_to_alert(self):
         return self.driver.switch_to.alert
 
     def switch_to_default_content(self):
-        return self.driver.switch_to.switch_to_default_content()
+        return self.driver.switch_to.default_content()
 
     def switch_to_frame(self, frame_reference):
         return self.driver.switch_to.frame(frame_reference)
@@ -247,9 +332,21 @@ class Spydr:
     def tag_name(self, locator):
         return self.find_element(locator).tag_name
 
+    @property
+    def timeout(self):
+        return self.__timeout
+
+    @timeout.setter
+    def timeout(self, seconds):
+        self.__timeout = seconds
+        self.implicitly_wait = seconds
+        self.page_load_timeout = seconds
+        self.script_timeout = seconds
+
     def text(self, locator):
         return self.find_element(locator).text
 
+    @property
     def title(self):
         return self.driver.title
 
@@ -257,7 +354,7 @@ class Spydr:
         return self.wait(self.driver, self.timeout).until(method)
 
     def wait_until_alert_present(self):
-        return self.wait_until(self.ec.alert_is_present)
+        return self.wait_until(lambda _: self.ec.alert_is_present)
 
     def wait_until_attribute_contains(self, locator, attribute, value):
         return self.wait_until(lambda _: value in self.find_element(locator).get_attribute(attribute))
@@ -267,7 +364,7 @@ class Spydr:
 
     def wait_until_elment_found_in_frame_and_switch(self, frame_locator, element_locator):
         self.switch_to_frame(self.find_element(frame_locator))
-        return self.wait_until(lambda _: self.find_element(element_locator))
+        return self.wait_until(lambda _: self.is_element_located(element_locator, seconds=self.timeout))
 
     def wait_until_enabled(self, locator):
         return self.wait_until(lambda _: self.is_enabled(locator))
@@ -276,14 +373,14 @@ class Spydr:
         return self.wait(self.driver, self.timeout).until_not(method)
 
     def wait_until_not_visible(self, locator, seconds=2):
-        self.implicitly_wait(seconds)
+        self.implicitly_wait = seconds
 
         try:
             return self.wait(self.driver, seconds).until(lambda _: not self.find_element(locator))
         except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
         finally:
-            self.implicitly_wait(self.timeout)
+            self.implicitly_wait = self.timeout
 
     def wait_until_number_of_windows_to_be(self, number):
         return self.wait_until(self.ec.number_of_windows_to_be(number))
@@ -306,35 +403,109 @@ class Spydr:
     def wait_until_visible(self, locator):
         return self.wait_until(lambda _: self.is_displayed(locator))
 
+    @property
+    def window_handle(self):
+        return self.driver.current_window_handle
+
+    @property
     def window_handles(self):
         return self.driver.window_handles
 
-    def _abs_filename(self, filename, suffix='.png'):
+    def _abs_filename(self, filename, suffix='.png', root=None):
         if not filename.lower().endswith(suffix):
             filename += suffix
 
-        abspath = path.abspath(path.join(self.screen_root, filename))
-        dirname = path.dirname(abspath)
+        abspath = os.path.abspath(
+            os.path.join(root or self.screen_root, filename))
+        dirname = os.path.dirname(abspath)
 
-        if not path.exists(dirname):
-            makedirs(dirname)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
 
         return abspath
 
+    def _auth_extension_as_base64(self, username, password):
+        bytes_ = self._auth_extension_as_bytes(username, password)
+        return base64.b64encode(bytes_).decode('utf-8')
+
+    def _auth_extension_as_bytes(self, username, password):
+        manifest = {
+            "manifest_version": 2,
+            "name": 'Spydr Authentication Extension',
+            "version": '1.0.0',
+            "permissions": ['<all_urls>', 'webRequest', 'webRequestBlocking'],
+            "background": {
+                "scripts": ['background.js']
+            }
+        }
+
+        background = '''
+            var username = '%s';
+            var password = '%s';
+
+            chrome.webRequest.onAuthRequired.addListener(
+                function handler(details) {
+                    if (username == null) {
+                        return { cancel: true };
+                    }
+
+                    var authCredentials = { username: username, password: username };
+                    // username = password = null;
+
+                    return { authCredentials: authCredentials };
+                },
+                { urls: ['<all_urls>'] },
+                ['blocking']
+            );
+        ''' % (username, password)
+
+        buffer = BytesIO()
+        zip = zipfile.ZipFile(buffer, 'w')
+        zip.writestr('manifest.json', json.dumps(manifest))
+        zip.writestr('background.js', background)
+        zip.close()
+
+        return buffer.getvalue()
+
+    def _auth_extension_as_file(self, username, password, suffix='.crx'):
+        bytes_ = self._auth_extension_as_bytes(username, password)
+        filename = self._abs_filename(
+            'spydr_auth', suffix=suffix, root=self.extension_root)
+
+        f = open(filename, 'wb')
+        f.write(bytes_)
+        f.close()
+
+        return filename
+
     def _chrome_options(self):
         options = webdriver.ChromeOptions()
+        options.add_argument('allow-running-insecure-content')
+        options.add_argument('ignore-certificate-errors')
+        options.add_argument('ignore-ssl-errors=yes')
+
         options.add_experimental_option(
             "excludeSwitches", ['enable-automation'])
 
+        if self.auth_username and self.auth_password:
+            options.add_encoded_extension(self._auth_extension_as_base64(
+                self.auth_username, self.auth_password))
+
         if self.headless:
             options.add_argument('headless')
-            options.add_argument(
-                'window-size={window_size}'.format(window_size=self.window_size))
+            options.add_argument(f'window-size={self.window_size}')
 
         return options
 
     def _firefox_options(self):
+        profile = webdriver.FirefoxProfile()
+        profile.accept_untrusted_certs = True
+        profile.assume_untrusted_cert_issuer = False
+        # profile.set_preference(
+        #     'network.automatic-ntlm-auth.trusted-uris', '.companyname.com')
+
         options = webdriver.FirefoxOptions()
+        options.profile = profile
 
         if self.headless:
             options.add_argument('headless')
@@ -342,20 +513,21 @@ class Spydr:
         return options
 
     def _get_webdriver(self):
+        path = os.getcwd()
+
         if self.browser not in self.browsers:
-            raise WebDriverException(
-                'Unsupported browser: {browser}'.format(browser=self.browser))
+            raise WebDriverException(f'Unsupported browser: {self.browser}')
 
         if self.browser == 'chrome':
             return webdriver.Chrome(
-                executable_path=ChromeDriverManager().install(), options=self._chrome_options())
+                executable_path=ChromeDriverManager(path=path).install(), options=self._chrome_options())
         elif self.browser == 'edge':
-            return webdriver.Edge(EdgeChromiumDriverManager().install())
+            return webdriver.Edge(EdgeChromiumDriverManager(path=path).install())
         elif self.browser == 'firefox':
             return webdriver.Firefox(
-                executable_path=GeckoDriverManager().install(), options=self._firefox_options())
+                executable_path=GeckoDriverManager(path=path).install(), options=self._firefox_options())
         elif self.browser == 'ie':
-            return webdriver.Ie(executable_path=IEDriverManager().install(), options=self._ie_options())
+            return webdriver.Ie(executable_path=IEDriverManager(path=path).install(), options=self._ie_options())
         elif self.browser == 'safari':
             return webdriver.Safari()
 
@@ -367,6 +539,15 @@ class Spydr:
         options.ignore_zoom_level = True
         options.native_events = False
         return options
+
+    def _is_element_clicked(self, element):
+        if not element.is_enabled():
+            return False
+        try:
+            element.click()
+            return True
+        except ElementClickInterceptedException:
+            return False
 
     def _parse_locator(self, locator):
         how = what = None
@@ -385,6 +566,6 @@ class Spydr:
 
         if how is None:
             raise InvalidSelectorException(
-                'Failed to parse locator: {locator}'.format(locator=locator))
+                f'Failed to parse locator: {locator}')
 
         return how, what
