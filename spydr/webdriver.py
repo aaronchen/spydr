@@ -8,16 +8,20 @@ import zipfile
 from io import BytesIO
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManager
@@ -37,8 +41,8 @@ class Spydr:
         'tag_name': by.TAG_NAME,
         'xpath': by.XPATH
     }
-    keys = webdriver.common.keys.Keys
-    wait = webdriver.support.ui.WebDriverWait
+    keys = Keys
+    wait = WebDriverWait
 
     def __init__(self,
                  auth_username=None,
@@ -58,6 +62,9 @@ class Spydr:
         self.window_size = window_size
         self.driver = self._get_webdriver()
         self.timeout = timeout
+
+    def actions(self):
+        return ActionChains(self.driver)
 
     def add_cookie(self, cookie):
         self.driver.add_cookie(cookie)
@@ -92,6 +99,9 @@ class Spydr:
     def blank(self):
         self.open('about:blank')
 
+    def blur(self, locator):
+        self.execute_script('arguments[0].blur();', self.find_element(locator))
+
     def css_property(self, locator, name):
         return self.find_element(locator).value_of_css_property(name)
 
@@ -99,15 +109,14 @@ class Spydr:
         self.find_element(locator).clear()
 
     def click(self, locator):
-        element = None
+        element = self.find_element(locator)
+        self.wait_until(lambda _: self._is_element_clicked(element))
 
-        if isinstance(locator, WebElement):
-            element = locator
-        else:
-            element = self.find_element(locator)
-
-        if element:
-            self.wait_until(lambda _: self._is_element_clicked(element))
+    def click_at(self, locator, x_offset=0, y_offset=0):
+        element = self.find_element(locator)
+        self.wait_until_enabled(element)
+        self.actions().move_to_element_with_offset(
+            element, x_offset, y_offset).click().perform()
 
     def close(self):
         self.driver.close()
@@ -126,6 +135,23 @@ class Spydr:
     def desired_capabilities(self):
         return self.driver.desired_capabilities
 
+    def double_click(self, locator, **kwargs):
+        element = self.find_element(locator)
+        x_offset = kwargs.get('x_offset', 0)
+        y_offset = kwargs.get('y_offset', 0)
+        self.actions().move_to_element_with_offset(
+            element, x_offset, y_offset).double_click().perform()
+
+    def drag_and_drop(self, source_locator, target_locator):
+        source_element = self.find_element(source_locator)
+        target_element = self.find_element(target_locator)
+        self.actions().drag_and_drop(source_element, target_element()).perform()
+
+    def drag_and_drop_by_offset(self, source_locator, x_offset, y_offset):
+        source_element = self.find_element(source_locator)
+        self.actions().drag_and_drop_by_offset(
+            source_element, x_offset, y_offset).perform()
+
     def execute_async_script(self, script, *args):
         return self.driver.execute_async_script(script, *args)
 
@@ -143,7 +169,11 @@ class Spydr:
             matched = re.search(r'(.*):eq\((\d+)\)', what)
             if matched:
                 new_what, nth = matched.group(1, 2)
-                element = self.find_elements(f'css={new_what}')[int(nth)]
+                try:
+                    element = self.find_elements(f'css={new_what}')[int(nth)]
+                except IndexError:
+                    raise NoSuchElementException(
+                        f'{locator} does not have {nth} element')
 
         element = element or self.driver.find_element(how, what)
         return element
@@ -153,8 +183,24 @@ class Spydr:
         elements = self.driver.find_elements(how, what)
         return elements
 
+    def focus(self, locator):
+        self.execute_script(
+            'arguments[0].focus();', self.find_element(locator))
+
     def forward(self):
         self.driver.forward()
+
+    def has_attribute(self, locator, attribute):
+        return self.execute_script(
+            'return arguments[0].hasAttribute(arguments[1]);', self.find_element(locator), attribute)
+
+    def hide(self, locator):
+        self.execute_script(
+            'arguments[0].style.display = "none";', self.find_element(locator))
+
+    def highlight(self, locator, hex_color='#ff3'):
+        self.execute_script(
+            'arguments[0].style.backgroundColor = `${arguments[1]}`;', self.find_element(locator), hex_color)
 
     def is_displayed(self, locator):
         return self.find_element(locator).is_displayed()
@@ -220,9 +266,31 @@ class Spydr:
         if not self.headless:
             self.driver.maximize_window()
 
+    def maximize_to_screen(self):
+        size = self.execute_script(
+            'return { width: window.screen.width, height: window.screen.height };')
+        self.set_window_position(0, 0)
+        self.set_window_size(size['width'], size['height'])
+
     def minimize_window(self):
         if not self.headless:
             self.driver.minimize_window()
+
+    def new_tab(self):
+        self.execute_script('window.open();')
+        return self.window_handles[-1]
+
+    def new_window(self, name):
+        self.execute_script('''
+            var w = Math.max(
+                document.documentElement.clientWidth, window.innerWidth || 0
+            );
+            var h = Math.max(
+                document.documentElement.clientHeight, window.innerHeight || 0
+            );
+            window.open("about:blank", arguments[0], `width=${w},height=${h}`);
+        ''', name)
+        return self.window_handles[-1]
 
     def open(self, url):
         self.driver.get(url)
@@ -267,11 +335,44 @@ class Spydr:
     def rect(self, locator):
         return self.find_element(locator).rect
 
+    def remove_attribute(self, locator, attribute):
+        self.execute_script('''
+            var element = arguments[0];
+            var attributeName = arguments[1];
+            if (element.hasAttribute(attributeName)) {
+                element.removeAttribute(attributeName);
+            }
+        ''', self.find_element(locator), attribute)
+
+    def right_click(self, locator, **kwargs):
+        element = self.find_element(locator)
+        x_offset = kwargs.get('x_offset', 0)
+        y_offset = kwargs.get('y_offset', 0)
+
+        self.actions().move_to_element_with_offset(
+            element, x_offset, y_offset).context_click().perform()
+
     def save_screenshot(self, filename):
         return self.driver.save_screenshot(self._abs_filename(filename))
 
+    def scroll_into_view(self, locator, align_to=True):
+        self.execute_script(
+            'arguments[0].scrollIntoView(arguments[1]);', self.find_element(locator), align_to)
+
     def select(self, option_locator):
         self.click(option_locator)
+
+    def set_attribute(self, locator, attribute, value):
+        self.execute_script('''
+            var element = arguments[0];
+            var attribute = arguments[1];
+            var value = arguments[2];
+            element.setAttribute(attribute, value);
+        ''', self.find_element(locator), attribute, value)
+
+    def show(self, locator):
+        self.execute_script(
+            'arguments[0].style.display = "";', self.find_element(locator))
 
     def screenshot(self, locator, filename):
         return self.find_element(locator).screenshot(self._abs_filename(filename))
@@ -350,6 +451,14 @@ class Spydr:
     def title(self):
         return self.driver.title
 
+    def trigger(self, locator, event):
+        self.execute_script('''
+            var element = arguments[0];
+            var eventName = arguments[1];
+            var event = new Event(eventName, {"bubbles": false, "cancelable": false});
+            element.dispatchEvent(event);
+        ''', self.find_element(locator), event)
+
     def wait_until(self, method):
         return self.wait(self.driver, self.timeout).until(method)
 
@@ -394,6 +503,9 @@ class Spydr:
     def wait_until_text_contains(self, locator, text):
         return self.wait_until(lambda _: text in self.find_element(locator).text)
 
+    def wait_until_text_excludes(self, locator, text):
+        return self.wait_until(lambda _: text not in self.find_element(locator).text)
+
     def wait_until_title_contains(self, title):
         return self.wait_until(self.ec.title_contains(title))
 
@@ -410,6 +522,9 @@ class Spydr:
     @property
     def window_handles(self):
         return self.driver.window_handles
+
+    def zoom(self, scale):
+        self.execute_script('document.body.style.zoom = arguments[0];', scale)
 
     def _abs_filename(self, filename, suffix='.png', root=None):
         if not filename.lower().endswith(suffix):
@@ -546,7 +661,7 @@ class Spydr:
         try:
             element.click()
             return True
-        except ElementClickInterceptedException:
+        except (ElementClickInterceptedException, ElementNotInteractableException):
             return False
 
     def _parse_locator(self, locator):
