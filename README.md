@@ -59,3 +59,8 @@ s.quit()
 If **_how_** is not specified, locator starting with `/` or `(` will be parsed as **xpath**, while `.`, `[` and `#` are treated as **css**.
 
 **css** pseudo selector support => `:eq()`
+
+
+# Documentation
+
+[spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html)
