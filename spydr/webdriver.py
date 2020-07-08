@@ -37,6 +37,8 @@ class Spydr:
             Supported browsers: 'chrome', 'edge', 'firefox', 'ie', 'safari'.
         extension_root (str): The directory of Extensions. Defaults to './extensions'.
         headless (bool): Headless mode. Defaults to False.
+        log_indentation (int): Indentation for log messages. Defaults to 2.
+        log_prefix (str): Prefix for log messages. Defaults to '- '.
         screen_root (str): The directory of saved screenshots. Defaults to './screens'.
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
         window_size (str): The size of the window when headless.  Defaults to '1280,720'.
@@ -83,6 +85,8 @@ class Spydr:
                  browser='chrome',
                  extension_root='./extensions',
                  headless=False,
+                 log_indentation=2,
+                 log_prefix='- ',
                  screen_root='./screens',
                  timeout=30,
                  window_size='1280,720'):
@@ -91,6 +95,8 @@ class Spydr:
         self.browser = browser.lower()
         self.extension_root = extension_root
         self.headless = headless
+        self.log_indentation = log_indentation
+        self.log_prefix = log_prefix
         self.screen_root = screen_root
         self.window_size = window_size
         self.driver = self._get_webdriver()
@@ -204,8 +210,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        element = self.find_element(locator)
-        self.wait_until(lambda _: self._is_element_clicked(element))
+        self.wait_until(lambda _: self._is_element_clicked(locator))
 
     def click_with_offset(self, locator, x_offset=1, y_offset=1):
         """Click the element from x and y offsets.
@@ -583,6 +588,16 @@ class Spydr:
             dict: The location of the element as dict: {'x': 0, 'y': 0}
         """
         return self.find_element(locator).location
+
+    def log(self, message, indentation=None):
+        """Log message.
+
+        Args:
+            message (str): Message to log
+            indentation (int, optional): Indentation for log message. Defaults to None.
+        """
+        indentation = indentation or self.log_indentation
+        print(f'{" " * indentation}{self.log_prefix}{message}')
 
     def maximize_window(self):
         """Maximize the current window."""
@@ -1391,18 +1406,19 @@ class Spydr:
         options.native_events = False
         return options
 
-    def _is_element_clicked(self, element):
-        if not element.is_enabled():
-            return False
+    def _is_element_clicked(self, locator):
         try:
+            element = self.find_element(locator)
+            if not element.is_displayed() or not element.is_enabled():
+                return False
             element.click()
             return True
-        except (ElementClickInterceptedException, ElementNotInteractableException):
+        except (ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException):
             return False
 
     def _parse_locator(self, locator):
         how = what = None
-        matched = re.search('^([A-Za-z]+)=(.+)', locator)
+        matched = re.search('^([A-Za-z_]+)=(.+)', locator)
 
         if matched is None:
             what = locator

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.1.0 documentation</title>
+    <title>spydr package &#8212; spydr 0.1.1 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
 <span id="spydr-webdriver-module"></span><h2>spydr.webdriver module<a class="headerlink" href="#module-spydr.webdriver" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="spydr.webdriver.Spydr">
-<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">Spydr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auth_password</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">browser</span><span class="o">=</span><span class="default_value">'chrome'</span></em>, <em class="sig-param"><span class="n">extension_root</span><span class="o">=</span><span class="default_value">'./extensions'</span></em>, <em class="sig-param"><span class="n">headless</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">screen_root</span><span class="o">=</span><span class="default_value">'./screens'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">window_size</span><span class="o">=</span><span class="default_value">'1280,720'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">Spydr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auth_password</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">browser</span><span class="o">=</span><span class="default_value">'chrome'</span></em>, <em class="sig-param"><span class="n">extension_root</span><span class="o">=</span><span class="default_value">'./extensions'</span></em>, <em class="sig-param"><span class="n">headless</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log_indentation</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">log_prefix</span><span class="o">=</span><span class="default_value">'- '</span></em>, <em class="sig-param"><span class="n">screen_root</span><span class="o">=</span><span class="default_value">'./screens'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">window_size</span><span class="o">=</span><span class="default_value">'1280,720'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Spydr Webdriver</p>
 <dl class="field-list simple">
@@ -63,6 +63,8 @@
 Supported browsers: ‘chrome’, ‘edge’, ‘firefox’, ‘ie’, ‘safari’.</p></li>
 <li><p><strong>extension_root</strong> (<em>str</em>) – The directory of Extensions. Defaults to ‘./extensions’.</p></li>
 <li><p><strong>headless</strong> (<em>bool</em>) – Headless mode. Defaults to False.</p></li>
+<li><p><strong>log_indentation</strong> (<em>int</em>) – Indentation for log messages. Defaults to 2.</p></li>
+<li><p><strong>log_prefix</strong> (<em>str</em>) – Prefix for log messages. Defaults to ‘- ‘.</p></li>
 <li><p><strong>screen_root</strong> (<em>str</em>) – The directory of saved screenshots. Defaults to ‘./screens’.</p></li>
 <li><p><strong>timeout</strong> (<em>int</em>) – Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.</p></li>
 <li><p><strong>window_size</strong> (<em>str</em>) – The size of the window when headless.  Defaults to ‘1280,720’.</p></li>
@@ -681,6 +683,20 @@ then move to the target offset and releases the mouse button.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>dict</em> – The location of the element as dict: {‘x’: 0, ‘y’: 0}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">indentation</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>) – Message to log</p></li>
+<li><p><strong>indentation</strong> (<em>int</em><em>, </em><em>optional</em>) – Indentation for log message. Defaults to None.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1555,7 +1571,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

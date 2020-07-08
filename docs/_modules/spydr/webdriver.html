@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.1.0 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.1.1 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -83,6 +83,8 @@
 <span class="sd">            Supported browsers: &#39;chrome&#39;, &#39;edge&#39;, &#39;firefox&#39;, &#39;ie&#39;, &#39;safari&#39;.</span>
 <span class="sd">        extension_root (str): The directory of Extensions. Defaults to &#39;./extensions&#39;.</span>
 <span class="sd">        headless (bool): Headless mode. Defaults to False.</span>
+<span class="sd">        log_indentation (int): Indentation for log messages. Defaults to 2.</span>
+<span class="sd">        log_prefix (str): Prefix for log messages. Defaults to &#39;- &#39;.</span>
 <span class="sd">        screen_root (str): The directory of saved screenshots. Defaults to &#39;./screens&#39;.</span>
 <span class="sd">        timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.</span>
 <span class="sd">        window_size (str): The size of the window when headless.  Defaults to &#39;1280,720&#39;.</span>
@@ -129,6 +131,8 @@
                  <span class="n">browser</span><span class="o">=</span><span class="s1">&#39;chrome&#39;</span><span class="p">,</span>
                  <span class="n">extension_root</span><span class="o">=</span><span class="s1">&#39;./extensions&#39;</span><span class="p">,</span>
                  <span class="n">headless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">log_indentation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">log_prefix</span><span class="o">=</span><span class="s1">&#39;- &#39;</span><span class="p">,</span>
                  <span class="n">screen_root</span><span class="o">=</span><span class="s1">&#39;./screens&#39;</span><span class="p">,</span>
                  <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">window_size</span><span class="o">=</span><span class="s1">&#39;1280,720&#39;</span><span class="p">):</span>
@@ -137,6 +141,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extension_root</span> <span class="o">=</span> <span class="n">extension_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="n">headless</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_indentation</span> <span class="o">=</span> <span class="n">log_indentation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_prefix</span> <span class="o">=</span> <span class="n">log_prefix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span> <span class="o">=</span> <span class="n">screen_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_webdriver</span><span class="p">()</span>
@@ -250,8 +256,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_element_clicked</span><span class="p">(</span><span class="n">element</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_element_clicked</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.click_with_offset"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.click_with_offset">[docs]</a>    <span class="k">def</span> <span class="nf">click_with_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_offset</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Click the element from x and y offsets.</span>
@@ -629,6 +634,16 @@
 <span class="sd">            dict: The location of the element as dict: {&#39;x&#39;: 0, &#39;y&#39;: 0}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">location</span></div>
+
+<div class="viewcode-block" id="Spydr.log"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">indentation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (str): Message to log</span>
+<span class="sd">            indentation (int, optional): Indentation for log message. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indentation</span> <span class="o">=</span> <span class="n">indentation</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_indentation</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indentation</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">log_prefix</span><span class="si">}{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.maximize_window"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.maximize_window">[docs]</a>    <span class="k">def</span> <span class="nf">maximize_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Maximize the current window.&quot;&quot;&quot;</span>
@@ -1437,18 +1452,19 @@
         <span class="n">options</span><span class="o">.</span><span class="n">native_events</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">options</span>
 
-    <span class="k">def</span> <span class="nf">_is_element_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">def</span> <span class="nf">_is_element_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
             <span class="n">element</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">ElementClickInterceptedException</span><span class="p">,</span> <span class="n">ElementNotInteractableException</span><span class="p">):</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">ElementClickInterceptedException</span><span class="p">,</span> <span class="n">ElementNotInteractableException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_parse_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="n">how</span> <span class="o">=</span> <span class="n">what</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">matched</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^([A-Za-z]+)=(.+)&#39;</span><span class="p">,</span> <span class="n">locator</span><span class="p">)</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^([A-Za-z_]+)=(.+)&#39;</span><span class="p">,</span> <span class="n">locator</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">matched</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">what</span> <span class="o">=</span> <span class="n">locator</span>
@@ -1497,7 +1513,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

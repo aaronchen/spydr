@@ -1,11 +1,13 @@
 # spydr
 Selenium Webdriver (Python binding) wrapper with Selenium IDE-like functionality
 
+[spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html)
+
 # Install
 
 `pip install spydr`
 
-# Using Sypdr
+# Using Sypdr Webdriver
 
 ``` python
 # Basic Example
@@ -60,7 +62,6 @@ If **_how_** is not specified, locator starting with `/` or `(` will be parsed a
 
 **css** pseudo selector support => `:eq()`
 
+# Project Home
 
-# Documentation
-
-[spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html)
+[https://pypi.org/project/spydr/](https://pypi.org/project/spydr/)
