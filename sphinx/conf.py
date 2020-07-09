@@ -7,10 +7,11 @@
 #   sphinx-quickstart
 # Edit Conf.py:
 #   extensions = [
-#     'sphinx.ext.autodoc',
-#     'sphinx.ext.viewcode',
-#     'sphinxcontrib.napoleon'
+#       'sphinx.ext.autodoc',
+#       'sphinx.ext.viewcode',
+#       'sphinxcontrib.napoleon'
 #   ]
+#
 #   # Napoleon
 #   napoleon_google_docstring = True
 #   napoleon_use_rtype = False

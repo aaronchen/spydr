@@ -1,5 +1,5 @@
 # spydr
-Selenium Webdriver (Python binding) wrapper with Selenium IDE-like functionality
+Selenium WebDriver (Python binding) wrapper with Selenium IDE-like functionality
 
 [spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html)
 
@@ -7,7 +7,7 @@ Selenium Webdriver (Python binding) wrapper with Selenium IDE-like functionality
 
 `pip install spydr`
 
-# Using Sypdr Webdriver
+# Using Sypdr WebDriver
 
 ``` python
 # Basic Example
@@ -61,6 +61,34 @@ s.quit()
 If **_how_** is not specified, locator starting with `/` or `(` will be parsed as **xpath**, while `.`, `[` and `#` are treated as **css**.
 
 **css** pseudo selector support => `:eq()`
+
+
+# Development Environment
+
+```
+cd spydr
+pip install -e .
+pip install autopep8
+pip install pylint
+pip install twine
+pip install sphinx
+pip install sphinxcontrib-napoleon
+```
+
+# Build Docs
+
+```
+cd spydr
+sphinx\make html
+```
+
+# Upload Package
+
+```
+cd spydr
+python setup.py bdist_wheel
+twine upload dist\*
+```
 
 # Project Home
 

@@ -1,6 +1,8 @@
 spydr documentation
 =================================
 
+Selenium WebDriver Wrapper (Python Binding)
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

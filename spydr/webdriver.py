@@ -11,6 +11,7 @@ from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
@@ -19,9 +20,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
+from time import strftime, localtime
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManager
@@ -41,6 +44,7 @@ class Spydr:
         log_prefix (str): Prefix for log messages. Defaults to '- '.
         screen_root (str): The directory of saved screenshots. Defaults to './screens'.
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
+        verbose (bool): Turn on/off verbose mode. Defaults to True.
         window_size (str): The size of the window when headless.  Defaults to '1280,720'.
 
     Raises:
@@ -59,7 +63,7 @@ class Spydr:
     """Set of supported locator strategies"""
 
     ec = expected_conditions
-    """"Pre-defined Expected Conditions"""
+    """Pre-defined Expected Conditions"""
 
     hows = {
         'css': by.CSS_SELECTOR,
@@ -89,6 +93,7 @@ class Spydr:
                  log_prefix='- ',
                  screen_root='./screens',
                  timeout=30,
+                 verbose=True,
                  window_size='1280,720'):
         self.auth_username = auth_username
         self.auth_password = auth_password
@@ -98,6 +103,7 @@ class Spydr:
         self.log_indentation = log_indentation
         self.log_prefix = log_prefix
         self.screen_root = screen_root
+        self.verbose = verbose
         self.window_size = window_size
         self.driver = self._get_webdriver()
         self.timeout = timeout
@@ -596,6 +602,9 @@ class Spydr:
             message (str): Message to log
             indentation (int, optional): Indentation for log message. Defaults to None.
         """
+        if not self.verbose:
+            return
+
         indentation = indentation or self.log_indentation
         print(f'{" " * indentation}{self.log_prefix}{message}')
 
@@ -1000,8 +1009,12 @@ class Spydr:
         Returns:
             False/WebElement: Return False if not located.  Return WebElement if located.
         """
-        self.switch_to_frame(self.find_element(frame_locator))
+        self.wait_until_frame_available_and_switch(frame_locator)
         return self.wait_until(lambda _: self.is_element_located(element_locator, seconds=self.timeout))
+
+    def switch_to_last_window_handle(self):
+        """Switch to the last opened tab or window."""
+        self.switch_to_window(self.window_handles[-1])
 
     def switch_to_parent_frame(self):
         """Switch to parent frame."""
@@ -1041,6 +1054,14 @@ class Spydr:
         self.implicitly_wait = seconds
         self.page_load_timeout = seconds
         self.script_timeout = seconds
+
+    def timestamp(self):
+        """Get current local timestamp
+
+        Returns:
+            str: Timestamp
+        """
+        return strftime('%Y%m%d%H%M%S', localtime())
 
     def text(self, locator):
         """The element's text.
@@ -1116,8 +1137,7 @@ class Spydr:
         Args:
             frame_locator (str/WebElement): The locator to identify the frame or WebElement
         """
-        self.wait_until(lambda _: self.switch_to_frame(
-            self.find_element(frame_locator)))
+        self.wait_until(lambda _: self._is_frame_switched(frame_locator))
 
     def wait_until_enabled(self, locator):
         """Wait until the element is enabled.
@@ -1416,23 +1436,51 @@ class Spydr:
         except (ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException):
             return False
 
-    def _parse_locator(self, locator):
+    def _is_frame_switched(self, locator):
+        try:
+            self.switch_to_frame(self.find_element(locator))
+            return True
+        except NoSuchFrameException:
+            return False
+
+    @staticmethod
+    def _parse_locator(locator):
         how = what = None
         matched = re.search('^([A-Za-z_]+)=(.+)', locator)
 
         if matched is None:
             what = locator
             if locator.startswith(('.', '#', '[')):
-                how = self.hows['css']
+                how = Spydr.hows['css']
             elif locator.startswith(('/', '(')):
-                how = self.hows['xpath']
+                how = Spydr.hows['xpath']
         else:
             somehow, what = matched.group(1, 2)
-            if somehow in self.hows:
-                how = self.hows[somehow]
+            if somehow in Spydr.hows:
+                how = Spydr.hows[somehow]
 
         if how is None:
             raise InvalidSelectorException(
                 f'Failed to parse locator: {locator}')
 
         return how, what
+
+
+#
+# --- WebElement Method Override ---
+#
+# Override WebElement.find_element and WebElement.find_elements to make sure
+# Spydr locator formats (Spydr._parse_locator) are accepted by WebElement as well.
+#
+def _new_web_element_find_element(self, locator):
+    how, what = Spydr._parse_locator(locator)
+    return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
+
+
+def _new_web_element_find_elements(self, locator):
+    how, what = Spydr._parse_locator(locator)
+    return self._execute(Command.FIND_CHILD_ELEMENTS,  {"using": how, "value": what})['value']
+
+
+WebElement.find_element = _new_web_element_find_element
+WebElement.find_elements = _new_web_element_find_elements

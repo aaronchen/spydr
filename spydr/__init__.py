@@ -1,1 +1,1 @@
-from spydr.webdriver import Spydr
+from .webdriver import Spydr
