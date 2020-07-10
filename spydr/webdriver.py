@@ -1348,7 +1348,7 @@ class Spydr:
 
     def _auth_extension_as_base64(self, username, password):
         bytes_ = self._auth_extension_as_bytes(username, password)
-        return base64.b64encode(bytes_).decode('utf-8')
+        return base64.b64encode(bytes_).decode('ascii')
 
     def _auth_extension_as_bytes(self, username, password):
         manifest = {
@@ -1409,13 +1409,14 @@ class Spydr:
         options.add_experimental_option(
             "excludeSwitches", ['enable-automation'])
 
-        if self.auth_username and self.auth_password:
-            options.add_encoded_extension(self._auth_extension_as_base64(
-                self.auth_username, self.auth_password))
-
         if self.headless:
             options.add_argument('headless')
             options.add_argument(f'window-size={self.window_size}')
+        else:
+            # Extension can only be installed when not headless
+            if self.auth_username and self.auth_password:
+                options.add_encoded_extension(self._auth_extension_as_base64(
+                    self.auth_username, self.auth_password))
 
         return options
 
@@ -1430,7 +1431,7 @@ class Spydr:
         options.profile = profile
 
         if self.headless:
-            options.add_argument('headless')
+            options.add_argument('--headless')
 
         return options
 

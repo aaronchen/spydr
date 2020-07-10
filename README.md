@@ -10,37 +10,41 @@ Selenium WebDriver (Python binding) wrapper with Selenium IDE-like functionality
 # Using Sypdr WebDriver
 
 ``` python
-# Basic Example: Google search 'webdriver'
+# Basic Example 1:
+# - Google search 'webdriver'
 from spydr.webdriver import Spydr
 
 s = Spydr()
 s.maximize_window()
 s.open('https://www.google.com/')
 s.send_keys('name=q', 'webdriver', s.keys.ENTER)
-s.save_screenshot('sample_shot')
+s.save_screenshot('sample_shot_1')
 s.quit()
 ```
 
 ``` python
-# Basic Example: Switch frame and window
+# Basic Example 2:
+# - Firefox driver, in headless mode, with 1920x1080 resolution
+# - Switch frame and window
 from spydr.webdriver import Spydr
 
-s = Spydr()
+s = Spydr(browser='firefox', headless='true', window_size='1920,1080')
+s.log('JSFiddle: Test "Open New Winodw"')
 s.maximize_window()
-s.log('JSFiddle: Open New Winodw Link')
 s.open('https://jsfiddle.net/s7gcx1du/')
 s.switch_to_frame('name=result')
 s.click('link_text=New Window')
+s.wait_until_number_of_windows_to_be(2)
 s.switch_to_last_window_handle()
-s.save_screenshot('new_window')
+s.save_screenshot('sample_shot_2')
 s.quit()
 ```
 
 ``` python
 # Handle Basic/Digest HTTP AUTH using Chrome
-from spydr import webdriver
+from spydr.webdriver import Spydr
 
-s = webdriver.Spydr(auth_username='guest', auth_password='guest')
+s = Spydr(auth_username='guest', auth_password='guest')
 s.open('https://jigsaw.w3.org/HTTP/Basic/')
 s.save_screenshot('basic')
 s.open('https://jigsaw.w3.org/HTTP/Digest/')
@@ -50,9 +54,9 @@ s.quit()
 
 ``` python
 # Handle Basic/Digest HTTP AUTH using non-Chrome
-from spydr import webdriver
+from spydr.webdriver import Spydr
 
-s = webdriver.Spydr(browser='firefox', auth_username='guest', auth_password='guest')
+s = Spydr(browser='firefox', auth_username='guest', auth_password='guest')
 s.open_with_auth('https://jigsaw.w3.org/HTTP/Basic/')
 s.save_screenshot('basic')
 s.open_with_auth('https://jigsaw.w3.org/HTTP/Digest/')
@@ -94,7 +98,7 @@ pip install sphinxcontrib-napoleon
 
 ```
 cd spydr
-sphinx\make html
+sphinx/make html
 ```
 
 # Upload Package
@@ -102,7 +106,7 @@ sphinx\make html
 ```
 cd spydr
 python setup.py bdist_wheel
-twine upload dist\*
+twine upload dist/*
 ```
 
 # Project Home
