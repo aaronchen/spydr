@@ -18,7 +18,7 @@ s = Spydr()
 s.maximize_window()
 s.open('https://www.google.com/')
 s.send_keys('name=q', 'webdriver', s.keys.ENTER)
-s.save_screenshot('sample_shot_1')
+s.save_screenshot('sample-1')
 s.quit()
 ```
 
@@ -28,15 +28,16 @@ s.quit()
 # - Switch frame and window
 from spydr.webdriver import Spydr
 
-s = Spydr(browser='firefox', headless='true', window_size='1920,1080')
-s.log('JSFiddle: Test "Open New Winodw"')
+s = Spydr(browser='firefox', headless=True, window_size='1920,1080')
+s.log('JSFiddle: Test "Open New Tab/Winodw"')
 s.maximize_window()
 s.open('https://jsfiddle.net/s7gcx1du/')
 s.switch_to_frame('name=result')
-s.click('link_text=New Window')
+s.click('link_text=New Window') # Open Google Search
 s.wait_until_number_of_windows_to_be(2)
 s.switch_to_last_window_handle()
-s.save_screenshot('sample_shot_2')
+s.wait_until_visible('name=q')
+s.save_screenshot(s.timestamp(prefix='sample-'))
 s.quit()
 ```
 
