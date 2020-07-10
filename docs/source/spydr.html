@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.1.2 documentation</title>
+    <title>spydr package &#8212; spydr 0.1.3 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -115,7 +115,7 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <code class="sig-name descname">alert_accept</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alert</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.alert_accept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.alert_accept" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept the alert available.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><p><strong>alert</strong> (<em>Alert</em><em>, </em><em>optional</em>) – Alert instance. Defaults to None.</p>
 </dd>
 </dl>
@@ -126,7 +126,7 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <code class="sig-name descname">alert_dismiss</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alert</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.alert_dismiss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.alert_dismiss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dismiss the alert available.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><p><strong>alert</strong> (<em>Alert</em><em>, </em><em>optional</em>) – Alert instance. Defaults to None.</p>
 </dd>
 </dl>
@@ -138,10 +138,10 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <dd><p>Send keys to the alert.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keys_to_send</strong> (<em>str</em>) – Text to send</p></li>
-<li><p><strong>alert</strong> (<em>Alert</em><em>, </em><em>optional</em>) – Alert instance. Defaults to None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>keys_to_send</strong> (<em>str</em>) – Text to send</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>alert</strong> (<em>Alert</em><em>, </em><em>optional</em>) – Alert instance. Defaults to None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -151,7 +151,7 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <code class="sig-name descname">alert_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alert</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.alert_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.alert_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the text of the alert.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><p><strong>alert</strong> (<em>Alert</em><em>, </em><em>optional</em>) – Alert Instance. Defaults to None.</p>
 </dd>
 </dl>
@@ -220,8 +220,10 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <dd><p>Click the element from x and y offsets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>x_offset</strong> (<em>int</em><em>, </em><em>optional</em>) – X offset from the left of the element. Defaults to 1.</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em><em>, </em><em>optional</em>) – Y offset from the top of the element. Defaults to 1.</p></li>
 </ul>
@@ -308,8 +310,10 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <dd><p>Double-click the element from x and y offsets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>x_offset</strong> (<em>int</em>) – X offset from the left of the element. Defaults to 1.</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em>) – Y offset from the top of the element. Defaults to 1.</p></li>
 </ul>
@@ -339,8 +343,10 @@ then move to the target element and releases the mouse button.</p>
 then move to the target offset and releases the mouse button.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>source_locator</strong> (<em>str/WebElement</em>) – The element to mouse down</p></li>
+<dd class="field-odd"><p><strong>source_locator</strong> (<em>str/WebElement</em>) – The element to mouse down</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>x_offset</strong> (<em>int</em>) – X offset to move to</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em>) – Y offset to move to</p></li>
 </ul>
@@ -520,7 +526,7 @@ then move to the target offset and releases the mouse button.</p>
 <code class="sig-name descname">get_window_position</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">window_handle</span><span class="o">=</span><span class="default_value">'current'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.get_window_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.get_window_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the x and y position of the given window.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><p><strong>window_handle</strong> (<em>str</em><em>, </em><em>optional</em>) – The handle of the window. Defaults to ‘current’.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -545,7 +551,7 @@ then move to the target offset and releases the mouse button.</p>
 <code class="sig-name descname">get_window_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">window_handle</span><span class="o">=</span><span class="default_value">'current'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.get_window_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.get_window_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the width and height of the given window.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><p><strong>window_handle</strong> (<em>str</em><em>, </em><em>optional</em>) – The handle of the window. Defaults to ‘current’.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -583,10 +589,10 @@ then move to the target offset and releases the mouse button.</p>
 <dd><p>Highlight the element with the given color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
-<li><p><strong>hex_color</strong> (<em>str</em><em>, </em><em>optional</em>) – Hex color. Defaults to ‘#ff3’.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>hex_color</strong> (<em>str</em><em>, </em><em>optional</em>) – Hex color. Defaults to ‘#ff3’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -628,13 +634,13 @@ then move to the target offset and releases the mouse button.</p>
 <dd><p>Check if the element can be located in the given seconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p></li>
-<li><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to wait until giving up. Defaults to 2.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>False/WebElement</em> – Return False if not located.  Return WebElement if located.</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to wait until giving up. Defaults to 2.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>False/WebElement</em> – Return False if not located.  Return WebElement if located.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -694,10 +700,10 @@ then move to the target offset and releases the mouse button.</p>
 <dd><p>Log message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> (<em>str</em>) – Message to log</p></li>
-<li><p><strong>indentation</strong> (<em>int</em><em>, </em><em>optional</em>) – Indentation for log message. Defaults to None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – Message to log</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>indentation</strong> (<em>int</em><em>, </em><em>optional</em>) – Indentation for log message. Defaults to None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -725,7 +731,7 @@ then move to the target offset and releases the mouse button.</p>
 <code class="sig-name descname">move_by_offset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_offset</span></em>, <em class="sig-param"><span class="n">y_offset</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.move_by_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.move_by_offset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Moving the mouse to an offset from current mouse position.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_offset</strong> (<em>int</em>) – X offset</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em>) – Y offset</p></li>
@@ -752,8 +758,10 @@ then move to the target offset and releases the mouse button.</p>
 Offsets are relative to the top-left corner of the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>x_offset</strong> (<em>int</em><em>, </em><em>optional</em>) – X offset. Defaults to 1.</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em><em>, </em><em>optional</em>) – Y offset. Defaults to 1.</p></li>
 </ul>
@@ -803,8 +811,10 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Load the web page by adding username and password to the URL</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> (<em>str</em>) – URL of the web page</p></li>
+<dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – URL of the web page</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>username</strong> (<em>str</em><em>, </em><em>optional</em>) – Username. Defaults to auth_username or None.</p></li>
 <li><p><strong>password</strong> (<em>str</em><em>, </em><em>optional</em>) – Password. Defaults to auth_password or None.</p></li>
 </ul>
@@ -891,8 +901,10 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Right-click on the element with x and y offsets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>x_offset</strong> (<em>int</em><em>, </em><em>optional</em>) – X offset from the left of the element. Defaults to 1.</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em><em>, </em><em>optional</em>) – Y offset from the top of the element. Defaults to 1.</p></li>
 </ul>
@@ -977,11 +989,11 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Scroll the element’s parent to be visible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
-<li><p><strong>align_to</strong> (<em>bool</em><em>, </em><em>optional</em>) – When True, align the top of the element to the top.
-When False, align the bottom of the element to the bottom. Defaults to True.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>align_to</strong> (<em>bool</em><em>, </em><em>optional</em>) – When True, align the top of the element to the top.
+When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1035,11 +1047,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>int</em>) – x-coordinate in pixels</p></li>
 <li><p><strong>y</strong> (<em>int</em>) – y-coordinate in pixels</p></li>
-<li><p><strong>window_handle</strong> (<em>str</em><em>, </em><em>optional</em>) – Window handle. Defaults to ‘current’.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>dict</em> – Window rect as dict: {‘x’: 0, ‘y’: 0, ‘width’: 100, ‘height’: 100}</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>window_handle</strong> (<em>str</em><em>, </em><em>optional</em>) – Window handle. Defaults to ‘current’.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – Window rect as dict: {‘x’: 0, ‘y’: 0, ‘width’: 100, ‘height’: 100}</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1049,7 +1063,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <code class="sig-name descname">set_window_rect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.set_window_rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.set_window_rect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the x, y, width, and height of the current window.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>int</em><em>, </em><em>optional</em>) – x-coordinate in pixels. Defaults to None.</p></li>
 <li><p><strong>y</strong> (<em>int</em><em>, </em><em>optional</em>) – y-coordinate in pixels. Defaults to None.</p></li>
@@ -1072,11 +1086,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – Window width in pixels. Defaults to None.</p></li>
 <li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – Window height in pixels. Defaults to None.</p></li>
-<li><p><strong>window_handle</strong> (<em>str</em><em>, </em><em>optional</em>) – Window handle. Defaults to ‘current’.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>dict</em> – Window rect as dict: {‘x’: 0, ‘y’: 0, ‘width’: 100, ‘height’: 100}</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>window_handle</strong> (<em>str</em><em>, </em><em>optional</em>) – Window handle. Defaults to ‘current’.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – Window rect as dict: {‘x’: 0, ‘y’: 0, ‘width’: 100, ‘height’: 100}</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1147,11 +1163,11 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.switch_to_frame">
-<code class="sig-name descname">switch_to_frame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">frame_reference</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.switch_to_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.switch_to_frame" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">switch_to_frame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">frame_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.switch_to_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.switch_to_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switch to frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>frame_reference</strong> (<em>int/str/WebElement</em>) – Frame reference</p>
+<dd class="field-odd"><p><strong>frame_locator</strong> (<em>str/WebElement</em>) – The locator to identify the frame or WebElement</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1237,11 +1253,17 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.timestamp">
-<code class="sig-name descname">timestamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get current local timestamp</p>
+<em class="property">static </em><code class="sig-name descname">timestamp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current local timestamp with optional prefix and/or suffix.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>str</em> – Timestamp</p>
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Prefix for timestamp. Defaults to ‘’.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – Suffix for timestamp. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – Timestamp with optional prefix and suffix</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1283,14 +1305,16 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>Create a WebDriverWait instance and wait until the given method is evaluated to not False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<em>callable</em>) – Method to call</p></li>
+<dd class="field-odd"><p><strong>method</strong> (<em>callable</em>) – Method to call</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>poll_frequency</strong> (<em>float</em><em>, </em><em>optional</em>) – Sleep interval between method calls. Defaults to 0.5.</p></li>
 <li><p><strong>ignored_exceptions</strong> (<em>list</em><em>[</em><em>Exception</em><em>]</em><em>, </em><em>optional</em>) – Exception classes to ignore during calls. Defaults to None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Any applicable return from the method call</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Any applicable return from the method call</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1369,13 +1393,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>Wait until the element is not visible in the given seconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p></li>
-<li><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to give up waiting. Defaults to 2.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>bool</em> – Whether the element is not visible</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to give up waiting. Defaults to 2.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em> – Whether the element is not visible</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1589,7 +1613,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

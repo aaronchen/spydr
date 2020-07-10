@@ -10,7 +10,7 @@ Selenium WebDriver (Python binding) wrapper with Selenium IDE-like functionality
 # Using Sypdr WebDriver
 
 ``` python
-# Basic Example
+# Basic Example: Google search 'webdriver'
 from spydr.webdriver import Spydr
 
 s = Spydr()
@@ -18,6 +18,21 @@ s.maximize_window()
 s.open('https://www.google.com/')
 s.send_keys('name=q', 'webdriver', s.keys.ENTER)
 s.save_screenshot('sample_shot')
+s.quit()
+```
+
+``` python
+# Basic Example: Switch frame and window
+from spydr.webdriver import Spydr
+
+s = Spydr()
+s.maximize_window()
+s.log('JSFiddle: Open New Winodw Link')
+s.open('https://jsfiddle.net/s7gcx1du/')
+s.switch_to_frame('name=result')
+s.click('link_text=New Window')
+s.switch_to_last_window_handle()
+s.save_screenshot('new_window')
 s.quit()
 ```
 

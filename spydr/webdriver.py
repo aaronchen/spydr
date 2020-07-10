@@ -132,7 +132,7 @@ class Spydr:
     def alert_accept(self, alert=None):
         """Accept the alert available.
 
-        Args:
+        Keyword Arguments:
             alert (Alert, optional): Alert instance. Defaults to None.
         """
         if isinstance(alert, Alert):
@@ -143,7 +143,7 @@ class Spydr:
     def alert_dismiss(self, alert=None):
         """Dismiss the alert available.
 
-        Args:
+        Keyword Arguments:
             alert (Alert, optional): Alert instance. Defaults to None.
         """
         if isinstance(alert, Alert):
@@ -156,6 +156,8 @@ class Spydr:
 
         Args:
             keys_to_send (str): Text to send
+
+        Keyword Arguments:
             alert (Alert, optional): Alert instance. Defaults to None.
         """
         if isinstance(alert, Alert):
@@ -166,7 +168,7 @@ class Spydr:
     def alert_text(self, alert=None):
         """Get the text of the alert.
 
-        Args:
+        Keyword Arguments:
             alert (Alert, optional): Alert Instance. Defaults to None.
         """
         if isinstance(alert, Alert):
@@ -223,6 +225,8 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
             x_offset (int, optional): X offset from the left of the element. Defaults to 1.
             y_offset (int, optional): Y offset from the top of the element. Defaults to 1.
         """
@@ -279,6 +283,8 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
             x_offset (int): X offset from the left of the element. Defaults to 1.
             y_offset (int): Y offset from the top of the element. Defaults to 1.
         """
@@ -304,6 +310,8 @@ class Spydr:
 
         Args:
             source_locator (str/WebElement): The element to mouse down
+
+        Keyword Arguments:
             x_offset (int): X offset to move to
             y_offset (int): Y offset to move to
         """
@@ -459,7 +467,7 @@ class Spydr:
     def get_window_position(self, window_handle='current'):
         """Get the x and y position of the given window.
 
-        Args:
+        Keyword Arguments:
             window_handle (str, optional): The handle of the window. Defaults to 'current'.
 
         Returns:
@@ -478,7 +486,7 @@ class Spydr:
     def get_window_size(self, window_handle='current'):
         """Get the width and height of the given window.
 
-        Args:
+        Keyword Arguments:
             window_handle (str, optional): The handle of the window. Defaults to 'current'.
 
         Returns:
@@ -509,6 +517,8 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
             hex_color (str, optional): Hex color. Defaults to '#ff3'.
         """
         self.execute_script(
@@ -568,6 +578,8 @@ class Spydr:
 
         Args:
             locator (str): The locator to identify the element
+
+        Keyword Arguments:
             seconds (int, optional): Seconds to wait until giving up. Defaults to 2.
 
         Returns:
@@ -600,6 +612,8 @@ class Spydr:
 
         Args:
             message (str): Message to log
+
+        Keyword Arguments:
             indentation (int, optional): Indentation for log message. Defaults to None.
         """
         if not self.verbose:
@@ -628,7 +642,7 @@ class Spydr:
     def move_by_offset(self, x_offset, y_offset):
         """Moving the mouse to an offset from current mouse position.
 
-        Args:
+        Keyword Arguments:
             x_offset (int): X offset
             y_offset (int): Y offset
         """
@@ -649,6 +663,8 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
             x_offset (int, optional): X offset. Defaults to 1.
             y_offset (int, optional): Y offset. Defaults to 1.
         """
@@ -698,6 +714,8 @@ class Spydr:
 
         Args:
             url (str): URL of the web page
+
+        Keyword Arguments:
             username (str, optional): Username. Defaults to auth_username or None.
             password (str, optional): Password. Defaults to auth_password or None.
         """
@@ -789,6 +807,8 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
             x_offset (int, optional): X offset from the left of the element. Defaults to 1.
             y_offset (int, optional): Y offset from the top of the element. Defaults to 1.
         """
@@ -863,6 +883,8 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
             align_to (bool, optional): When True, align the top of the element to the top.
                 When False, align the bottom of the element to the bottom. Defaults to True.
         """
@@ -907,6 +929,8 @@ class Spydr:
         Args:
             x (int): x-coordinate in pixels
             y (int): y-coordinate in pixels
+
+        Keyword Arguments:
             window_handle (str, optional): Window handle. Defaults to 'current'.
 
         Returns:
@@ -917,7 +941,7 @@ class Spydr:
     def set_window_rect(self, x=None, y=None, width=None, height=None):
         """Set the x, y, width, and height of the current window.
 
-        Args:
+        Keyword Arguments:
             x (int, optional): x-coordinate in pixels. Defaults to None.
             y (int, optional): y-coordinate in pixels. Defaults to None.
             width (int, optional): Window width in pixels. Defaults to None.
@@ -934,6 +958,8 @@ class Spydr:
         Args:
             width (int, optional): Window width in pixels. Defaults to None.
             height (int, optional): Window height in pixels. Defaults to None.
+
+        Keyword Arguments:
             window_handle (str, optional): Window handle. Defaults to 'current'.
 
         Returns:
@@ -991,13 +1017,13 @@ class Spydr:
         """Switch to default content."""
         self.driver.switch_to.default_content()
 
-    def switch_to_frame(self, frame_reference):
+    def switch_to_frame(self, frame_locator):
         """Switch to frame.
 
         Args:
-            frame_reference (int/str/WebElement): Frame reference
+            frame_locator (str/WebElement): The locator to identify the frame or WebElement
         """
-        self.driver.switch_to.frame(frame_reference)
+        self.driver.switch_to.frame(self.find_element(frame_locator))
 
     def switch_to_frame_and_wait_until_elment_located_in_frame(self, frame_locator, element_locator):
         """Switch to the given frame and wait until the element is located within the frame.
@@ -1055,13 +1081,19 @@ class Spydr:
         self.page_load_timeout = seconds
         self.script_timeout = seconds
 
-    def timestamp(self):
-        """Get current local timestamp
+    @staticmethod
+    def timestamp(prefix='', suffix=''):
+        """Get current local timestamp with optional prefix and/or suffix.
+
+        Keyword Arguments:
+            prefix (str, optional): Prefix for timestamp. Defaults to ''.
+            suffix (str, optional): Suffix for timestamp. Defaults to ''.
 
         Returns:
-            str: Timestamp
+            str: Timestamp with optional prefix and suffix
         """
-        return strftime('%Y%m%d%H%M%S', localtime())
+        timestamp = strftime(r'%Y%m%d%H%M%S', localtime())
+        return f'{prefix}{timestamp}{suffix}'
 
     def text(self, locator):
         """The element's text.
@@ -1102,6 +1134,8 @@ class Spydr:
 
         Args:
             method (callable): Method to call
+
+        Keyword Arguments:
             poll_frequency (float, optional): Sleep interval between method calls. Defaults to 0.5.
             ignored_exceptions (list[Exception], optional): Exception classes to ignore during calls. Defaults to None.
 
@@ -1166,6 +1200,8 @@ class Spydr:
 
         Args:
             locator (str): The locator to identify the element
+
+        Keyword Arguments:
             seconds (int, optional): Seconds to give up waiting. Defaults to 2.
 
         Returns:
@@ -1302,7 +1338,7 @@ class Spydr:
             filename += suffix
 
         abspath = os.path.abspath(
-            os.path.join(root or self.screen_root, filename))
+            os.path.join(root or self.screen_root, self._slugify(filename)))
         dirname = os.path.dirname(abspath)
 
         if not os.path.exists(dirname):
@@ -1433,12 +1469,12 @@ class Spydr:
                 return False
             element.click()
             return True
-        except (ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException):
+        except (NoSuchWindowException, ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException):
             return False
 
     def _is_frame_switched(self, locator):
         try:
-            self.switch_to_frame(self.find_element(locator))
+            self.switch_to_frame(locator)
             return True
         except NoSuchFrameException:
             return False
@@ -1464,6 +1500,11 @@ class Spydr:
                 f'Failed to parse locator: {locator}')
 
         return how, what
+
+    @staticmethod
+    def _slugify(s):
+        s = str(s).strip().replace(' ', '_')
+        return re.sub(r'(?u)[^-\w.]', '', s)
 
 
 #

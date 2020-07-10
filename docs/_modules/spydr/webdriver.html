@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.1.2 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.1.3 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -178,7 +178,7 @@
 <div class="viewcode-block" id="Spydr.alert_accept"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.alert_accept">[docs]</a>    <span class="k">def</span> <span class="nf">alert_accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Accept the alert available.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            alert (Alert, optional): Alert instance. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">Alert</span><span class="p">):</span>
@@ -189,7 +189,7 @@
 <div class="viewcode-block" id="Spydr.alert_dismiss"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.alert_dismiss">[docs]</a>    <span class="k">def</span> <span class="nf">alert_dismiss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dismiss the alert available.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            alert (Alert, optional): Alert instance. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">Alert</span><span class="p">):</span>
@@ -202,6 +202,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            keys_to_send (str): Text to send</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            alert (Alert, optional): Alert instance. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">Alert</span><span class="p">):</span>
@@ -212,7 +214,7 @@
 <div class="viewcode-block" id="Spydr.alert_text"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.alert_text">[docs]</a>    <span class="k">def</span> <span class="nf">alert_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alert</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the text of the alert.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            alert (Alert, optional): Alert Instance. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alert</span><span class="p">,</span> <span class="n">Alert</span><span class="p">):</span>
@@ -269,6 +271,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x_offset (int, optional): X offset from the left of the element. Defaults to 1.</span>
 <span class="sd">            y_offset (int, optional): Y offset from the top of the element. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -325,6 +329,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x_offset (int): X offset from the left of the element. Defaults to 1.</span>
 <span class="sd">            y_offset (int): Y offset from the top of the element. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -350,6 +356,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            source_locator (str/WebElement): The element to mouse down</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x_offset (int): X offset to move to</span>
 <span class="sd">            y_offset (int): Y offset to move to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -505,7 +513,7 @@
 <div class="viewcode-block" id="Spydr.get_window_position"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_handle</span><span class="o">=</span><span class="s1">&#39;current&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the x and y position of the given window.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            window_handle (str, optional): The handle of the window. Defaults to &#39;current&#39;.</span>
 
 <span class="sd">        Returns:</span>
@@ -524,7 +532,7 @@
 <div class="viewcode-block" id="Spydr.get_window_size"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_window_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_handle</span><span class="o">=</span><span class="s1">&#39;current&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the width and height of the given window.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            window_handle (str, optional): The handle of the window. Defaults to &#39;current&#39;.</span>
 
 <span class="sd">        Returns:</span>
@@ -555,6 +563,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            hex_color (str, optional): Hex color. Defaults to &#39;#ff3&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
@@ -614,6 +624,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str): The locator to identify the element</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            seconds (int, optional): Seconds to wait until giving up. Defaults to 2.</span>
 
 <span class="sd">        Returns:</span>
@@ -646,6 +658,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (str): Message to log</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            indentation (int, optional): Indentation for log message. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
@@ -674,7 +688,7 @@
 <div class="viewcode-block" id="Spydr.move_by_offset"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.move_by_offset">[docs]</a>    <span class="k">def</span> <span class="nf">move_by_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Moving the mouse to an offset from current mouse position.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x_offset (int): X offset</span>
 <span class="sd">            y_offset (int): Y offset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -695,6 +709,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x_offset (int, optional): X offset. Defaults to 1.</span>
 <span class="sd">            y_offset (int, optional): Y offset. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -744,6 +760,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            url (str): URL of the web page</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            username (str, optional): Username. Defaults to auth_username or None.</span>
 <span class="sd">            password (str, optional): Password. Defaults to auth_password or None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -835,6 +853,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x_offset (int, optional): X offset from the left of the element. Defaults to 1.</span>
 <span class="sd">            y_offset (int, optional): Y offset from the top of the element. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -909,6 +929,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            align_to (bool, optional): When True, align the top of the element to the top.</span>
 <span class="sd">                When False, align the bottom of the element to the bottom. Defaults to True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -953,6 +975,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            x (int): x-coordinate in pixels</span>
 <span class="sd">            y (int): y-coordinate in pixels</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            window_handle (str, optional): Window handle. Defaults to &#39;current&#39;.</span>
 
 <span class="sd">        Returns:</span>
@@ -963,7 +987,7 @@
 <div class="viewcode-block" id="Spydr.set_window_rect"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.set_window_rect">[docs]</a>    <span class="k">def</span> <span class="nf">set_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the x, y, width, and height of the current window.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            x (int, optional): x-coordinate in pixels. Defaults to None.</span>
 <span class="sd">            y (int, optional): y-coordinate in pixels. Defaults to None.</span>
 <span class="sd">            width (int, optional): Window width in pixels. Defaults to None.</span>
@@ -980,6 +1004,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            width (int, optional): Window width in pixels. Defaults to None.</span>
 <span class="sd">            height (int, optional): Window height in pixels. Defaults to None.</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            window_handle (str, optional): Window handle. Defaults to &#39;current&#39;.</span>
 
 <span class="sd">        Returns:</span>
@@ -1037,13 +1063,13 @@
         <span class="sd">&quot;&quot;&quot;Switch to default content.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">default_content</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Spydr.switch_to_frame"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.switch_to_frame">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_reference</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.switch_to_frame"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.switch_to_frame">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Switch to frame.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            frame_reference (int/str/WebElement): Frame reference</span>
+<span class="sd">            frame_locator (str/WebElement): The locator to identify the frame or WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">frame_reference</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">frame_locator</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.switch_to_frame_and_wait_until_elment_located_in_frame"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.switch_to_frame_and_wait_until_elment_located_in_frame">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_frame_and_wait_until_elment_located_in_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_locator</span><span class="p">,</span> <span class="n">element_locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Switch to the given frame and wait until the element is located within the frame.</span>
@@ -1101,13 +1127,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">page_load_timeout</span> <span class="o">=</span> <span class="n">seconds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script_timeout</span> <span class="o">=</span> <span class="n">seconds</span>
 
-<div class="viewcode-block" id="Spydr.timestamp"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get current local timestamp</span>
+<div class="viewcode-block" id="Spydr.timestamp"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.timestamp">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get current local timestamp with optional prefix and/or suffix.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            prefix (str, optional): Prefix for timestamp. Defaults to &#39;&#39;.</span>
+<span class="sd">            suffix (str, optional): Suffix for timestamp. Defaults to &#39;&#39;.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: Timestamp</span>
+<span class="sd">            str: Timestamp with optional prefix and suffix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span> <span class="n">localtime</span><span class="p">())</span></div>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span> <span class="n">localtime</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">timestamp</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span></div>
 
 <div class="viewcode-block" id="Spydr.text"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The element&#39;s text.</span>
@@ -1148,6 +1180,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            method (callable): Method to call</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            poll_frequency (float, optional): Sleep interval between method calls. Defaults to 0.5.</span>
 <span class="sd">            ignored_exceptions (list[Exception], optional): Exception classes to ignore during calls. Defaults to None.</span>
 
@@ -1212,6 +1246,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str): The locator to identify the element</span>
+
+<span class="sd">        Keyword Arguments:</span>
 <span class="sd">            seconds (int, optional): Seconds to give up waiting. Defaults to 2.</span>
 
 <span class="sd">        Returns:</span>
@@ -1348,7 +1384,7 @@
             <span class="n">filename</span> <span class="o">+=</span> <span class="n">suffix</span>
 
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slugify</span><span class="p">(</span><span class="n">filename</span><span class="p">)))</span>
         <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
@@ -1479,12 +1515,12 @@
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="n">element</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">ElementClickInterceptedException</span><span class="p">,</span> <span class="n">ElementNotInteractableException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchWindowException</span><span class="p">,</span> <span class="n">ElementClickInterceptedException</span><span class="p">,</span> <span class="n">ElementNotInteractableException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_is_frame_switched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">switch_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">switch_to_frame</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -1509,7 +1545,12 @@
             <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Failed to parse locator: </span><span class="si">{</span><span class="n">locator</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span></div>
+        <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_slugify</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?u)[^-\w.]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
 
 
 <span class="c1">#</span>
@@ -1561,7 +1602,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
