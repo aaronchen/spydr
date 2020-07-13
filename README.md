@@ -7,6 +7,23 @@ Selenium WebDriver (Python binding) wrapper with Selenium IDE-like functionality
 
 `pip install spydr`
 
+# Supported **_locator_**
+
+Spydr WebDriver supports **_locator_** using the following `how=what` strategies to locate elements:
+
+- `css=.btn`
+- `class=btn-primary`
+- `id=frame1`
+- `link_text=text`
+- `name=j_username`
+- `partial_link_text=text`
+- `tag_name=span`
+- `xpath=//span/a`
+
+If **_how_** is not specified, **_locator_** starting with `/` or `(` will be parsed as **xpath**, while `.`, `[` and `#` are treated as **css**.
+
+**_locator_** also supports **css** pseudo selector `:eq()`, like using `.tab:eq(2)` to locate 3rd element of `.tab`.
+
 # Using Sypdr WebDriver
 
 ``` python
@@ -64,24 +81,6 @@ s.open_with_auth('https://jigsaw.w3.org/HTTP/Digest/')
 s.save_screenshot('digest')
 s.quit()
 ```
-
-# Supported **_locator_**
-
-**_Format: 'how=what'_**
-
-- `css=.btn`
-- `class=btn-primary`
-- `id=frame1`
-- `link_text=text`
-- `name=j_username`
-- `partial_link_text=text`
-- `tag_name=span`
-- `xpath=//span/a`
-
-If **_how_** is not specified, locator starting with `/` or `(` will be parsed as **xpath**, while `.`, `[` and `#` are treated as **css**.
-
-**css** pseudo selector support => `:eq()`
-
 
 # Development Environment
 

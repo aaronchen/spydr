@@ -573,28 +573,33 @@ class Spydr:
         """
         return self.find_element(locator).is_selected()
 
-    def is_element_located(self, locator, seconds=2):
-        """Check if the element can be located in the given seconds.
+    def is_element_located(self, locator, seconds=None):
+        """Check if the element is located in the given seconds.
 
         Args:
             locator (str): The locator to identify the element
 
         Keyword Arguments:
-            seconds (int, optional): Seconds to wait until giving up. Defaults to 2.
+            seconds (int, optional): Seconds to wait until giving up. Defaults to `self.implicitly_wait`.
 
         Returns:
             False/WebElement: Return False if not located.  Return WebElement if located.
         """
         how, what = self._parse_locator(locator)
 
-        self.implicitly_wait = seconds
+        orig_implicitly_wait = self.implicitly_wait
+        seconds = seconds if seconds else orig_implicitly_wait
+
+        if seconds != orig_implicitly_wait:
+            self.implicitly_wait = seconds
 
         try:
             return self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what))
         except (NoSuchElementException, NoSuchWindowException, StaleElementReferenceException, TimeoutException):
             return False
         finally:
-            self.implicitly_wait = self.timeout
+            if seconds != orig_implicitly_wait:
+                self.implicitly_wait = orig_implicitly_wait
 
     def location(self, locator):
         """The location of the element in the renderable canvas.
@@ -1036,7 +1041,7 @@ class Spydr:
             False/WebElement: Return False if not located.  Return WebElement if located.
         """
         self.wait_until_frame_available_and_switch(frame_locator)
-        return self.wait_until(lambda _: self.is_element_located(element_locator, seconds=self.timeout))
+        return self.wait_until(lambda _: self.is_element_located(element_locator))
 
     def switch_to_last_window_handle(self):
         """Switch to the last opened tab or window."""
@@ -1207,10 +1212,11 @@ class Spydr:
         Returns:
             bool: Whether the element is not visible
         """
+        how, what = self._parse_locator(locator)
         self.implicitly_wait = seconds
 
         try:
-            return self.wait(self.driver, seconds).until(lambda _: not self.find_element(locator))
+            return self.wait(self.driver, seconds).until(lambda wd: not wd.find_element(how, what))
         except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
         finally:
@@ -1437,20 +1443,21 @@ class Spydr:
 
     def _get_webdriver(self):
         path = os.getcwd()
+        config = {'path': path, 'log_level': 50}
 
         if self.browser not in self.browsers:
             raise WebDriverException(f'Unsupported browser: {self.browser}')
 
         if self.browser == 'chrome':
             return webdriver.Chrome(
-                executable_path=ChromeDriverManager(path=path).install(), options=self._chrome_options())
+                executable_path=ChromeDriverManager(**config).install(), options=self._chrome_options())
         elif self.browser == 'edge':
-            return webdriver.Edge(EdgeChromiumDriverManager(path=path).install())
+            return webdriver.Edge(EdgeChromiumDriverManager(**config).install())
         elif self.browser == 'firefox':
             return webdriver.Firefox(
-                executable_path=GeckoDriverManager(path=path).install(), options=self._firefox_options())
+                executable_path=GeckoDriverManager(**config).install(), options=self._firefox_options(), service_log_path=os.path.devnull)
         elif self.browser == 'ie':
-            return webdriver.Ie(executable_path=IEDriverManager(path=path).install(), options=self._ie_options())
+            return webdriver.Ie(executable_path=IEDriverManager(**config).install(), options=self._ie_options())
         elif self.browser == 'safari':
             return webdriver.Safari()
 
@@ -1482,6 +1489,17 @@ class Spydr:
 
     @staticmethod
     def _parse_locator(locator):
+        """Parse locator with supported `how=what` strategies
+
+        Args:
+            locator (str): The locator using supported `how=what` strategies
+
+        Raises:
+            InvalidSelectorException: Raise an error when `how=what` is not supported
+
+        Returns:
+            (str, str): (how, what) strategy
+        """
         how = what = None
         matched = re.search('^([A-Za-z_]+)=(.+)', locator)
 
