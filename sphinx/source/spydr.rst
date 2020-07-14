@@ -4,6 +4,14 @@ spydr package
 Submodules
 ----------
 
+spydr.utils module
+------------------
+
+.. automodule:: spydr.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 spydr.webdriver module
 ----------------------
 

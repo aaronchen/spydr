@@ -9,7 +9,6 @@ from io import BytesIO
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
@@ -29,9 +28,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManager
 
+from spydr.utils import HOWS, Utils
+
 
 class Spydr:
-    """Spydr Webdriver
+    """Spydr WebDriver
 
     Keyword Arguments:
         auth_username (str): Username for HTTP Basic/Digest Auth. Defaults to None.
@@ -50,7 +51,6 @@ class Spydr:
     Raises:
         NoSuchElementException: Raise an error when no element is found
         WebDriverException: Raise an error when Spydr encounters an error
-        InvalidSelectorException: Raise an error when locator is invalid
 
     Returns:
         Spydr: An instance of Spydr Webdriver
@@ -64,18 +64,6 @@ class Spydr:
 
     ec = expected_conditions
     """Pre-defined Expected Conditions"""
-
-    hows = {
-        'css': by.CSS_SELECTOR,
-        'class': by.CLASS_NAME,
-        'id': by.ID,
-        'link_text': by.LINK_TEXT,
-        'name': by.NAME,
-        'partial_link_text': by.PARTIAL_LINK_TEXT,
-        'tag_name': by.TAG_NAME,
-        'xpath': by.XPATH
-    }
-    """Set of How locators"""
 
     keys = Keys
     """Pre-defined keys codes"""
@@ -211,6 +199,14 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
         self.find_element(locator).clear()
+
+    def clear_and_send_keys(self, locator, *keys):
+        """Clear the element first and then send the given keys.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        self.find_element(locator).clear_and_send_keys(*keys)
 
     def click(self, locator):
         """Click the element.
@@ -359,9 +355,9 @@ class Spydr:
             return locator
 
         element = None
-        how, what = self._parse_locator(locator)
+        how, what = Utils.parse_locator(locator)
 
-        if how == self.hows['css']:
+        if how == HOWS['css']:
             matched = re.search(r'(.*):eq\((\d+)\)', what)
             if matched:
                 new_what, nth = matched.group(1, 2)
@@ -383,7 +379,7 @@ class Spydr:
         Returns:
             list[WebElement]: All elements found
         """
-        how, what = self._parse_locator(locator)
+        how, what = Utils.parse_locator(locator)
         elements = self.driver.find_elements(how, what)
         return elements
 
@@ -585,7 +581,7 @@ class Spydr:
         Returns:
             False/WebElement: Return False if not located.  Return WebElement if located.
         """
-        how, what = self._parse_locator(locator)
+        how, what = Utils.parse_locator(locator)
 
         orig_implicitly_wait = self.implicitly_wait
         seconds = seconds if seconds else orig_implicitly_wait
@@ -1212,7 +1208,7 @@ class Spydr:
         Returns:
             bool: Whether the element is not visible
         """
-        how, what = self._parse_locator(locator)
+        how, what = Utils.parse_locator(locator)
         self.implicitly_wait = seconds
 
         try:
@@ -1313,6 +1309,18 @@ class Spydr:
         """
         return self.wait_until(lambda _: self.is_displayed(locator))
 
+    def wait_until_visible_and_get_elmement(self, locator):
+        """Wait until the element is visible and return the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: WebElement
+        """
+        self.wait_until_visible(locator)
+        return self.find_element(locator)
+
     @property
     def window_handle(self):
         """Return the handle of the current window.
@@ -1339,15 +1347,15 @@ class Spydr:
         """
         self.execute_script('document.body.style.zoom = arguments[0];', scale)
 
-    def _abs_filename(self, filename, suffix='.png', root=None):
+    def _abs_filename(self, filename, suffix='.png', root=None, mkdir=True):
         if not filename.lower().endswith(suffix):
             filename += suffix
 
         abspath = os.path.abspath(
-            os.path.join(root or self.screen_root, self._slugify(filename)))
+            os.path.join(root or self.screen_root, Utils.sanitize(filename)))
         dirname = os.path.dirname(abspath)
 
-        if not os.path.exists(dirname):
+        if mkdir and not os.path.exists(dirname):
             os.makedirs(dirname)
 
         return abspath
@@ -1407,13 +1415,23 @@ class Spydr:
         return filename
 
     def _chrome_options(self):
+        # https://chromium.googlesource.com/chromium/src/+/master/chrome/common/chrome_switches.cc
+        # https://chromium.googlesource.com/chromium/src/+/master/chrome/common/pref_names.cc
         options = webdriver.ChromeOptions()
+
         options.add_argument('allow-running-insecure-content')
         options.add_argument('ignore-certificate-errors')
         options.add_argument('ignore-ssl-errors=yes')
 
         options.add_experimental_option(
-            "excludeSwitches", ['enable-automation'])
+            "excludeSwitches", ['enable-automation', 'enable-logging'])
+        options.add_experimental_option('useAutomationExtension', False)
+        options.add_experimental_option("prefs", {
+            "credentials_enable_service": False,
+            "profile": {
+                "password_manager_enabled": False
+            }
+        })
 
         if self.headless:
             options.add_argument('headless')
@@ -1487,60 +1505,37 @@ class Spydr:
         except NoSuchFrameException:
             return False
 
-    @staticmethod
-    def _parse_locator(locator):
-        """Parse locator with supported `how=what` strategies
-
-        Args:
-            locator (str): The locator using supported `how=what` strategies
-
-        Raises:
-            InvalidSelectorException: Raise an error when `how=what` is not supported
-
-        Returns:
-            (str, str): (how, what) strategy
-        """
-        how = what = None
-        matched = re.search('^([A-Za-z_]+)=(.+)', locator)
-
-        if matched is None:
-            what = locator
-            if locator.startswith(('.', '#', '[')):
-                how = Spydr.hows['css']
-            elif locator.startswith(('/', '(')):
-                how = Spydr.hows['xpath']
-        else:
-            somehow, what = matched.group(1, 2)
-            if somehow in Spydr.hows:
-                how = Spydr.hows[somehow]
-
-        if how is None:
-            raise InvalidSelectorException(
-                f'Failed to parse locator: {locator}')
-
-        return how, what
-
-    @staticmethod
-    def _slugify(s):
-        s = str(s).strip().replace(' ', '_')
-        return re.sub(r'(?u)[^-\w.]', '', s)
-
 
 #
-# --- WebElement Method Override ---
+# --- WebElement Method Additions ---
 #
-# Override WebElement.find_element and WebElement.find_elements to make sure
-# Spydr locator formats (Spydr._parse_locator) are accepted by WebElement as well.
+# Goals:
+#   - Add additional functionality to WebElement
+#   - Override WebElement methods to accommodate Spydr locator formats (Utils.parse_locator)
 #
-def _new_web_element_find_element(self, locator):
-    how, what = Spydr._parse_locator(locator)
+# Mthods to add:
+#   - WebElement.clear_and_send_keys
+#
+# Methods to override:
+#   - WebElement.find_element
+#   - WebElement.find_elements
+#
+def _web_element_clear_and_send_keys(self, *keys):
+    self.clear()
+    self.send_keys(*keys)
+    return self
+
+
+def _web_element_find_element(self, locator):
+    how, what = Utils.parse_locator(locator)
     return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
 
 
-def _new_web_element_find_elements(self, locator):
-    how, what = Spydr._parse_locator(locator)
+def _web_element_find_elements(self, locator):
+    how, what = Utils.parse_locator(locator)
     return self._execute(Command.FIND_CHILD_ELEMENTS,  {"using": how, "value": what})['value']
 
 
-WebElement.find_element = _new_web_element_find_element
-WebElement.find_elements = _new_web_element_find_elements
+WebElement.clear_and_send_keys = _web_element_clear_and_send_keys
+WebElement.find_element = _web_element_find_element
+WebElement.find_elements = _web_element_find_elements

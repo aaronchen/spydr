@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.1.6 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.1.7 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -55,7 +55,6 @@
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ElementClickInterceptedException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ElementNotInteractableException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchWindowException</span>
@@ -75,9 +74,11 @@
 <span class="kn">from</span> <span class="nn">webdriver_manager.firefox</span> <span class="kn">import</span> <span class="n">GeckoDriverManager</span>
 <span class="kn">from</span> <span class="nn">webdriver_manager.microsoft</span> <span class="kn">import</span> <span class="n">IEDriverManager</span><span class="p">,</span> <span class="n">EdgeChromiumDriverManager</span>
 
+<span class="kn">from</span> <span class="nn">spydr.utils</span> <span class="kn">import</span> <span class="n">HOWS</span><span class="p">,</span> <span class="n">Utils</span>
+
 
 <div class="viewcode-block" id="Spydr"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr">[docs]</a><span class="k">class</span> <span class="nc">Spydr</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Spydr Webdriver</span>
+    <span class="sd">&quot;&quot;&quot;Spydr WebDriver</span>
 
 <span class="sd">    Keyword Arguments:</span>
 <span class="sd">        auth_username (str): Username for HTTP Basic/Digest Auth. Defaults to None.</span>
@@ -96,7 +97,6 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        NoSuchElementException: Raise an error when no element is found</span>
 <span class="sd">        WebDriverException: Raise an error when Spydr encounters an error</span>
-<span class="sd">        InvalidSelectorException: Raise an error when locator is invalid</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Spydr: An instance of Spydr Webdriver</span>
@@ -110,18 +110,6 @@
 
     <span class="n">ec</span> <span class="o">=</span> <span class="n">expected_conditions</span>
     <span class="sd">&quot;&quot;&quot;Pre-defined Expected Conditions&quot;&quot;&quot;</span>
-
-    <span class="n">hows</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;css&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span>
-        <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span>
-        <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span>
-        <span class="s1">&#39;link_text&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span>
-        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span>
-        <span class="s1">&#39;partial_link_text&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span>
-        <span class="s1">&#39;tag_name&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span>
-        <span class="s1">&#39;xpath&#39;</span><span class="p">:</span> <span class="n">by</span><span class="o">.</span><span class="n">XPATH</span>
-    <span class="p">}</span>
-    <span class="sd">&quot;&quot;&quot;Set of How locators&quot;&quot;&quot;</span>
 
     <span class="n">keys</span> <span class="o">=</span> <span class="n">Keys</span>
     <span class="sd">&quot;&quot;&quot;Pre-defined keys codes&quot;&quot;&quot;</span>
@@ -257,6 +245,14 @@
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.clear_and_send_keys"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.clear_and_send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">clear_and_send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear the element first and then send the given keys.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">clear_and_send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.click">[docs]</a>    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Click the element.</span>
@@ -405,9 +401,9 @@
             <span class="k">return</span> <span class="n">locator</span>
 
         <span class="n">element</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">hows</span><span class="p">[</span><span class="s1">&#39;css&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="n">HOWS</span><span class="p">[</span><span class="s1">&#39;css&#39;</span><span class="p">]:</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(.*):eq\((\d+)\)&#39;</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
                 <span class="n">new_what</span><span class="p">,</span> <span class="n">nth</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -429,7 +425,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            list[WebElement]: All elements found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">elements</span></div>
 
@@ -631,7 +627,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            False/WebElement: Return False if not located.  Return WebElement if located.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
 
         <span class="n">orig_implicitly_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span>
         <span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="k">if</span> <span class="n">seconds</span> <span class="k">else</span> <span class="n">orig_implicitly_wait</span>
@@ -1258,7 +1254,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the element is not visible</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">seconds</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -1359,6 +1355,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="Spydr.wait_until_visible_and_get_elmement"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_visible_and_get_elmement">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_visible_and_get_elmement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the element is visible and return the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_visible</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">window_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the handle of the current window.</span>
@@ -1385,15 +1393,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;document.body.style.zoom = arguments[0];&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_abs_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_abs_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
             <span class="n">filename</span> <span class="o">+=</span> <span class="n">suffix</span>
 
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slugify</span><span class="p">(</span><span class="n">filename</span><span class="p">)))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">,</span> <span class="n">Utils</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">filename</span><span class="p">)))</span>
         <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">mkdir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">abspath</span>
@@ -1453,13 +1461,23 @@
         <span class="k">return</span> <span class="n">filename</span>
 
     <span class="k">def</span> <span class="nf">_chrome_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># https://chromium.googlesource.com/chromium/src/+/master/chrome/common/chrome_switches.cc</span>
+        <span class="c1"># https://chromium.googlesource.com/chromium/src/+/master/chrome/common/pref_names.cc</span>
         <span class="n">options</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">ChromeOptions</span><span class="p">()</span>
+
         <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;allow-running-insecure-content&#39;</span><span class="p">)</span>
         <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ignore-certificate-errors&#39;</span><span class="p">)</span>
         <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ignore-ssl-errors=yes&#39;</span><span class="p">)</span>
 
         <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span>
-            <span class="s2">&quot;excludeSwitches&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;enable-automation&#39;</span><span class="p">])</span>
+            <span class="s2">&quot;excludeSwitches&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;enable-automation&#39;</span><span class="p">,</span> <span class="s1">&#39;enable-logging&#39;</span><span class="p">])</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s1">&#39;useAutomationExtension&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s2">&quot;prefs&quot;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">&quot;credentials_enable_service&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;password_manager_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">headless</span><span class="p">:</span>
             <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;headless&#39;</span><span class="p">)</span>
@@ -1531,65 +1549,42 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">switch_to_frame</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parse locator with supported `how=what` strategies</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            locator (str): The locator using supported `how=what` strategies</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            InvalidSelectorException: Raise an error when `how=what` is not supported</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (str, str): (how, what) strategy</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">how</span> <span class="o">=</span> <span class="n">what</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">matched</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^([A-Za-z_]+)=(.+)&#39;</span><span class="p">,</span> <span class="n">locator</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">matched</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">what</span> <span class="o">=</span> <span class="n">locator</span>
-            <span class="k">if</span> <span class="n">locator</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">)):</span>
-                <span class="n">how</span> <span class="o">=</span> <span class="n">Spydr</span><span class="o">.</span><span class="n">hows</span><span class="p">[</span><span class="s1">&#39;css&#39;</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">locator</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">)):</span>
-                <span class="n">how</span> <span class="o">=</span> <span class="n">Spydr</span><span class="o">.</span><span class="n">hows</span><span class="p">[</span><span class="s1">&#39;xpath&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">somehow</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">somehow</span> <span class="ow">in</span> <span class="n">Spydr</span><span class="o">.</span><span class="n">hows</span><span class="p">:</span>
-                <span class="n">how</span> <span class="o">=</span> <span class="n">Spydr</span><span class="o">.</span><span class="n">hows</span><span class="p">[</span><span class="n">somehow</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">how</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Failed to parse locator: </span><span class="si">{</span><span class="n">locator</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_slugify</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?u)[^-\w.]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="c1">#</span>
-<span class="c1"># --- WebElement Method Override ---</span>
+<span class="c1"># --- WebElement Method Additions ---</span>
 <span class="c1">#</span>
-<span class="c1"># Override WebElement.find_element and WebElement.find_elements to make sure</span>
-<span class="c1"># Spydr locator formats (Spydr._parse_locator) are accepted by WebElement as well.</span>
+<span class="c1"># Goals:</span>
+<span class="c1">#   - Add additional functionality to WebElement</span>
+<span class="c1">#   - Override WebElement methods to accommodate Spydr locator formats (Utils.parse_locator)</span>
 <span class="c1">#</span>
-<span class="k">def</span> <span class="nf">_new_web_element_find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-    <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Spydr</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+<span class="c1"># Mthods to add:</span>
+<span class="c1">#   - WebElement.clear_and_send_keys</span>
+<span class="c1">#</span>
+<span class="c1"># Methods to override:</span>
+<span class="c1">#   - WebElement.find_element</span>
+<span class="c1">#   - WebElement.find_elements</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">_web_element_clear_and_send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span>
+
+
+<span class="k">def</span> <span class="nf">_web_element_find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+    <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">how</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">what</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_new_web_element_find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-    <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Spydr</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_web_element_find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+    <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>  <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">how</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">what</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
 
-<span class="n">WebElement</span><span class="o">.</span><span class="n">find_element</span> <span class="o">=</span> <span class="n">_new_web_element_find_element</span>
-<span class="n">WebElement</span><span class="o">.</span><span class="n">find_elements</span> <span class="o">=</span> <span class="n">_new_web_element_find_elements</span>
+<span class="n">WebElement</span><span class="o">.</span><span class="n">clear_and_send_keys</span> <span class="o">=</span> <span class="n">_web_element_clear_and_send_keys</span>
+<span class="n">WebElement</span><span class="o">.</span><span class="n">find_element</span> <span class="o">=</span> <span class="n">_web_element_find_element</span>
+<span class="n">WebElement</span><span class="o">.</span><span class="n">find_elements</span> <span class="o">=</span> <span class="n">_web_element_find_elements</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -1621,7 +1616,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
