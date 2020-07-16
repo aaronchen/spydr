@@ -1,7 +1,7 @@
 # spydr
 Selenium WebDriver (Python binding) wrapper with Selenium IDE-like functionality
 
-[spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html)
+[spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html#module-spydr.webdriver)
 
 # Install
 
@@ -19,6 +19,7 @@ Spydr WebDriver supports **_locator_** using the following `how=what` strategies
 - `partial_link_text=text`
 - `tag_name=span`
 - `xpath=//span/a`
+- `yml=today_page.dashboard.search_button`
 
 If **_how_** is not specified, **_locator_** starting with `/` or `(` will be parsed as **xpath**, while `.`, `[` and `#` are treated as **css**.
 
@@ -81,6 +82,29 @@ s.open_with_auth('https://jigsaw.w3.org/HTTP/Digest/')
 s.save_screenshot('digest')
 s.quit()
 ```
+
+# Using YML dot notation (for getting environment values or as **_locator_**)
+
+``` YML
+# conf.yml
+env:
+  url: 'https://dev.company.com'
+
+today_page:
+  dashboard:
+    search_button: '#dashboard-search'
+```
+
+``` python
+from spydr.webdriver import Spydr
+
+s = Spydr(yml='conf.yml')
+url = s.t('env.url')
+s.open(f'{url}/today')
+s.send_keys('yml=today_page.dashboard.search_button', 'critical')
+```
+
+
 
 # Development Environment
 

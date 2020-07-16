@@ -3,12 +3,15 @@ import json
 import os
 import re
 import urllib.parse
+import yaml
 import zipfile
 
+from functools import reduce
 from io import BytesIO
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
@@ -47,8 +50,10 @@ class Spydr:
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
         verbose (bool): Turn on/off verbose mode. Defaults to True.
         window_size (str): The size of the window when headless.  Defaults to '1280,720'.
+        yml (str/bytes/os.PathLike): Read YAML File into dict.  Defaults to None.
 
     Raises:
+        InvalidSelectorException: Raise an error when locator is invalid
         NoSuchElementException: Raise an error when no element is found
         WebDriverException: Raise an error when Spydr encounters an error
 
@@ -82,7 +87,8 @@ class Spydr:
                  screen_root='./screens',
                  timeout=30,
                  verbose=True,
-                 window_size='1280,720'):
+                 window_size='1280,720',
+                 yml=None):
         self.auth_username = auth_username
         self.auth_password = auth_password
         self.browser = browser.lower()
@@ -93,6 +99,7 @@ class Spydr:
         self.screen_root = screen_root
         self.verbose = verbose
         self.window_size = window_size
+        self.yml = yml
         self.driver = self._get_webdriver()
         self.timeout = timeout
 
@@ -191,6 +198,40 @@ class Spydr:
             str: CSS property value
         """
         return self.find_element(locator).value_of_css_property(name)
+
+    def checkbox_to_be(self, locator, is_checked):
+        """Set the checkbox, identified by the locator, to the given state (is_checked).
+
+        Args:
+            locator (str/WebElement): The locator to identify the checkbox or WebElement
+            is_checked (bool): whether the element to be checked
+
+        Raises:
+            InvalidSelectorException: Raise an error when the element is not a checkbox
+        """
+        element = self.find_element(locator)
+
+        if element.tag_name != 'input' and element.get_attribute('type') != 'checkbox':
+            raise InvalidSelectorException(
+                f'Element is not a checkbox: {locator}')
+
+        if element.is_selected() != is_checked:
+            element.send_keys(self.keys.SPACE)
+
+    def checkboxes_to_be(self, locator, is_checked):
+        """Set all checkboxes, identified by the locator, to the given state (is_checked).
+
+        Args:
+            locator (str): The locator to identify all the checkboxes
+            is_checked (bool): whether the checkboxes to be checked
+        """
+        elements = self.find_elements(locator)
+
+        for element in elements:
+            if element.tag_name != 'input' and element.get_attribute('type') != 'checkbox':
+                continue
+            if element.is_selected() != is_checked:
+                element.send_keys(self.keys.SPACE)
 
     def clear(self, locator):
         """Clear the text of a text input element.
@@ -355,7 +396,7 @@ class Spydr:
             return locator
 
         element = None
-        how, what = Utils.parse_locator(locator)
+        how, what = self._parse_locator(locator)
 
         if how == HOWS['css']:
             matched = re.search(r'(.*):eq\((\d+)\)', what)
@@ -367,7 +408,14 @@ class Spydr:
                     raise NoSuchElementException(
                         f'{locator} does not have {nth} element')
 
-        element = element or self.driver.find_element(how, what)
+        if not element:
+            element = self.wait_until(
+                lambda _: self.is_element_located(locator))
+
+            if not isinstance(element, WebElement):
+                raise NoSuchElementException(
+                    f'Cannot locate element in the given time using: {locator}')
+
         return element
 
     def find_elements(self, locator):
@@ -379,7 +427,10 @@ class Spydr:
         Returns:
             list[WebElement]: All elements found
         """
-        how, what = Utils.parse_locator(locator)
+        if isinstance(locator, (list, tuple)) and all(isinstance(el, WebElement) for el in locator):
+            return locator
+
+        how, what = self._parse_locator(locator)
         elements = self.driver.find_elements(how, what)
         return elements
 
@@ -581,7 +632,7 @@ class Spydr:
         Returns:
             False/WebElement: Return False if not located.  Return WebElement if located.
         """
-        how, what = Utils.parse_locator(locator)
+        how, what = self._parse_locator(locator)
 
         orig_implicitly_wait = self.implicitly_wait
         seconds = seconds if seconds else orig_implicitly_wait
@@ -892,13 +943,22 @@ class Spydr:
         self.execute_script(
             'arguments[0].scrollIntoView(arguments[1]);', self.find_element(locator), align_to)
 
-    def select(self, option_locator):
-        """Select the given option in the drop-down menu.
+    def select_to_be(self, option_locator):
+        """Select the given `option` in the `select` drop-down menu.
 
         Args:
             option_locator (str/WebElement): The locator to identify the element or WebElement
+
+        Raises:
+            InvalidSelectorException: Raise an error when the element is not an option
         """
-        self.click(option_locator)
+        option_element = self.find_element(option_locator)
+
+        if option_element.tag_name != 'option':
+            raise InvalidSelectorException(
+                f'Element is not an option: {option_locator}')
+
+        self.click(option_element)
 
     def send_keys(self, locator, *keys):
         """Simulate typing into the element.
@@ -988,6 +1048,17 @@ class Spydr:
         """
         return self.find_element(locator).size
 
+    def sleep(self, seconds):
+        """Sleep the given seconds.
+
+        Args:
+            seconds (int): Seconds to sleep
+        """
+        try:
+            self.wait(self.driver, seconds).until(lambda _: False)
+        except:
+            pass
+
     def submit(self, locator):
         """Submit a form.
 
@@ -1054,6 +1125,31 @@ class Spydr:
             window_name (str): Window name
         """
         self.driver.switch_to.window(window_name)
+
+    def t(self, key):
+        """Get value from `self.yml` by using "dot notation" key.
+
+        Examples:
+            | # YAML
+            | today:
+            |   dashboard:
+            |     search: '#search'
+            |
+            | t('today.dashboard.search') => '#search'
+
+        Args:
+            key (str): Dot notation key
+
+        Returns:
+            value of dot notation key
+        """
+        if not self.yml:
+            return None
+
+        try:
+            return reduce(lambda c, k: c[k], key.split('.'), self.yml)
+        except KeyError:
+            raise WebDriverException(f'Key not found: {key}')
 
     def tag_name(self, locator):
         """Get the element's tagName
@@ -1208,7 +1304,7 @@ class Spydr:
         Returns:
             bool: Whether the element is not visible
         """
-        how, what = Utils.parse_locator(locator)
+        how, what = self._parse_locator(locator)
         self.implicitly_wait = seconds
 
         try:
@@ -1338,6 +1434,25 @@ class Spydr:
             list[str]: List of all window handles
         """
         return self.driver.window_handles
+
+    @property
+    def yml(self):
+        """dict of the YAML file read.
+
+        Returns:
+            dict: YAML as dict
+        """
+        return self.__yml
+
+    @yml.setter
+    def yml(self, file):
+        if isinstance(file, (str, bytes, os.PathLike)):
+            try:
+                self.__yml = yaml.safe_load(open(file, 'r').read())
+            except FileNotFoundError:
+                raise WebDriverException(f'File not found: {file}')
+        else:
+            self.__yml = None
 
     def zoom(self, scale):
         """Set the zoom factor of a document defined by the viewport.
@@ -1505,6 +1620,18 @@ class Spydr:
         except NoSuchFrameException:
             return False
 
+    def _parse_locator(self, locator):
+        how, what = Utils.parse_locator(locator)
+
+        if how == 'yml':
+            if self.yml:
+                return Utils.parse_locator(self.t(what))
+            else:
+                raise WebDriverException(
+                    'Cannot use "yml=" as locator strategie when the instance is not assigned with .yml file.')
+
+        return how, what
+
 
 #
 # --- WebElement Method Additions ---
@@ -1515,6 +1642,7 @@ class Spydr:
 #
 # Mthods to add:
 #   - WebElement.clear_and_send_keys
+#   - WebElement.css_property
 #
 # Methods to override:
 #   - WebElement.find_element
@@ -1537,5 +1665,6 @@ def _web_element_find_elements(self, locator):
 
 
 WebElement.clear_and_send_keys = _web_element_clear_and_send_keys
+WebElement.css_property = WebElement.value_of_css_property
 WebElement.find_element = _web_element_find_element
 WebElement.find_elements = _web_element_find_elements

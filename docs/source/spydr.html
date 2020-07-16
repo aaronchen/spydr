@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.1.7 documentation</title>
+    <title>spydr package &#8212; spydr 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
 <span id="spydr-utils-module"></span><h2>spydr.utils module<a class="headerlink" href="#module-spydr.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
 <dt id="spydr.utils.HOWS">
-<code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">HOWS</code><em class="property"> = {'class': 'class name', 'css': 'css selector', 'id': 'id', 'link_text': 'link text', 'name': 'name', 'partial_link_text': 'partial link text', 'tag_name': 'tag name', 'xpath': 'xpath'}</em><a class="headerlink" href="#spydr.utils.HOWS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">HOWS</code><em class="property"> = {'class': 'class name', 'css': 'css selector', 'id': 'id', 'link_text': 'link text', 'name': 'name', 'partial_link_text': 'partial link text', 'tag_name': 'tag name', 'xpath': 'xpath', 'yml': 'yml'}</em><a class="headerlink" href="#spydr.utils.HOWS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of HOW strategies to identify elements.</p>
 </dd></dl>
 
@@ -62,7 +62,7 @@
 <p>Utilites for Spydr WebDriver</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>InvalidSelectorException</strong> – Raise an error when <cite>how=what</cite> can not be parsed</p>
+<dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when <cite>how=what</cite> can not be parsed</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -74,7 +74,7 @@
 <dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator using supported <cite>how=what</cite> strategies</p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>InvalidSelectorException</strong> – Raise an error when <cite>how=what</cite> is not supported</p>
+<dd class="field-even"><p><strong>WebDriverException</strong> – Raise an error when <cite>how=what</cite> is not supported</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>(str, str)</em> – (how, what) strategy</p>
@@ -103,7 +103,7 @@
 <span id="spydr-webdriver-module"></span><h2>spydr.webdriver module<a class="headerlink" href="#module-spydr.webdriver" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="spydr.webdriver.Spydr">
-<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">Spydr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auth_password</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">browser</span><span class="o">=</span><span class="default_value">'chrome'</span></em>, <em class="sig-param"><span class="n">extension_root</span><span class="o">=</span><span class="default_value">'./extensions'</span></em>, <em class="sig-param"><span class="n">headless</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log_indentation</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">log_prefix</span><span class="o">=</span><span class="default_value">'- '</span></em>, <em class="sig-param"><span class="n">screen_root</span><span class="o">=</span><span class="default_value">'./screens'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">window_size</span><span class="o">=</span><span class="default_value">'1280,720'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">Spydr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auth_password</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">browser</span><span class="o">=</span><span class="default_value">'chrome'</span></em>, <em class="sig-param"><span class="n">extension_root</span><span class="o">=</span><span class="default_value">'./extensions'</span></em>, <em class="sig-param"><span class="n">headless</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log_indentation</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">log_prefix</span><span class="o">=</span><span class="default_value">'- '</span></em>, <em class="sig-param"><span class="n">screen_root</span><span class="o">=</span><span class="default_value">'./screens'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">window_size</span><span class="o">=</span><span class="default_value">'1280,720'</span></em>, <em class="sig-param"><span class="n">yml</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Spydr WebDriver</p>
 <dl class="field-list simple">
@@ -121,10 +121,12 @@ Supported browsers: ‘chrome’, ‘edge’, ‘firefox’, ‘ie’, ‘safari
 <li><p><strong>timeout</strong> (<em>int</em>) – Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – Turn on/off verbose mode. Defaults to True.</p></li>
 <li><p><strong>window_size</strong> (<em>str</em>) – The size of the window when headless.  Defaults to ‘1280,720’.</p></li>
+<li><p><strong>yml</strong> (<em>str/bytes/os.PathLike</em>) – Read YAML File into dict.  Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
+<li><p><strong>InvalidSelectorException</strong> – Raise an error when locator is invalid</p></li>
 <li><p><strong>NoSuchElementException</strong> – Raise an error when no element is found</p></li>
 <li><p><strong>WebDriverException</strong> – Raise an error when Spydr encounters an error</p></li>
 </ul>
@@ -241,6 +243,37 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <dt id="spydr.webdriver.Spydr.by">
 <code class="sig-name descname">by</code><a class="headerlink" href="#spydr.webdriver.Spydr.by" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.common.by.By</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.checkbox_to_be">
+<code class="sig-name descname">checkbox_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.checkbox_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.checkbox_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the checkbox, identified by the locator, to the given state (is_checked).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the checkbox or WebElement</p></li>
+<li><p><strong>is_checked</strong> (<em>bool</em>) – whether the element to be checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a checkbox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.checkboxes_to_be">
+<code class="sig-name descname">checkboxes_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.checkboxes_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.checkboxes_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all checkboxes, identified by the locator, to the given state (is_checked).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str</em>) – The locator to identify all the checkboxes</p></li>
+<li><p><strong>is_checked</strong> (<em>bool</em>) – whether the checkboxes to be checked</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1055,12 +1088,15 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spydr.webdriver.Spydr.select">
-<code class="sig-name descname">select</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select the given option in the drop-down menu.</p>
+<dt id="spydr.webdriver.Spydr.select_to_be">
+<code class="sig-name descname">select_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the given <cite>option</cite> in the <cite>select</cite> drop-down menu.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>option_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not an option</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1179,6 +1215,17 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.sleep">
+<code class="sig-name descname">sleep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seconds</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.sleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.sleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sleep the given seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>seconds</strong> (<em>int</em>) – Seconds to sleep</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.submit">
 <code class="sig-name descname">submit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.submit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit a form.</p>
@@ -1264,6 +1311,33 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>window_name</strong> (<em>str</em>) – Window name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.t">
+<code class="sig-name descname">t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get value from <cite>self.yml</cite> by using “dot notation” key.</p>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line"># YAML</div>
+<div class="line">today:</div>
+<div class="line-block">
+<div class="line">dashboard:</div>
+<div class="line-block">
+<div class="line">search: ‘#search’</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="line">t(‘today.dashboard.search’) =&gt; ‘#search’</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – Dot notation key</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value of dot notation key</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1618,6 +1692,17 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.yml">
+<em class="property">property </em><code class="sig-name descname">yml</code><a class="headerlink" href="#spydr.webdriver.Spydr.yml" title="Permalink to this definition">¶</a></dt>
+<dd><p>dict of the YAML file read.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – YAML as dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.zoom">
 <code class="sig-name descname">zoom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.zoom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.zoom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the zoom factor of a document defined by the viewport.</p>
@@ -1684,7 +1769,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.1.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

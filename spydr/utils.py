@@ -1,6 +1,6 @@
 import re
 
-from selenium.common.exceptions import InvalidSelectorException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
@@ -12,16 +12,22 @@ HOWS = {
     'name': By.NAME,
     'partial_link_text': By.PARTIAL_LINK_TEXT,
     'tag_name': By.TAG_NAME,
-    'xpath': By.XPATH
+    'xpath': By.XPATH,
+    'yml': 'yml'
 }
 """Set of HOW strategies to identify elements."""
+
+
+# Todo:
+# Cannot raise InvalidSelectorException as it is ignored in webdriver.
+# Use WebDriverException for now.
 
 
 class Utils:
     """Utilites for Spydr WebDriver
 
     Raises:
-        InvalidSelectorException: Raise an error when `how=what` can not be parsed
+        WebDriverException: Raise an error when `how=what` can not be parsed
     """
     @staticmethod
     def parse_locator(locator):
@@ -31,7 +37,7 @@ class Utils:
             locator (str): The locator using supported `how=what` strategies
 
         Raises:
-            InvalidSelectorException: Raise an error when `how=what` is not supported
+            WebDriverException: Raise an error when `how=what` is not supported
 
         Returns:
             (str, str): (how, what) strategy
@@ -51,7 +57,7 @@ class Utils:
                 how = HOWS[somehow]
 
         if how is None:
-            raise InvalidSelectorException(
+            raise WebDriverException(
                 f'Failed to parse locator: {locator}')
 
         return how, what

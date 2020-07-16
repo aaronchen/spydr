@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.utils &#8212; spydr 0.1.7 documentation</title>
+    <title>spydr.utils &#8212; spydr 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.utils</a></li> 
       </ul>
@@ -46,7 +46,7 @@
   <h1>Source code for spydr.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 
 
@@ -58,16 +58,22 @@
     <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span>
     <span class="s1">&#39;partial_link_text&#39;</span><span class="p">:</span> <span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span>
     <span class="s1">&#39;tag_name&#39;</span><span class="p">:</span> <span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span>
-    <span class="s1">&#39;xpath&#39;</span><span class="p">:</span> <span class="n">By</span><span class="o">.</span><span class="n">XPATH</span>
+    <span class="s1">&#39;xpath&#39;</span><span class="p">:</span> <span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+    <span class="s1">&#39;yml&#39;</span><span class="p">:</span> <span class="s1">&#39;yml&#39;</span>
 <span class="p">}</span>
 <span class="sd">&quot;&quot;&quot;Set of HOW strategies to identify elements.&quot;&quot;&quot;</span>
+
+
+<span class="c1"># Todo:</span>
+<span class="c1"># Cannot raise InvalidSelectorException as it is ignored in webdriver.</span>
+<span class="c1"># Use WebDriverException for now.</span>
 
 
 <div class="viewcode-block" id="Utils"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.Utils">[docs]</a><span class="k">class</span> <span class="nc">Utils</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Utilites for Spydr WebDriver</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        InvalidSelectorException: Raise an error when `how=what` can not be parsed</span>
+<span class="sd">        WebDriverException: Raise an error when `how=what` can not be parsed</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Utils.parse_locator"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.Utils.parse_locator">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">):</span>
@@ -77,7 +83,7 @@
 <span class="sd">            locator (str): The locator using supported `how=what` strategies</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidSelectorException: Raise an error when `how=what` is not supported</span>
+<span class="sd">            WebDriverException: Raise an error when `how=what` is not supported</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (str, str): (how, what) strategy</span>
@@ -97,7 +103,7 @@
                 <span class="n">how</span> <span class="o">=</span> <span class="n">HOWS</span><span class="p">[</span><span class="n">somehow</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">how</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Failed to parse locator: </span><span class="si">{</span><span class="n">locator</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span></div>
@@ -145,7 +151,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.1.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.utils</a></li> 
       </ul>
