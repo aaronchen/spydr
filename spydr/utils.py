@@ -18,11 +18,6 @@ HOWS = {
 """Set of HOW strategies to identify elements."""
 
 
-# Todo:
-# Cannot raise InvalidSelectorException as it is ignored in webdriver.
-# Use WebDriverException for now.
-
-
 class Utils:
     """Utilites for Spydr WebDriver
 
@@ -57,6 +52,8 @@ class Utils:
                 how = HOWS[somehow]
 
         if how is None:
+            # Cannot raise InvalidSelectorException as it is ignored in webdriver.wait_until.
+            # Use WebDriverException for now.
             raise WebDriverException(
                 f'Failed to parse locator: {locator}')
 

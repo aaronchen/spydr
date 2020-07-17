@@ -19,7 +19,7 @@ Spydr WebDriver supports **_locator_** using the following `how=what` strategies
 - `partial_link_text=text`
 - `tag_name=span`
 - `xpath=//span/a`
-- `yml=today_page.dashboard.search_button`
+- `yml=today_page.dashboard.search_field`
 
 If **_how_** is not specified, **_locator_** starting with `/` or `(` will be parsed as **xpath**, while `.`, `[` and `#` are treated as **css**.
 
@@ -83,7 +83,7 @@ s.save_screenshot('digest')
 s.quit()
 ```
 
-# Using YML dot notation (for getting environment values or as **_locator_**)
+# Using YML: Dot Notation (for environment values or **_locator_**)
 
 ``` YML
 # conf.yml
@@ -92,7 +92,7 @@ env:
 
 today_page:
   dashboard:
-    search_button: '#dashboard-search'
+    search_field: '#dashboard-search'
 ```
 
 ``` python
@@ -101,7 +101,7 @@ from spydr.webdriver import Spydr
 s = Spydr(yml='conf.yml')
 url = s.t('env.url')
 s.open(f'{url}/today')
-s.send_keys('yml=today_page.dashboard.search_button', 'critical')
+s.send_keys('yml=today_page.dashboard.search_field', 'critical')
 ```
 
 

@@ -31,7 +31,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManager
 
-from spydr.utils import HOWS, Utils
+from .utils import HOWS, Utils
 
 
 class Spydr:
@@ -199,12 +199,15 @@ class Spydr:
         """
         return self.find_element(locator).value_of_css_property(name)
 
-    def checkbox_to_be(self, locator, is_checked):
+    def checkbox_to_be(self, locator, is_checked, method='click'):
         """Set the checkbox, identified by the locator, to the given state (is_checked).
 
         Args:
             locator (str/WebElement): The locator to identify the checkbox or WebElement
             is_checked (bool): whether the element to be checked
+
+        Keyword Arguments:
+            method (str): Methods to toggle checkbox: click, space.  Defaults to 'click'.
 
         Raises:
             InvalidSelectorException: Raise an error when the element is not a checkbox
@@ -216,14 +219,22 @@ class Spydr:
                 f'Element is not a checkbox: {locator}')
 
         if element.is_selected() != is_checked:
-            element.send_keys(self.keys.SPACE)
+            if method == 'click':
+                self.js_click(element)
+            elif method == 'space':
+                element.send_keys(self.keys.SPACE)
+            else:
+                raise WebDriverException(f'Unknown method: {method}')
 
-    def checkboxes_to_be(self, locator, is_checked):
+    def checkboxes_to_be(self, locator, is_checked, method='click'):
         """Set all checkboxes, identified by the locator, to the given state (is_checked).
 
         Args:
             locator (str): The locator to identify all the checkboxes
             is_checked (bool): whether the checkboxes to be checked
+
+        Keyword Arguments:
+            method (str): Methods to toggle checkbox: click, space.  Defaults to 'click'.
         """
         elements = self.find_elements(locator)
 
@@ -231,7 +242,12 @@ class Spydr:
             if element.tag_name != 'input' and element.get_attribute('type') != 'checkbox':
                 continue
             if element.is_selected() != is_checked:
-                element.send_keys(self.keys.SPACE)
+                if method == 'click':
+                    self.js_click(element)
+                elif method == 'space':
+                    element.send_keys(self.keys.SPACE)
+                else:
+                    raise WebDriverException(f'Unknown method: {method}')
 
     def clear(self, locator):
         """Clear the text of a text input element.
@@ -275,6 +291,17 @@ class Spydr:
     def close(self):
         """Close the window."""
         self.driver.close()
+
+    def ctrl_click(self, locator):
+        """Ctrl-click the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        element = self.find_element(locator)
+        control = self.keys.CONTROL
+
+        self.actions().key_down(control).click(element).key_up(control).perform()
 
     @property
     def current_url(self):
@@ -488,6 +515,7 @@ class Spydr:
         Returns:
             str: Base64 encoded string of the screenshot
         """
+        self.wait_until_page_loaded()
         return self.driver.get_screenshot_as_base64()
 
     def get_screenshot_as_file(self, filename):
@@ -501,6 +529,7 @@ class Spydr:
         Returns:
             bool: Whether the file is saved
         """
+        self.wait_until_page_loaded()
         return self.driver.get_screenshot_as_file(self._abs_filename(filename))
 
     def get_screenshot_as_png(self):
@@ -509,6 +538,7 @@ class Spydr:
         Returns:
             bytes: Binary data of the screenshot
         """
+        self.wait_until_page_loaded()
         return self.driver.get_screenshot_as_png()
 
     def get_window_position(self, window_handle='current'):
@@ -607,19 +637,6 @@ class Spydr:
         """
         return self.find_element(locator).is_enabled()
 
-    def is_selected(self, locator):
-        """Check if the element is selected.
-
-        Can be used to check if a checkbox or radio button is selected.
-
-        Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
-
-        Returns:
-            bool: Whether the element is selected
-        """
-        return self.find_element(locator).is_selected()
-
     def is_element_located(self, locator, seconds=None):
         """Check if the element is located in the given seconds.
 
@@ -647,6 +664,36 @@ class Spydr:
         finally:
             if seconds != orig_implicitly_wait:
                 self.implicitly_wait = orig_implicitly_wait
+
+    def is_page_loaded(self):
+        """Check if `document.readyState` is `complete`.
+
+        Returns:
+            bool: Whether the page is loaded
+        """
+        return self.execute_script('return document.readyState == "complete";')
+
+    def is_selected(self, locator):
+        """Check if the element is selected.
+
+        Can be used to check if a checkbox or radio button is selected.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            bool: Whether the element is selected
+        """
+        return self.find_element(locator).is_selected()
+
+    def js_click(self, locator):
+        """Call `HTMLElement.click()` using JavaScript.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        self.execute_script(
+            'arguments[0].click();', self.find_element(locator))
 
     def location(self, locator):
         """The location of the element in the renderable canvas.
@@ -880,6 +927,7 @@ class Spydr:
         Returns:
             bool: Whether the file is saved
         """
+        self.wait_until_page_loaded()
         return self.driver.save_screenshot(self._abs_filename(filename))
 
     def screenshot(self, locator, filename):
@@ -1324,6 +1372,10 @@ class Spydr:
             bool: Whether number of windows matching the given number
         """
         return self.wait_until(self.ec.number_of_windows_to_be(number))
+
+    def wait_until_page_loaded(self):
+        """Wait until `document.readyState` is `complete`."""
+        self.wait_until(lambda _: self.is_page_loaded())
 
     def wait_until_selected(self, locator):
         """Wait until the element is selected.

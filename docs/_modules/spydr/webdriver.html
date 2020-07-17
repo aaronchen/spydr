@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.2.0 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -77,7 +77,7 @@
 <span class="kn">from</span> <span class="nn">webdriver_manager.firefox</span> <span class="kn">import</span> <span class="n">GeckoDriverManager</span>
 <span class="kn">from</span> <span class="nn">webdriver_manager.microsoft</span> <span class="kn">import</span> <span class="n">IEDriverManager</span><span class="p">,</span> <span class="n">EdgeChromiumDriverManager</span>
 
-<span class="kn">from</span> <span class="nn">spydr.utils</span> <span class="kn">import</span> <span class="n">HOWS</span><span class="p">,</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">HOWS</span><span class="p">,</span> <span class="n">Utils</span>
 
 
 <div class="viewcode-block" id="Spydr"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr">[docs]</a><span class="k">class</span> <span class="nc">Spydr</span><span class="p">:</span>
@@ -245,12 +245,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">value_of_css_property</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Spydr.checkbox_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.checkbox_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">checkbox_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.checkbox_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.checkbox_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">checkbox_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;click&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the checkbox, identified by the locator, to the given state (is_checked).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the checkbox or WebElement</span>
 <span class="sd">            is_checked (bool): whether the element to be checked</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            method (str): Methods to toggle checkbox: click, space.  Defaults to &#39;click&#39;.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            InvalidSelectorException: Raise an error when the element is not a checkbox</span>
@@ -262,14 +265,22 @@
                 <span class="sa">f</span><span class="s1">&#39;Element is not a checkbox: </span><span class="si">{</span><span class="n">locator</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">!=</span> <span class="n">is_checked</span><span class="p">:</span>
-            <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;click&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">js_click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;space&#39;</span><span class="p">:</span>
+                <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Spydr.checkboxes_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.checkboxes_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">checkboxes_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.checkboxes_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.checkboxes_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">checkboxes_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;click&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set all checkboxes, identified by the locator, to the given state (is_checked).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str): The locator to identify all the checkboxes</span>
 <span class="sd">            is_checked (bool): whether the checkboxes to be checked</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            method (str): Methods to toggle checkbox: click, space.  Defaults to &#39;click&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
 
@@ -277,7 +288,12 @@
             <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag_name</span> <span class="o">!=</span> <span class="s1">&#39;input&#39;</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;checkbox&#39;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">!=</span> <span class="n">is_checked</span><span class="p">:</span>
-                <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span></div>
+                <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;click&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">js_click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;space&#39;</span><span class="p">:</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.clear"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the text of a text input element.</span>
@@ -321,6 +337,17 @@
 <div class="viewcode-block" id="Spydr.close"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the window.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.ctrl_click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.ctrl_click">[docs]</a>    <span class="k">def</span> <span class="nf">ctrl_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ctrl-click the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">CONTROL</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">control</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">control</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -534,6 +561,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Base64 encoded string of the screenshot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Spydr.get_screenshot_as_file"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_screenshot_as_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -547,6 +575,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the file is saved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.get_screenshot_as_png"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_screenshot_as_png">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -555,6 +584,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: Binary data of the screenshot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_png</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Spydr.get_window_position"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_handle</span><span class="o">=</span><span class="s1">&#39;current&#39;</span><span class="p">):</span>
@@ -653,19 +683,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Spydr.is_selected"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_selected">[docs]</a>    <span class="k">def</span> <span class="nf">is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if the element is selected.</span>
-
-<span class="sd">        Can be used to check if a checkbox or radio button is selected.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether the element is selected</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span></div>
-
 <div class="viewcode-block" id="Spydr.is_element_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_element_located">[docs]</a>    <span class="k">def</span> <span class="nf">is_element_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the element is located in the given seconds.</span>
 
@@ -693,6 +710,36 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">seconds</span> <span class="o">!=</span> <span class="n">orig_implicitly_wait</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">orig_implicitly_wait</span></div>
+
+<div class="viewcode-block" id="Spydr.is_page_loaded"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_page_loaded">[docs]</a>    <span class="k">def</span> <span class="nf">is_page_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if `document.readyState` is `complete`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the page is loaded</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return document.readyState == &quot;complete&quot;;&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.is_selected"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_selected">[docs]</a>    <span class="k">def</span> <span class="nf">is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the element is selected.</span>
+
+<span class="sd">        Can be used to check if a checkbox or radio button is selected.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element is selected</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.js_click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.js_click">[docs]</a>    <span class="k">def</span> <span class="nf">js_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call `HTMLElement.click()` using JavaScript.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
+            <span class="s1">&#39;arguments[0].click();&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.location"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.location">[docs]</a>    <span class="k">def</span> <span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The location of the element in the renderable canvas.</span>
@@ -926,6 +973,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the file is saved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.screenshot"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -1371,6 +1419,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">number_of_windows_to_be</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="Spydr.wait_until_page_loaded"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_page_loaded">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_page_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until `document.readyState` is `complete`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_page_loaded</span><span class="p">())</span></div>
+
 <div class="viewcode-block" id="Spydr.wait_until_selected"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_selected">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element is selected.</span>
 
@@ -1745,7 +1797,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
