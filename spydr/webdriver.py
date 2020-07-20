@@ -6,6 +6,7 @@ import urllib.parse
 import yaml
 import zipfile
 
+from datetime import date, timedelta
 from functools import reduce
 from io import BytesIO
 from selenium import webdriver
@@ -239,15 +240,7 @@ class Spydr:
         elements = self.find_elements(locator)
 
         for element in elements:
-            if element.tag_name != 'input' and element.get_attribute('type') != 'checkbox':
-                continue
-            if element.is_selected() != is_checked:
-                if method == 'click':
-                    self.js_click(element)
-                elif method == 'space':
-                    element.send_keys(self.keys.SPACE)
-                else:
-                    raise WebDriverException(f'Unknown method: {method}')
+            self.checkbox_to_be(element, is_checked, method)
 
     def clear(self, locator):
         """Clear the text of a text input element.
@@ -311,6 +304,37 @@ class Spydr:
             str: URL of the page
         """
         return self.driver.current_url
+
+    def date_from_delta(self, days, format='%m/%d/%Y'):
+        """Get the date by the given delta from today.
+
+        Examples:
+            | date_today() => 2020/12/10
+            | date_from_delta(1) => 2020/12/11
+            | date_from_delta(-1) => 2020/12/09
+
+        Args:
+            days (int): Delta days from today
+
+        Keyword Arguments:
+            format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+
+        Returns:
+            str: Delta date from today
+        """
+        delta = date.today() + timedelta(days=days)
+        return delta.strftime(format)
+
+    def date_today(self, format='%m/%d/%Y'):
+        """Get Today's date.
+
+        Keyword Arguments:
+            format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+
+        Returns:
+            str: Today's date in the given format
+        """
+        return date.today().strftime(format)
 
     def delete_all_cookies(self):
         """Delete all cookies in the scope of the session."""
@@ -382,6 +406,19 @@ class Spydr:
         source_element = self.find_element(source_locator)
         self.actions().drag_and_drop_by_offset(
             source_element, x_offset, y_offset).perform()
+
+    @property
+    def driver(self):
+        """Instance of Selenium WebDriver.
+
+        Returns:
+            WebDriver: Instance of Selenium WebDriver
+        """
+        return self.__driver
+
+    @driver.setter
+    def driver(self, driver_):
+        self.__driver = driver_
 
     def execute_async_script(self, script, *args):
         """Asynchronously execute JavaScript in the current window or frame.
@@ -459,6 +496,7 @@ class Spydr:
 
         how, what = self._parse_locator(locator)
         elements = self.driver.find_elements(how, what)
+
         return elements
 
     def focus(self, locator):
@@ -1076,6 +1114,20 @@ class Spydr:
         """
         return self.driver.set_window_size(width, height, window_handle)
 
+    def shift_click_from_and_to(self, from_locator, to_locator):
+        """Shift click from `from_locator` to `to_locator`.
+
+        Args:
+            from_locator (str/WebElement): The locator to identify the element or WebElement
+            to_locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        from_element = self.find_element(from_locator)
+        to_element = self.find_element(to_locator)
+        shift = self.keys.SHIFT
+
+        self.actions().key_down(shift).click(from_element).click(
+            to_element).key_up(shift).perform()
+
     def show(self, locator):
         """Show the element.
 
@@ -1174,7 +1226,7 @@ class Spydr:
         """
         self.driver.switch_to.window(window_name)
 
-    def t(self, key):
+    def t(self, key, **kwargs):
         """Get value from `self.yml` by using "dot notation" key.
 
         Examples:
@@ -1182,11 +1234,16 @@ class Spydr:
             | today:
             |   dashboard:
             |     search: '#search'
+            |     name: 'Name is {name}'
             |
             | t('today.dashboard.search') => '#search'
+            | t('today.dashboard.name', name='Spydr') => 'Name is Spydr'
 
         Args:
             key (str): Dot notation key
+
+        Keyword Arguments:
+            **kwargs: Format key value (str) with `str.format(**kwargs)`.
 
         Returns:
             value of dot notation key
@@ -1195,7 +1252,16 @@ class Spydr:
             return None
 
         try:
-            return reduce(lambda c, k: c[k], key.split('.'), self.yml)
+            value = reduce(lambda c, k: c[k], key.split('.'), self.yml)
+
+            if isinstance(value, str) and kwargs:
+                for placeholder in kwargs.keys():
+                    if not value.find(f'{{placeholder}}'):
+                        raise WebDriverException(
+                            f'{key} has no placeholder: {placeholder}')
+                return value.format(**kwargs)
+
+            return value
         except KeyError:
             raise WebDriverException(f'Key not found: {key}')
 
@@ -1716,7 +1782,12 @@ def _web_element_find_elements(self, locator):
     return self._execute(Command.FIND_CHILD_ELEMENTS,  {"using": how, "value": what})['value']
 
 
+def _web_element__str__(self):
+    return self.get_attribute('outerHTML')
+
+
 WebElement.clear_and_send_keys = _web_element_clear_and_send_keys
 WebElement.css_property = WebElement.value_of_css_property
 WebElement.find_element = _web_element_find_element
 WebElement.find_elements = _web_element_find_elements
+WebElement.__str__ = _web_element__str__

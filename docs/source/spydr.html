@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.2.1 documentation</title>
+    <title>spydr package &#8212; spydr 0.2.2 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -378,6 +378,43 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.date_from_delta">
+<code class="sig-name descname">date_from_delta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">days</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.date_from_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.date_from_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the date by the given delta from today.</p>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line">date_today() =&gt; 2020/12/10</div>
+<div class="line">date_from_delta(1) =&gt; 2020/12/11</div>
+<div class="line">date_from_delta(-1) =&gt; 2020/12/09</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>days</strong> (<em>int</em>) – Delta days from today</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – Delta date from today</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.date_today">
+<code class="sig-name descname">date_today</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.date_today"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.date_today" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Today’s date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – Today’s date in the given format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.delete_all_cookies">
 <code class="sig-name descname">delete_all_cookies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.delete_all_cookies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.delete_all_cookies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete all cookies in the scope of the session.</p>
@@ -462,6 +499,17 @@ then move to the target offset and releases the mouse button.</p>
 <li><p><strong>x_offset</strong> (<em>int</em>) – X offset to move to</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em>) – Y offset to move to</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.driver">
+<em class="property">property </em><code class="sig-name descname">driver</code><a class="headerlink" href="#spydr.webdriver.Spydr.driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of Selenium WebDriver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebDriver</em> – Instance of Selenium WebDriver</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1229,6 +1277,20 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.shift_click_from_and_to">
+<code class="sig-name descname">shift_click_from_and_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_locator</span></em>, <em class="sig-param"><span class="n">to_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.shift_click_from_and_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.shift_click_from_and_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift click from <cite>from_locator</cite> to <cite>to_locator</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>to_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.show">
 <code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the element.</p>
@@ -1356,7 +1418,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.t">
-<code class="sig-name descname">t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.t" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get value from <cite>self.yml</cite> by using “dot notation” key.</p>
 <p class="rubric">Examples</p>
 <div class="line-block">
@@ -1366,17 +1428,22 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <div class="line">dashboard:</div>
 <div class="line-block">
 <div class="line">search: ‘#search’</div>
+<div class="line">name: ‘Name is {name}’</div>
 <div class="line"><br /></div>
 </div>
 </div>
 <div class="line">t(‘today.dashboard.search’) =&gt; ‘#search’</div>
+<div class="line">t(‘today.dashboard.name’, name=’Spydr’) =&gt; ‘Name is Spydr’</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – Dot notation key</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>value of dot notation key</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – Format key value (str) with <cite>str.format(**kwargs)</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>value of dot notation key</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1814,7 +1881,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

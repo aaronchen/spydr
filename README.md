@@ -54,7 +54,6 @@ s.switch_to_frame('name=result')
 s.click('link_text=New Window') # Open Google Search
 s.wait_until_number_of_windows_to_be(2)
 s.switch_to_last_window_handle()
-s.wait_until_visible('name=q')
 s.save_screenshot(s.timestamp(prefix='sample-'))
 s.quit()
 ```
@@ -83,25 +82,29 @@ s.save_screenshot('digest')
 s.quit()
 ```
 
-# Using YML: Dot Notation (for environment values or **_locator_**)
+# Using YML: Dot Notation (for environment values, **_locator_**, etc)
 
 ``` YML
 # conf.yml
 env:
-  url: 'https://dev.company.com'
+  url: 'https://dev.company.com/today'
 
 today_page:
   dashboard:
     search_field: '#dashboard-search'
+    search_string: 'name is {name}'
 ```
 
 ``` python
 from spydr.webdriver import Spydr
 
 s = Spydr(yml='conf.yml')
+
 url = s.t('env.url')
-s.open(f'{url}/today')
-s.send_keys('yml=today_page.dashboard.search_field', 'critical')
+search_string = s.t('today_page.dashboard.search_string', name='spydr')
+
+s.open(url)
+s.send_keys('yml=today_page.dashboard.search_field', search_string)
 ```
 
 

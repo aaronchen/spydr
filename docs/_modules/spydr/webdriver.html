@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.2.1 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.2.2 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -52,6 +52,7 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
@@ -285,15 +286,7 @@
         <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag_name</span> <span class="o">!=</span> <span class="s1">&#39;input&#39;</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;checkbox&#39;</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">!=</span> <span class="n">is_checked</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;click&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">js_click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;space&#39;</span><span class="p">:</span>
-                    <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_to_be</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.clear"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the text of a text input element.</span>
@@ -357,6 +350,37 @@
 <span class="sd">            str: URL of the page</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
+
+<div class="viewcode-block" id="Spydr.date_from_delta"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.date_from_delta">[docs]</a>    <span class="k">def</span> <span class="nf">date_from_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the date by the given delta from today.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            | date_today() =&gt; 2020/12/10</span>
+<span class="sd">            | date_from_delta(1) =&gt; 2020/12/11</span>
+<span class="sd">            | date_from_delta(-1) =&gt; 2020/12/09</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            days (int): Delta days from today</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            format (str, optional): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Delta date from today</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">delta</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.date_today"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.date_today">[docs]</a>    <span class="k">def</span> <span class="nf">date_today</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get Today&#39;s date.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            format (str, optional): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Today&#39;s date in the given format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.delete_all_cookies"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.delete_all_cookies">[docs]</a>    <span class="k">def</span> <span class="nf">delete_all_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete all cookies in the scope of the session.&quot;&quot;&quot;</span>
@@ -428,6 +452,19 @@
         <span class="n">source_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">source_locator</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">drag_and_drop_by_offset</span><span class="p">(</span>
             <span class="n">source_element</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instance of Selenium WebDriver.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebDriver: Instance of Selenium WebDriver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__driver</span>
+
+    <span class="nd">@driver</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__driver</span> <span class="o">=</span> <span class="n">driver_</span>
 
 <div class="viewcode-block" id="Spydr.execute_async_script"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.execute_async_script">[docs]</a>    <span class="k">def</span> <span class="nf">execute_async_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asynchronously execute JavaScript in the current window or frame.</span>
@@ -505,6 +542,7 @@
 
         <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">elements</span></div>
 
 <div class="viewcode-block" id="Spydr.focus"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.focus">[docs]</a>    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
@@ -1122,6 +1160,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">set_window_size</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">window_handle</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.shift_click_from_and_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.shift_click_from_and_to">[docs]</a>    <span class="k">def</span> <span class="nf">shift_click_from_and_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_locator</span><span class="p">,</span> <span class="n">to_locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shift click from `from_locator` to `to_locator`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            from_locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            to_locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">from_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">from_locator</span><span class="p">)</span>
+        <span class="n">to_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">to_locator</span><span class="p">)</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">SHIFT</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">from_element</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">(</span>
+            <span class="n">to_element</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Spydr.show"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Show the element.</span>
 
@@ -1220,7 +1272,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Spydr.t"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.t">[docs]</a>    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.t"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.t">[docs]</a>    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get value from `self.yml` by using &quot;dot notation&quot; key.</span>
 
 <span class="sd">        Examples:</span>
@@ -1228,11 +1280,16 @@
 <span class="sd">            | today:</span>
 <span class="sd">            |   dashboard:</span>
 <span class="sd">            |     search: &#39;#search&#39;</span>
+<span class="sd">            |     name: &#39;Name is {name}&#39;</span>
 <span class="sd">            |</span>
 <span class="sd">            | t(&#39;today.dashboard.search&#39;) =&gt; &#39;#search&#39;</span>
+<span class="sd">            | t(&#39;today.dashboard.name&#39;, name=&#39;Spydr&#39;) =&gt; &#39;Name is Spydr&#39;</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (str): Dot notation key</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            **kwargs: Format key value (str) with `str.format(**kwargs)`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            value of dot notation key</span>
@@ -1241,7 +1298,16 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">yml</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">yml</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">placeholder</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> has no placeholder: </span><span class="si">{</span><span class="n">placeholder</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">value</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key not found: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
@@ -1762,10 +1828,15 @@
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>  <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">how</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">what</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
 
+<span class="k">def</span> <span class="nf">_web_element__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;outerHTML&#39;</span><span class="p">)</span>
+
+
 <span class="n">WebElement</span><span class="o">.</span><span class="n">clear_and_send_keys</span> <span class="o">=</span> <span class="n">_web_element_clear_and_send_keys</span>
 <span class="n">WebElement</span><span class="o">.</span><span class="n">css_property</span> <span class="o">=</span> <span class="n">WebElement</span><span class="o">.</span><span class="n">value_of_css_property</span>
 <span class="n">WebElement</span><span class="o">.</span><span class="n">find_element</span> <span class="o">=</span> <span class="n">_web_element_find_element</span>
 <span class="n">WebElement</span><span class="o">.</span><span class="n">find_elements</span> <span class="o">=</span> <span class="n">_web_element_find_elements</span>
+<span class="n">WebElement</span><span class="o">.</span><span class="fm">__str__</span> <span class="o">=</span> <span class="n">_web_element__str__</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -1797,7 +1868,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
