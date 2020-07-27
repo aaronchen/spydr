@@ -1,13 +1,14 @@
 import base64
+import inspect
 import json
+import logging
 import os
 import re
 import urllib.parse
-import yaml
 import zipfile
 
 from datetime import date, timedelta
-from functools import reduce
+from functools import wraps
 from io import BytesIO
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
@@ -32,7 +33,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManager
 
-from .utils import HOWS, Utils
+from .utils import INI, HOWS, Utils, YML
 
 
 class Spydr:
@@ -45,13 +46,15 @@ class Spydr:
             Supported browsers: 'chrome', 'edge', 'firefox', 'ie', 'safari'.
         extension_root (str): The directory of Extensions. Defaults to './extensions'.
         headless (bool): Headless mode. Defaults to False.
-        log_indentation (int): Indentation for log messages. Defaults to 2.
-        log_prefix (str): Prefix for log messages. Defaults to '- '.
+        ini(str/INI): INI File as INI instance. Defaults to None.
+        log_indent (int): Indentation for logging messages. Defaults to 2.
+        log_level (str): Logging level: 'INFO' or 'DEBUG'. Defaults to None.
+            When set to 'INFO', `info()` messages will be shown.
+            When set to 'DEBUG', `debug()`, `info()` and called methods will be shown.
         screen_root (str): The directory of saved screenshots. Defaults to './screens'.
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
-        verbose (bool): Turn on/off verbose mode. Defaults to True.
         window_size (str): The size of the window when headless.  Defaults to '1280,720'.
-        yml (str/bytes/os.PathLike): Read YAML File into dict.  Defaults to None.
+        yml (str/bytes/os.PathLike/YML): Read YAML File as YML instance.  Defaults to None.
 
     Raises:
         InvalidSelectorException: Raise an error when locator is invalid
@@ -83,11 +86,11 @@ class Spydr:
                  browser='chrome',
                  extension_root='./extensions',
                  headless=False,
-                 log_indentation=2,
-                 log_prefix='- ',
+                 ini=None,
+                 log_indent=2,
+                 log_level=None,
                  screen_root='./screens',
                  timeout=30,
-                 verbose=True,
                  window_size='1280,720',
                  yml=None):
         self.auth_username = auth_username
@@ -95,14 +98,29 @@ class Spydr:
         self.browser = browser.lower()
         self.extension_root = extension_root
         self.headless = headless
-        self.log_indentation = log_indentation
-        self.log_prefix = log_prefix
+        self.ini = ini
+        self.log_indent = log_indent if isinstance(log_indent, int) else 2
+        self.log_level = logging.getLevelName(log_level) if log_level in ['DEBUG', 'INFO'] else 50
         self.screen_root = screen_root
-        self.verbose = verbose
         self.window_size = window_size
         self.yml = yml
         self.driver = self._get_webdriver()
+        self.logger = self._get_logger()
         self.timeout = timeout
+
+    def abspath(self, filename, suffix='.png', root=os.getcwd(), mkdir=True):
+        """Resolve file to absolute path and create all directories if missing.
+
+        Args:
+            filename (str): File name
+            suffix (str, optional): File suffix. Defaults to '.png'.
+            root (str, optional): Root directory. Defaults to os.getcwd().
+            mkdir (bool, optional): Create directores in the path. Defaults to True.
+
+        Returns:
+            str: Absolute path of the file
+        """
+        return Utils.to_abspath(filename, suffix=suffix, root=root, mkdir=mkdir)
 
     def actions(self):
         """Initialize an ActionChains.
@@ -240,7 +258,7 @@ class Spydr:
         elements = self.find_elements(locator)
 
         for element in elements:
-            self.checkbox_to_be(element, is_checked, method)
+            self.checkbox_to_be(element, is_checked, method=method)
 
     def clear(self, locator):
         """Clear the text of a text input element.
@@ -335,6 +353,14 @@ class Spydr:
             str: Today's date in the given format
         """
         return date.today().strftime(format)
+
+    def debug(self, message):
+        """Log **DEBUG** messages.
+
+        Args:
+            message (str): **DEBUG** message
+        """
+        self.logger.debug(message)
 
     def delete_all_cookies(self):
         """Delete all cookies in the scope of the session."""
@@ -547,6 +573,30 @@ class Spydr:
         """
         return self.driver.get_cookies()
 
+    def get_ini_key(self, key):
+        """Get value of the given key from INI.
+
+        Args:
+            key (str): Key name
+
+        Returns:
+            str: The value of the key
+        """
+        if self.ini:
+            return self.ini.get_key(key)
+
+    def get_property(self, locator, name):
+        """Get the given property of the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            name (str): Property name
+
+        Returns:
+            bool/dict/int/list/str/None: The property value
+        """
+        return self.find_element(locator).get_property(name)
+
     def get_screenshot_as_base64(self):
         """Get a screenshot of the current window as a base64 encoded string.
 
@@ -568,7 +618,7 @@ class Spydr:
             bool: Whether the file is saved
         """
         self.wait_until_page_loaded()
-        return self.driver.get_screenshot_as_file(self._abs_filename(filename))
+        return self.driver.get_screenshot_as_file(self.abspath(filename, root=self.screen_root))
 
     def get_screenshot_as_png(self):
         """Get a screenshot of the current window as a binary data.
@@ -653,6 +703,30 @@ class Spydr:
         self.__implicitly_wait = seconds
         self.driver.implicitly_wait(seconds)
 
+    def info(self, message):
+        """Log **INFO** messages.
+
+        Args:
+            message (str): **INFO** Message
+        """
+        self.logger.info(message)
+
+    @property
+    def ini(self):
+        """INI file as an INI instance.
+
+        Returns:
+            INI: INI instance
+        """
+        return self.__ini
+
+    @ini.setter
+    def ini(self, file):
+        if isinstance(file, INI):
+            self.__ini = file
+        else:
+            self.__ini = INI(file) if file else None
+
     def is_displayed(self, locator):
         """Check if the element is visible.
 
@@ -724,6 +798,31 @@ class Spydr:
         """
         return self.find_element(locator).is_selected()
 
+    def is_text_in_element(self, locator, text):
+        """Check if the element contains the given `text`.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text to check
+
+        Returns:
+            bool: Whether the element has the given text
+        """
+        return text in self.find_element(locator).text
+
+    def is_value_in_element_attribute(self, locator, attribute, value):
+        """Check if the element's attribute contains the given `value`.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            attribute (str): Attribute name
+            value (str): value to check
+
+        Returns:
+            bool: Whether value is found in the element's attribute
+        """
+        return value in self.find_element(locator).get_attribute(attribute)
+
     def js_click(self, locator):
         """Call `HTMLElement.click()` using JavaScript.
 
@@ -743,21 +842,6 @@ class Spydr:
             dict: The location of the element as dict: {'x': 0, 'y': 0}
         """
         return self.find_element(locator).location
-
-    def log(self, message, indentation=None):
-        """Log message.
-
-        Args:
-            message (str): Message to log
-
-        Keyword Arguments:
-            indentation (int, optional): Indentation for log message. Defaults to None.
-        """
-        if not self.verbose:
-            return
-
-        indentation = indentation or self.log_indentation
-        print(f'{" " * indentation}{self.log_prefix}{message}')
 
     def maximize_window(self):
         """Maximize the current window."""
@@ -904,6 +988,17 @@ class Spydr:
         """Refresh the current page."""
         self.driver.refresh()
 
+    def refresh_until_page_changed(self, seconds=10):
+        """Refresh the page (every 2 seconds) until the page changes or until the given time.
+
+        Args:
+            seconds (int, optional): Time allowed to refresh. Defaults to 10.
+
+        Returns:
+            bool: Whether the page is changed
+        """
+        return self.wait(self.driver, seconds, poll_frequency=2).until(lambda _: self._is_page_changed_after_refresh())
+
     def rect(self, locator):
         """Get the size and location of the element.
 
@@ -954,6 +1049,11 @@ class Spydr:
         self.actions().move_to_element_with_offset(
             element, x_offset, y_offset).context_click().perform()
 
+    def save_ini(self):
+        """Save INI file."""
+        if self.ini:
+            self.ini.save()
+
     def save_screenshot(self, filename):
         """Save a screenshot of the current window to filename (PNG).
 
@@ -966,7 +1066,7 @@ class Spydr:
             bool: Whether the file is saved
         """
         self.wait_until_page_loaded()
-        return self.driver.save_screenshot(self._abs_filename(filename))
+        return self.driver.save_screenshot(self.abspath(filename, root=self.screen_root))
 
     def screenshot(self, locator, filename):
         """Save a screenshot of the current element to the filename (PNG).
@@ -978,7 +1078,7 @@ class Spydr:
         Returns:
             bool: Whether the file is saved
         """
-        return self.find_element(locator).screenshot(self._abs_filename(filename))
+        return self.find_element(locator).screenshot(self.abspath(filename, root=self.screen_root))
 
     def screenshot_as_base64(self, locator):
         """Get the screenshot of the current element as a Base64 encoded string
@@ -1046,6 +1146,67 @@ class Spydr:
 
         self.click(option_element)
 
+    def select_to_be_all(self, select_locator):
+        """Select all `option` in a **multiple** `select` drop-down menu.
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        select = self.find_element(select_locator)
+        self._multiple_select_to_be(select, True)
+
+    def select_to_be_none(self, select_locator):
+        """De-select all `option` in a **multiple** `select` drop-down menu.
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        select = self.find_element(select_locator)
+        self._multiple_select_to_be(select, False)
+
+    def selected_options(self, select_locator, by='value'):
+        """Get values of **selected** `option` in a `select` drop-down menu.
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            by (str): Get selected options by value, text, or index.  Defaults to 'value'.
+
+        Raises:
+            InvalidSelectorException: Raise an error when element is not a select element
+            WebDriverException: Raise an error when the given `by` is unsupported
+
+        Returns:
+            list[int/str]: list of values of all selected options
+        """
+        select = self.find_element(select_locator)
+        options = []
+
+        if select.tag_name != 'select':
+            raise InvalidSelectorException(
+                f'Element is not a select: {select_locator}')
+
+        if self.browser == 'ie':
+            multiple = select.get_attribute('multiple')
+
+            for option in select.find_elements('tag_name=option'):
+                if option.is_selected():
+                    options.append(option)
+                    if not multiple:
+                        break
+        else:
+            options.extend(select.get_property('selectedOptions'))
+
+        if by == 'value':
+            return [opt.get_attribute('value') for opt in options]
+        elif by == 'text':
+            return [opt.text for opt in options]
+        elif by == 'index':
+            return [opt.get_property('index') for opt in options]
+        else:
+            raise WebDriverException(f'Unsupported selected options by: {by}')
+
     def send_keys(self, locator, *keys):
         """Simulate typing into the element.
 
@@ -1069,6 +1230,16 @@ class Spydr:
             var value = arguments[2];
             element.setAttribute(attribute, value);
         ''', self.find_element(locator), attribute, value)
+
+    def set_ini_key(self, key, value):
+        """Set the value of the given key in INI.
+
+        Args:
+            key (str): Key name
+            value (str): Value of the key
+        """
+        if self.ini:
+            self.ini.set_key(key, value)
 
     def set_window_position(self, x, y, window_handle='current'):
         """Set the x and y position of the current window
@@ -1227,7 +1398,7 @@ class Spydr:
         self.driver.switch_to.window(window_name)
 
     def t(self, key, **kwargs):
-        """Get value from `self.yml` by using "dot notation" key.
+        """Get value from YML instance by using "dot notation" key.
 
         Examples:
             | # YAML
@@ -1248,22 +1419,7 @@ class Spydr:
         Returns:
             value of dot notation key
         """
-        if not self.yml:
-            return None
-
-        try:
-            value = reduce(lambda c, k: c[k], key.split('.'), self.yml)
-
-            if isinstance(value, str) and kwargs:
-                for placeholder in kwargs.keys():
-                    if not value.find(f'{{placeholder}}'):
-                        raise WebDriverException(
-                            f'{key} has no placeholder: {placeholder}')
-                return value.format(**kwargs)
-
-            return value
-        except KeyError:
-            raise WebDriverException(f'Key not found: {key}')
+        return self.yml.t(key, **kwargs)
 
     def tag_name(self, locator):
         """Get the element's tagName
@@ -1275,6 +1431,35 @@ class Spydr:
             str: tagName
         """
         return self.find_element(locator).tag_name
+
+    def text(self, locator):
+        """The element's text.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            str: The text of the element
+        """
+        return self.find_element(locator).text
+
+    def text_to_file(self, text, filename, suffix):
+        """Write text to the given filename
+
+        Args:
+            text (str): Text to write
+            filename (str): filename of the text file
+            suffix (str): suffix of the text file
+
+        Returns:
+            str: Absolute path of the file
+        """
+        file = self.abspath(filename, suffix=suffix)
+
+        with open(file, 'w') as file_:
+            file_.write(text)
+
+        return file
 
     @property
     def timeout(self):
@@ -1305,17 +1490,6 @@ class Spydr:
         """
         timestamp = strftime(r'%Y%m%d%H%M%S', localtime())
         return f'{prefix}{timestamp}{suffix}'
-
-    def text(self, locator):
-        """The element's text.
-
-        Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
-
-        Returns:
-            str: The text of the element
-        """
-        return self.find_element(locator).text
 
     @property
     def title(self):
@@ -1374,7 +1548,7 @@ class Spydr:
         Returns:
             bool: Whether value is found in the element's attribute
         """
-        return self.wait_until(lambda _: value in self.find_element(locator).get_attribute(attribute))
+        return self.wait_until(lambda _: self.is_value_in_element_attribute(locator, attribute, value))
 
     def wait_until_frame_available_and_switch(self, frame_locator):
         """Wait until the given frame is available and switch to it.
@@ -1476,7 +1650,19 @@ class Spydr:
         Returns:
             bool: Whether the element's text containing the given text
         """
-        return self.wait_until(lambda _: text in self.find_element(locator).text)
+        return self.wait_until(lambda _: self.is_text_in_element(locator, text))
+
+    def wait_until_text_equal_to(self, locator, text):
+        """Wait until the element's text equal to the given text.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text to not match
+
+        Returns:
+            bool: Whether the element's text equal to the given text
+        """
+        return self.wait_until(lambda _: text == self.find_element(locator).text)
 
     def wait_until_text_excludes(self, locator, text):
         """Wait until the element's text to exclude the given text.
@@ -1489,6 +1675,18 @@ class Spydr:
             bool: Whether the element's text excluding the given text
         """
         return self.wait_until(lambda _: text not in self.find_element(locator).text)
+
+    def wait_until_text_not_equal_to(self, locator, text):
+        """Wait until the element's text not equal to the given text.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text to not match
+
+        Returns:
+            bool: Whether the element's text not equal to the given text
+        """
+        return self.wait_until(lambda _: text != self.find_element(locator).text)
 
     def wait_until_title_contains(self, title):
         """Wait until the title of the current page contains the given title.
@@ -1555,22 +1753,19 @@ class Spydr:
 
     @property
     def yml(self):
-        """dict of the YAML file read.
+        """YAML file as YML instance.
 
         Returns:
-            dict: YAML as dict
+            YML: YML instance
         """
         return self.__yml
 
     @yml.setter
     def yml(self, file):
-        if isinstance(file, (str, bytes, os.PathLike)):
-            try:
-                self.__yml = yaml.safe_load(open(file, 'r').read())
-            except FileNotFoundError:
-                raise WebDriverException(f'File not found: {file}')
+        if isinstance(file, YML):
+            self.__yml = file
         else:
-            self.__yml = None
+            self.__yml = YML(file)
 
     def zoom(self, scale):
         """Set the zoom factor of a document defined by the viewport.
@@ -1579,19 +1774,6 @@ class Spydr:
             scale (float/str): Zoom factor: 0.8, 1.5, or '150%'
         """
         self.execute_script('document.body.style.zoom = arguments[0];', scale)
-
-    def _abs_filename(self, filename, suffix='.png', root=None, mkdir=True):
-        if not filename.lower().endswith(suffix):
-            filename += suffix
-
-        abspath = os.path.abspath(
-            os.path.join(root or self.screen_root, Utils.sanitize(filename)))
-        dirname = os.path.dirname(abspath)
-
-        if mkdir and not os.path.exists(dirname):
-            os.makedirs(dirname)
-
-        return abspath
 
     def _auth_extension_as_base64(self, username, password):
         bytes_ = self._auth_extension_as_bytes(username, password)
@@ -1638,8 +1820,7 @@ class Spydr:
 
     def _auth_extension_as_file(self, username, password, suffix='.crx'):
         bytes_ = self._auth_extension_as_bytes(username, password)
-        filename = self._abs_filename(
-            'spydr_auth', suffix=suffix, root=self.extension_root)
+        filename = self.abspath('spydr_auth', suffix=suffix, root=self.extension_root)
 
         f = open(filename, 'wb')
         f.write(bytes_)
@@ -1677,6 +1858,20 @@ class Spydr:
 
         return options
 
+    def _decorator(self, fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            # namespace = inspect.currentframe().f_back.f_locals
+            namespace = inspect.stack()[0].frame.f_back.f_locals
+            if 'self' not in namespace or not isinstance(namespace['self'], self.__class__):
+                p1_args = ', '.join(f'{str(x).strip()}' for x in args)
+                p2_args = ', '.join([f'{k}={str(v).strip()}' for k, v in kwargs.items()])
+                fn_name = fn.__name__
+                fn_arguments = ", ".join(x for x in [p1_args, p2_args] if x)
+                self.debug(f'{fn_name}({fn_arguments})')
+            return fn(*args, **kwargs)
+        return wrapper
+
     def _firefox_options(self):
         profile = webdriver.FirefoxProfile()
         profile.accept_untrusted_certs = True
@@ -1691,6 +1886,21 @@ class Spydr:
             options.add_argument('--headless')
 
         return options
+
+    def _get_logger(self):
+        logger = logging.getLogger(__name__)
+        logger.setLevel(self.log_level)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(self.log_level)
+
+        formatter = logging.Formatter(
+            f'{" " * self.log_indent}%(asctime)s.%(msecs)03d> %(message)s', datefmt=r'%Y-%m-%d %H:%M:%S')
+
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+
+        return logger
 
     def _get_webdriver(self):
         path = os.getcwd()
@@ -1738,6 +1948,27 @@ class Spydr:
         except NoSuchFrameException:
             return False
 
+    def _is_page_changed_after_refresh(self):
+        before_page = self.page_source
+        self.refresh()
+        self.wait_until_page_loaded()
+        return before_page != self.page_source
+
+    def _multiple_select_to_be(self, element, state):
+        if not isinstance(element, WebElement):
+            raise WebDriverException(f'Not WebElement: {element}')
+
+        if element.tag_name != 'select':
+            raise WebDriverException(f'Element is not a select: {element}')
+
+        if element.get_attribute('multiple'):
+            for option in element.find_elements('css=option'):
+                if option.is_selected() != state:
+                    option.click()
+        else:
+            raise WebDriverException(
+                f'Element is not a multiple select: {element}')
+
     def _parse_locator(self, locator):
         how, what = Utils.parse_locator(locator)
 
@@ -1746,9 +1977,17 @@ class Spydr:
                 return Utils.parse_locator(self.t(what))
             else:
                 raise WebDriverException(
-                    'Cannot use "yml=" as locator strategie when the instance is not assigned with .yml file.')
+                    'Cannot use "yml=" as locator strategy when the instance is not assigned with .yml file.')
 
         return how, what
+
+    def __getattribute__(self, fn_name):
+        log_level = object.__getattribute__(self, 'log_level')
+        fn_method = object.__getattribute__(self, fn_name)
+        if logging.DEBUG >= log_level and not fn_name.startswith('_') and fn_name not in ['debug', 'info', 't'] and hasattr(fn_method, '__self__'):
+            decorator = object.__getattribute__(self, '_decorator')
+            return decorator(fn_method)
+        return fn_method
 
 
 #
@@ -1777,9 +2016,14 @@ def _web_element_find_element(self, locator):
     return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
 
 
-def _web_element_find_elements(self, locator):
-    how, what = Utils.parse_locator(locator)
+def _web_element_find_elements(self, *locator):
+    how, what = Utils.parse_locator(*locator)
     return self._execute(Command.FIND_CHILD_ELEMENTS,  {"using": how, "value": what})['value']
+
+
+@property
+def _web_element_value(self):
+    return self.get_attribute('value')
 
 
 def _web_element__str__(self):
@@ -1790,4 +2034,5 @@ WebElement.clear_and_send_keys = _web_element_clear_and_send_keys
 WebElement.css_property = WebElement.value_of_css_property
 WebElement.find_element = _web_element_find_element
 WebElement.find_elements = _web_element_find_elements
+WebElement.value = _web_element_value
 WebElement.__str__ = _web_element__str__

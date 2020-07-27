@@ -46,8 +46,8 @@ s.quit()
 # - Switch frame and window
 from spydr.webdriver import Spydr
 
-s = Spydr(browser='firefox', headless=True, window_size='1920,1080')
-s.log('JSFiddle: Test "Open New Tab/Winodw"')
+s = Spydr(browser='firefox', headless=True, log_level='INFO', window_size='1920,1080')
+s.info('JSFiddle: Test "Open New Tab/Winodw"')
 s.maximize_window()
 s.open('https://jsfiddle.net/s7gcx1du/')
 s.switch_to_frame('name=result')

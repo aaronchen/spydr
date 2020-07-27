@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.2.2 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.2.3 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -45,15 +45,16 @@
             
   <h1>Source code for spydr.webdriver</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ElementClickInterceptedException</span>
@@ -78,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">webdriver_manager.firefox</span> <span class="kn">import</span> <span class="n">GeckoDriverManager</span>
 <span class="kn">from</span> <span class="nn">webdriver_manager.microsoft</span> <span class="kn">import</span> <span class="n">IEDriverManager</span><span class="p">,</span> <span class="n">EdgeChromiumDriverManager</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">HOWS</span><span class="p">,</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">INI</span><span class="p">,</span> <span class="n">HOWS</span><span class="p">,</span> <span class="n">Utils</span><span class="p">,</span> <span class="n">YML</span>
 
 
 <div class="viewcode-block" id="Spydr"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr">[docs]</a><span class="k">class</span> <span class="nc">Spydr</span><span class="p">:</span>
@@ -91,13 +92,15 @@
 <span class="sd">            Supported browsers: &#39;chrome&#39;, &#39;edge&#39;, &#39;firefox&#39;, &#39;ie&#39;, &#39;safari&#39;.</span>
 <span class="sd">        extension_root (str): The directory of Extensions. Defaults to &#39;./extensions&#39;.</span>
 <span class="sd">        headless (bool): Headless mode. Defaults to False.</span>
-<span class="sd">        log_indentation (int): Indentation for log messages. Defaults to 2.</span>
-<span class="sd">        log_prefix (str): Prefix for log messages. Defaults to &#39;- &#39;.</span>
+<span class="sd">        ini(str/INI): INI File as INI instance. Defaults to None.</span>
+<span class="sd">        log_indent (int): Indentation for logging messages. Defaults to 2.</span>
+<span class="sd">        log_level (str): Logging level: &#39;INFO&#39; or &#39;DEBUG&#39;. Defaults to None.</span>
+<span class="sd">            When set to &#39;INFO&#39;, `info()` messages will be shown.</span>
+<span class="sd">            When set to &#39;DEBUG&#39;, `debug()`, `info()` and called methods will be shown.</span>
 <span class="sd">        screen_root (str): The directory of saved screenshots. Defaults to &#39;./screens&#39;.</span>
 <span class="sd">        timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.</span>
-<span class="sd">        verbose (bool): Turn on/off verbose mode. Defaults to True.</span>
 <span class="sd">        window_size (str): The size of the window when headless.  Defaults to &#39;1280,720&#39;.</span>
-<span class="sd">        yml (str/bytes/os.PathLike): Read YAML File into dict.  Defaults to None.</span>
+<span class="sd">        yml (str/bytes/os.PathLike/YML): Read YAML File as YML instance.  Defaults to None.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        InvalidSelectorException: Raise an error when locator is invalid</span>
@@ -129,11 +132,11 @@
                  <span class="n">browser</span><span class="o">=</span><span class="s1">&#39;chrome&#39;</span><span class="p">,</span>
                  <span class="n">extension_root</span><span class="o">=</span><span class="s1">&#39;./extensions&#39;</span><span class="p">,</span>
                  <span class="n">headless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">log_indentation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                 <span class="n">log_prefix</span><span class="o">=</span><span class="s1">&#39;- &#39;</span><span class="p">,</span>
+                 <span class="n">ini</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">log_indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">screen_root</span><span class="o">=</span><span class="s1">&#39;./screens&#39;</span><span class="p">,</span>
                  <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">window_size</span><span class="o">=</span><span class="s1">&#39;1280,720&#39;</span><span class="p">,</span>
                  <span class="n">yml</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_username</span> <span class="o">=</span> <span class="n">auth_username</span>
@@ -141,14 +144,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extension_root</span> <span class="o">=</span> <span class="n">extension_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="n">headless</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_indentation</span> <span class="o">=</span> <span class="n">log_indentation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_prefix</span> <span class="o">=</span> <span class="n">log_prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ini</span> <span class="o">=</span> <span class="n">ini</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_indent</span> <span class="o">=</span> <span class="n">log_indent</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_indent</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span> <span class="k">if</span> <span class="n">log_level</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;INFO&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">50</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span> <span class="o">=</span> <span class="n">screen_root</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yml</span> <span class="o">=</span> <span class="n">yml</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_webdriver</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_logger</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+
+<div class="viewcode-block" id="Spydr.abspath"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.abspath">[docs]</a>    <span class="k">def</span> <span class="nf">abspath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resolve file to absolute path and create all directories if missing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): File name</span>
+<span class="sd">            suffix (str, optional): File suffix. Defaults to &#39;.png&#39;.</span>
+<span class="sd">            root (str, optional): Root directory. Defaults to os.getcwd().</span>
+<span class="sd">            mkdir (bool, optional): Create directores in the path. Defaults to True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Absolute path of the file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">to_abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="n">mkdir</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.actions"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.actions">[docs]</a>    <span class="k">def</span> <span class="nf">actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize an ActionChains.</span>
@@ -286,7 +304,7 @@
         <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_to_be</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_to_be</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.clear"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the text of a text input element.</span>
@@ -381,6 +399,14 @@
 <span class="sd">            str: Today&#39;s date in the given format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.debug"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log **DEBUG** messages.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (str): **DEBUG** message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.delete_all_cookies"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.delete_all_cookies">[docs]</a>    <span class="k">def</span> <span class="nf">delete_all_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete all cookies in the scope of the session.&quot;&quot;&quot;</span>
@@ -593,6 +619,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_cookies</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Spydr.get_ini_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_ini_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_ini_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get value of the given key from INI.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Key name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The value of the key</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ini</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ini</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.get_property"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_property">[docs]</a>    <span class="k">def</span> <span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the given property of the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            name (str): Property name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool/dict/int/list/str/None: The property value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.get_screenshot_as_base64"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_screenshot_as_base64">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a screenshot of the current window as a base64 encoded string.</span>
 
@@ -614,7 +664,7 @@
 <span class="sd">            bool: Whether the file is saved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.get_screenshot_as_png"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.get_screenshot_as_png">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a screenshot of the current window as a binary data.</span>
@@ -699,6 +749,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__implicitly_wait</span> <span class="o">=</span> <span class="n">seconds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">implicitly_wait</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Spydr.info"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log **INFO** messages.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (str): **INFO** Message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ini</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;INI file as an INI instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            INI: INI instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ini</span>
+
+    <span class="nd">@ini</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ini</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">INI</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__ini</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__ini</span> <span class="o">=</span> <span class="n">INI</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">if</span> <span class="n">file</span> <span class="k">else</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="Spydr.is_displayed"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_displayed">[docs]</a>    <span class="k">def</span> <span class="nf">is_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the element is visible.</span>
 
@@ -770,6 +844,31 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Spydr.is_text_in_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_text_in_element">[docs]</a>    <span class="k">def</span> <span class="nf">is_text_in_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the element contains the given `text`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            text (str): Text to check</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element has the given text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
+
+<div class="viewcode-block" id="Spydr.is_value_in_element_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_value_in_element_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">is_value_in_element_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the element&#39;s attribute contains the given `value`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            attribute (str): Attribute name</span>
+<span class="sd">            value (str): value to check</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether value is found in the element&#39;s attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.js_click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.js_click">[docs]</a>    <span class="k">def</span> <span class="nf">js_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Call `HTMLElement.click()` using JavaScript.</span>
 
@@ -789,21 +888,6 @@
 <span class="sd">            dict: The location of the element as dict: {&#39;x&#39;: 0, &#39;y&#39;: 0}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">location</span></div>
-
-<div class="viewcode-block" id="Spydr.log"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">indentation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log message.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            message (str): Message to log</span>
-
-<span class="sd">        Keyword Arguments:</span>
-<span class="sd">            indentation (int, optional): Indentation for log message. Defaults to None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="n">indentation</span> <span class="o">=</span> <span class="n">indentation</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_indentation</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indentation</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">log_prefix</span><span class="si">}{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.maximize_window"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.maximize_window">[docs]</a>    <span class="k">def</span> <span class="nf">maximize_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Maximize the current window.&quot;&quot;&quot;</span>
@@ -950,6 +1034,17 @@
         <span class="sd">&quot;&quot;&quot;Refresh the current page.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Spydr.refresh_until_page_changed"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.refresh_until_page_changed">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_until_page_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Refresh the page (every 2 seconds) until the page changes or until the given time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            seconds (int, optional): Time allowed to refresh. Defaults to 10.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the page is changed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_page_changed_after_refresh</span><span class="p">())</span></div>
+
 <div class="viewcode-block" id="Spydr.rect"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.rect">[docs]</a>    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the size and location of the element.</span>
 
@@ -1000,6 +1095,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">move_to_element_with_offset</span><span class="p">(</span>
             <span class="n">element</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span><span class="o">.</span><span class="n">context_click</span><span class="p">()</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Spydr.save_ini"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.save_ini">[docs]</a>    <span class="k">def</span> <span class="nf">save_ini</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save INI file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ini</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ini</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Spydr.save_screenshot"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save a screenshot of the current window to filename (PNG).</span>
 
@@ -1012,7 +1112,7 @@
 <span class="sd">            bool: Whether the file is saved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.screenshot"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save a screenshot of the current element to the filename (PNG).</span>
@@ -1024,7 +1124,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the file is saved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.screenshot_as_base64"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.screenshot_as_base64">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the screenshot of the current element as a Base64 encoded string</span>
@@ -1092,6 +1192,67 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">option_element</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.select_to_be_all"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be_all">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select all `option` in a **multiple** `select` drop-down menu.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            select_locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">select_locator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multiple_select_to_be</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.select_to_be_none"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be_none">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be_none</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;De-select all `option` in a **multiple** `select` drop-down menu.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            select_locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">select_locator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multiple_select_to_be</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.selected_options"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.selected_options">[docs]</a>    <span class="k">def</span> <span class="nf">selected_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get values of **selected** `option` in a `select` drop-down menu.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            select_locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            by (str): Get selected options by value, text, or index.  Defaults to &#39;value&#39;.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidSelectorException: Raise an error when element is not a select element</span>
+<span class="sd">            WebDriverException: Raise an error when the given `by` is unsupported</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[int/str]: list of values of all selected options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">select_locator</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">select</span><span class="o">.</span><span class="n">tag_name</span> <span class="o">!=</span> <span class="s1">&#39;select&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Element is not a select: </span><span class="si">{</span><span class="n">select_locator</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">==</span> <span class="s1">&#39;ie&#39;</span><span class="p">:</span>
+            <span class="n">multiple</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;multiple&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">select</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="s1">&#39;tag_name=option&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">is_selected</span><span class="p">():</span>
+                    <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">multiple</span><span class="p">:</span>
+                        <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;selectedOptions&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported selected options by: </span><span class="si">{</span><span class="n">by</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.send_keys"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulate typing into the element.</span>
 
@@ -1115,6 +1276,16 @@
 <span class="s1">            var value = arguments[2];</span>
 <span class="s1">            element.setAttribute(attribute, value);</span>
 <span class="s1">        &#39;&#39;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">),</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.set_ini_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.set_ini_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_ini_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the value of the given key in INI.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Key name</span>
+<span class="sd">            value (str): Value of the key</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ini</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ini</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.set_window_position"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.set_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">set_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">window_handle</span><span class="o">=</span><span class="s1">&#39;current&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the x and y position of the current window</span>
@@ -1273,7 +1444,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.t"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.t">[docs]</a>    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get value from `self.yml` by using &quot;dot notation&quot; key.</span>
+        <span class="sd">&quot;&quot;&quot;Get value from YML instance by using &quot;dot notation&quot; key.</span>
 
 <span class="sd">        Examples:</span>
 <span class="sd">            | # YAML</span>
@@ -1294,22 +1465,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            value of dot notation key</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">yml</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">yml</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">placeholder</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> has no placeholder: </span><span class="si">{</span><span class="n">placeholder</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">value</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key not found: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">yml</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.tag_name"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.tag_name">[docs]</a>    <span class="k">def</span> <span class="nf">tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the element&#39;s tagName</span>
@@ -1321,6 +1477,35 @@
 <span class="sd">            str: tagName</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">tag_name</span></div>
+
+<div class="viewcode-block" id="Spydr.text"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The element&#39;s text.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The text of the element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
+
+<div class="viewcode-block" id="Spydr.text_to_file"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.text_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">text_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write text to the given filename</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): Text to write</span>
+<span class="sd">            filename (str): filename of the text file</span>
+<span class="sd">            suffix (str): suffix of the text file</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Absolute path of the file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_</span><span class="p">:</span>
+            <span class="n">file_</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">file</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1351,17 +1536,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span> <span class="n">localtime</span><span class="p">())</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">timestamp</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span></div>
-
-<div class="viewcode-block" id="Spydr.text"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The element&#39;s text.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: The text of the element</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1420,7 +1594,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether value is found in the element&#39;s attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_value_in_element_attribute</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_frame_available_and_switch"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_frame_available_and_switch">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_frame_available_and_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the given frame is available and switch to it.</span>
@@ -1522,7 +1696,19 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the element&#39;s text containing the given text</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_text_in_element</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Spydr.wait_until_text_equal_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_text_equal_to">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_text_equal_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the element&#39;s text equal to the given text.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            text (str): Text to not match</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element&#39;s text equal to the given text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">text</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_text_excludes"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_text_excludes">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_text_excludes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element&#39;s text to exclude the given text.</span>
@@ -1535,6 +1721,18 @@
 <span class="sd">            bool: Whether the element&#39;s text excluding the given text</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.wait_until_text_not_equal_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_text_not_equal_to">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_text_not_equal_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the element&#39;s text not equal to the given text.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            text (str): Text to not match</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element&#39;s text not equal to the given text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">text</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_title_contains"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_title_contains">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_title_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the title of the current page contains the given title.</span>
@@ -1601,22 +1799,19 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">yml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;dict of the YAML file read.</span>
+        <span class="sd">&quot;&quot;&quot;YAML file as YML instance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dict: YAML as dict</span>
+<span class="sd">            YML: YML instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__yml</span>
 
     <span class="nd">@yml</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">yml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__yml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File not found: </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">YML</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__yml</span> <span class="o">=</span> <span class="n">file</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__yml</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__yml</span> <span class="o">=</span> <span class="n">YML</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Spydr.zoom"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.zoom">[docs]</a>    <span class="k">def</span> <span class="nf">zoom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the zoom factor of a document defined by the viewport.</span>
@@ -1625,19 +1820,6 @@
 <span class="sd">            scale (float/str): Zoom factor: 0.8, 1.5, or &#39;150%&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;document.body.style.zoom = arguments[0];&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_abs_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
-            <span class="n">filename</span> <span class="o">+=</span> <span class="n">suffix</span>
-
-        <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span><span class="p">,</span> <span class="n">Utils</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">filename</span><span class="p">)))</span>
-        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">mkdir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">abspath</span>
 
     <span class="k">def</span> <span class="nf">_auth_extension_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
         <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auth_extension_as_bytes</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
@@ -1684,8 +1866,7 @@
 
     <span class="k">def</span> <span class="nf">_auth_extension_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.crx&#39;</span><span class="p">):</span>
         <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auth_extension_as_bytes</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abs_filename</span><span class="p">(</span>
-            <span class="s1">&#39;spydr_auth&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extension_root</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;spydr_auth&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extension_root</span><span class="p">)</span>
 
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span>
@@ -1723,6 +1904,20 @@
 
         <span class="k">return</span> <span class="n">options</span>
 
+    <span class="k">def</span> <span class="nf">_decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># namespace = inspect.currentframe().f_back.f_locals</span>
+            <span class="n">namespace</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_locals</span>
+            <span class="k">if</span> <span class="s1">&#39;self&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">namespace</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">namespace</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+                <span class="n">p1_args</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+                <span class="n">p2_args</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+                <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="n">fn_arguments</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">p1_args</span><span class="p">,</span> <span class="n">p2_args</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fn_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">fn_arguments</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+
     <span class="k">def</span> <span class="nf">_firefox_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">profile</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">FirefoxProfile</span><span class="p">()</span>
         <span class="n">profile</span><span class="o">.</span><span class="n">accept_untrusted_certs</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1737,6 +1932,21 @@
             <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--headless&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">options</span>
+
+    <span class="k">def</span> <span class="nf">_get_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">)</span>
+
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">)</span>
+
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_indent</span><span class="si">}</span><span class="s1">%(asctime)s.%(msecs)03d&gt; %(message)s&#39;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+
+        <span class="n">ch</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">logger</span>
 
     <span class="k">def</span> <span class="nf">_get_webdriver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
@@ -1784,6 +1994,27 @@
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
+    <span class="k">def</span> <span class="nf">_is_page_changed_after_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">before_page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_page_loaded</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">before_page</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_source</span>
+
+    <span class="k">def</span> <span class="nf">_multiple_select_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not WebElement: </span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag_name</span> <span class="o">!=</span> <span class="s1">&#39;select&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Element is not a select: </span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;multiple&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="s1">&#39;css=option&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">!=</span> <span class="n">state</span><span class="p">:</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Element is not a multiple select: </span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_parse_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
 
@@ -1792,9 +2023,17 @@
                 <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">what</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
-                    <span class="s1">&#39;Cannot use &quot;yml=&quot; as locator strategie when the instance is not assigned with .yml file.&#39;</span><span class="p">)</span>
+                    <span class="s1">&#39;Cannot use &quot;yml=&quot; as locator strategy when the instance is not assigned with .yml file.&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span></div>
+        <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span>
+
+    <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">):</span>
+        <span class="n">log_level</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;log_level&#39;</span><span class="p">)</span>
+        <span class="n">fn_method</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="o">&gt;=</span> <span class="n">log_level</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fn_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn_method</span><span class="p">,</span> <span class="s1">&#39;__self__&#39;</span><span class="p">):</span>
+            <span class="n">decorator</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_decorator&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">decorator</span><span class="p">(</span><span class="n">fn_method</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fn_method</span></div>
 
 
 <span class="c1">#</span>
@@ -1823,9 +2062,14 @@
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">how</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">what</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_web_element_find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-    <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_web_element_find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">locator</span><span class="p">):</span>
+    <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>  <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">how</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">what</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">_web_element_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_web_element__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1836,6 +2080,7 @@
 <span class="n">WebElement</span><span class="o">.</span><span class="n">css_property</span> <span class="o">=</span> <span class="n">WebElement</span><span class="o">.</span><span class="n">value_of_css_property</span>
 <span class="n">WebElement</span><span class="o">.</span><span class="n">find_element</span> <span class="o">=</span> <span class="n">_web_element_find_element</span>
 <span class="n">WebElement</span><span class="o">.</span><span class="n">find_elements</span> <span class="o">=</span> <span class="n">_web_element_find_elements</span>
+<span class="n">WebElement</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">_web_element_value</span>
 <span class="n">WebElement</span><span class="o">.</span><span class="fm">__str__</span> <span class="o">=</span> <span class="n">_web_element__str__</span>
 </pre></div>
 
@@ -1868,7 +2113,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
