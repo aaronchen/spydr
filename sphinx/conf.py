@@ -85,6 +85,9 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 
+# autodoc
+autodoc_docstring_signature = True
+
 # Napoleon
 napoleon_google_docstring = True
 napoleon_use_rtype = False

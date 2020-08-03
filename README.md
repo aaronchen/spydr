@@ -82,7 +82,7 @@ s.save_screenshot('digest')
 s.quit()
 ```
 
-# Using YML: Dot Notation (for environment values, **_locator_**, etc)
+# Using YML: Dot Notation
 
 ``` YML
 # conf.yml
@@ -104,10 +104,34 @@ url = s.t('env.url')
 search_string = s.t('today_page.dashboard.search_string', name='spydr')
 
 s.open(url)
-s.send_keys('yml=today_page.dashboard.search_field', search_string)
+s.send_keys('yml=today_page.dashboard.search_field', search_string)  # using yml as locator
 ```
 
+# Using INI
+``` INI
+; conf.ini
+[Spydr]
+url = https://www.google.com
+search = webdriver
+```
 
+``` python
+from spydr.webdriver import Spydr
+
+s = Spydr(ini='conf.ini')
+
+url = s.get_ini_key('url')
+search = s.get_ini_key('search')
+
+s.open(url)
+s.send_keys('name=q', search, s.keys.ENTER)
+
+first_result = s.find_element('.r > a h3:eq(0)').text  # Get first search result
+s.set_ini_key('first_result', first_result)  # add first_result to the INI file
+s.save_ini()  # Save the INI file
+
+s.quit()
+```
 
 # Development Environment
 

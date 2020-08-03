@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.utils &#8212; spydr 0.2.3 documentation</title>
+    <title>spydr.utils &#8212; spydr 0.2.4 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.utils</a></li> 
       </ul>
@@ -45,6 +45,7 @@
             
   <h1>Source code for spydr.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
@@ -68,49 +69,67 @@
 
 
 <div class="viewcode-block" id="INI"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.INI">[docs]</a><span class="k">class</span> <span class="nc">INI</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Access INI file.</span>
+    <span class="sd">&quot;&quot;&quot;Access INI (`key=value`) file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file (str): Ini file</span>
-<span class="sd">        section (str): Section name.  Defaults to &#39;Spydr&#39;.</span>
+<span class="sd">        default_section (str): Default section name.  Defaults to &#39;Spydr&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="s1">&#39;Spydr&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">default_section</span><span class="o">=</span><span class="s1">&#39;Spydr&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">=</span> <span class="n">section</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_key</span><span class="p">(</span><span class="n">default_section</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ini</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
 
-<div class="viewcode-block" id="INI.set_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.INI.set_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set key/value for INI</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            key (str): Key</span>
-<span class="sd">            value (str): Value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="INI.get_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.INI.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="INI.get_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.INI.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get value from the given key.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (str): Key</span>
+<span class="sd">            section: INI section.  Defaults to the default section.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: Value</span>
+<span class="sd">            Value (any data type JSON supports)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_section</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Section not found: </span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key not found: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="INI.save"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.INI.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save INI file.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="INI.set_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.INI.set_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set key/value for INI</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Key</span>
+<span class="sd">            value: Value (any data type JSON supports)</span>
+<span class="sd">            section: INI section.  Defaults to the default section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_section</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_to_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_to_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">section</span><span class="p">)</span> <span class="k">if</span> <span class="n">section</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_section</span></div>
 
 
 <div class="viewcode-block" id="Utils"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.Utils">[docs]</a><span class="k">class</span> <span class="nc">Utils</span><span class="p">:</span>
@@ -167,19 +186,20 @@
         <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?u)[^-\w.\/]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Utils.to_abspath"><a class="viewcode-back" href="../../source/spydr.html#spydr.utils.Utils.to_abspath">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">to_abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Resolve file to absolute path and create all directories if missing.</span>
+    <span class="k">def</span> <span class="nf">to_abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;to_abspath(filename, suffix=&#39;.png&#39;, root=os.getcwd(), mkdir=True)</span>
+<span class="sd">        Resolve file to absolute path and create all directories if missing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename (str): File name</span>
-<span class="sd">            suffix (str, optional): File suffix. Defaults to &#39;.png&#39;.</span>
+<span class="sd">            suffix (str, optional): File suffix. Defaults to None.</span>
 <span class="sd">            root (str, optional): Root directory. Defaults to os.getcwd().</span>
 <span class="sd">            mkdir (bool, optional): Create directores in the path. Defaults to True.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Absolute path of the file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">suffix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
             <span class="n">filename</span> <span class="o">+=</span> <span class="n">suffix</span>
 
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Utils</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">filename</span><span class="p">)))</span>
@@ -277,7 +297,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.utils</a></li> 
       </ul>

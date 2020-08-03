@@ -46,7 +46,8 @@ class Spydr:
             Supported browsers: 'chrome', 'edge', 'firefox', 'ie', 'safari'.
         extension_root (str): The directory of Extensions. Defaults to './extensions'.
         headless (bool): Headless mode. Defaults to False.
-        ini(str/INI): INI File as INI instance. Defaults to None.
+        ini (str/INI): INI File as INI instance. Defaults to None.
+        locale (str): Browser locale.  Defaults to 'en'.
         log_indent (int): Indentation for logging messages. Defaults to 2.
         log_level (str): Logging level: 'INFO' or 'DEBUG'. Defaults to None.
             When set to 'INFO', `info()` messages will be shown.
@@ -66,19 +67,19 @@ class Spydr:
     """
 
     browsers = ('chrome', 'edge', 'firefox', 'ie', 'safari')
-    """Supported Browsers"""
+    """tuple: Supported Browsers"""
 
     by = By
-    """Set of supported locator strategies"""
+    """selenium.webdriver.common.by.By: Set of supported locator strategies"""
 
     ec = expected_conditions
     """Pre-defined Expected Conditions"""
 
     keys = Keys
-    """Pre-defined keys codes"""
+    """selenium.webdriver.common.keys.Keys: Pre-defined keys codes"""
 
     wait = WebDriverWait
-    """WebDriverWait"""
+    """selenium.webdriver.support.ui.WebDriverWait: WebDriverWait"""
 
     def __init__(self,
                  auth_username=None,
@@ -87,6 +88,7 @@ class Spydr:
                  extension_root='./extensions',
                  headless=False,
                  ini=None,
+                 locale='en',
                  log_indent=2,
                  log_level=None,
                  screen_root='./screens',
@@ -104,17 +106,19 @@ class Spydr:
         self.screen_root = screen_root
         self.window_size = window_size
         self.yml = yml
+        self.locale = self._format_locale(locale)
         self.driver = self._get_webdriver()
         self.logger = self._get_logger()
         self.timeout = timeout
 
-    def abspath(self, filename, suffix='.png', root=os.getcwd(), mkdir=True):
-        """Resolve file to absolute path and create all directories if missing.
+    def abspath(self, filename, suffix=None, root=os.getcwd(), mkdir=True):
+        """abspath(filename, suffix='.png', root=os.getcwd(), mkdir=True)
+        Resolve file to absolute path and create all directories if missing.
 
         Args:
             filename (str): File name
-            suffix (str, optional): File suffix. Defaults to '.png'.
-            root (str, optional): Root directory. Defaults to os.getcwd().
+            suffix (str, optional): File suffix. Defaults to None.
+            root (str, optional): Root directory. Defaults to `os.getcwd()`.
             mkdir (bool, optional): Create directores in the path. Defaults to True.
 
         Returns:
@@ -419,7 +423,7 @@ class Spydr:
         self.actions().drag_and_drop(source_element, target_element()).perform()
 
     def drag_and_drop_by_offset(self, source_locator, x_offset, y_offset):
-        """Hold down the left mouse button on the source element, 
+        """Hold down the left mouse button on the source element,
         then move to the target offset and releases the mouse button.
 
         Args:
@@ -500,7 +504,7 @@ class Spydr:
 
         if not element:
             element = self.wait_until(
-                lambda _: self.is_element_located(locator))
+                lambda _: self.is_located(locator))
 
             if not isinstance(element, WebElement):
                 raise NoSuchElementException(
@@ -512,7 +516,7 @@ class Spydr:
         """Find all elements by the given locator.
 
         Args:
-            locator (str): The locator to identify the element
+            locator (str): The locator to identify the elements or list[WebElement]
 
         Returns:
             list[WebElement]: All elements found
@@ -573,17 +577,18 @@ class Spydr:
         """
         return self.driver.get_cookies()
 
-    def get_ini_key(self, key):
+    def get_ini_key(self, key, section=None):
         """Get value of the given key from INI.
 
         Args:
             key (str): Key name
+            section: INI section.  Defaults to the default section.
 
         Returns:
-            str: The value of the key
+            Value (any data type JSON supports)
         """
         if self.ini:
-            return self.ini.get_key(key)
+            return self.ini.get_key(key, section)
 
     def get_property(self, locator, name):
         """Get the given property of the element.
@@ -618,7 +623,7 @@ class Spydr:
             bool: Whether the file is saved
         """
         self.wait_until_page_loaded()
-        return self.driver.get_screenshot_as_file(self.abspath(filename, root=self.screen_root))
+        return self.driver.get_screenshot_as_file(self.abspath(filename, suffix='.png', root=self.screen_root))
 
     def get_screenshot_as_png(self):
         """Get a screenshot of the current window as a binary data.
@@ -749,7 +754,7 @@ class Spydr:
         """
         return self.find_element(locator).is_enabled()
 
-    def is_element_located(self, locator, seconds=None):
+    def is_located(self, locator, seconds=None):
         """Check if the element is located in the given seconds.
 
         Args:
@@ -922,13 +927,73 @@ class Spydr:
         ''', name)
         return self.window_handles[-1]
 
-    def open(self, url):
+    def open(self, url, new_tab=False):
         """Load the web page by its given URL.
 
         Args:
             url (str): URL of the web page
+            new_tab (bool, optional): Whether to open in a new tab. Defaults to False.
+
+        Returns:
+            list[str]: List of [current_window_handle, new_tab_window_handle]
         """
+        current_handle = self.window_handle
+
+        if new_tab:
+            new_handle = self.new_tab()
+            self.switch_to_window(new_handle)
+
         self.driver.get(url)
+
+        return [current_handle, new_handle] if new_tab else [current_handle, None]
+
+    def open_data_as_url(self, data, mediatype='text/html', encoding='utf-8'):
+        """Use Data URL to open `data` as inline document.
+
+        Args:
+            data (str): Data to be open as inline document
+            mediatype (str, optional): MIME type. Defaults to 'text/html'.
+            encoding (str, optional): Data encoding. Defaults to 'utf-8'.
+        """
+        base64_encoded = base64.b64encode(bytes(data, encoding))
+        base64_data = str(base64_encoded, encoding)
+        self.open(f'data:{mediatype};base64,{base64_data}')
+
+    def open_file(self, filename):
+        """Open file with the browser.
+
+        Args:
+            filename (str): File name
+
+        Raises:
+            WebDriverException: Raise an error when filename is not found
+        """
+        file_ = self.abspath(filename, mkdir=False)
+
+        if os.path.isfile(file_):
+            html_path = file_.replace('\\', '/')
+            self.open(f'file:///{html_path}')
+        else:
+            raise WebDriverException(f'Cannot find file: ${file_}')
+
+    def open_file_as_url(self, filename, mediatype='text/html', encoding='utf-8'):
+        """Use Data URL to open file content as inline document.
+
+        Args:
+            filename (str): File name
+            mediatype (str, optional): MIME type. Defaults to 'text/html'.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+
+        Raises:
+            WebDriverException: Raise an error when filename is not found
+        """
+        file_ = self.abspath(filename, mkdir=False)
+
+        if os.path.isfile(file_):
+            data = open(file_, 'r', encoding=encoding).read()
+            self.open_data_as_url(data, mediatype=mediatype, encoding=encoding)
+        else:
+            raise WebDriverException(f'Cannot find file: ${file_}')
 
     def open_with_auth(self, url, username=None, password=None):
         """Load the web page by adding username and password to the URL
@@ -1066,7 +1131,7 @@ class Spydr:
             bool: Whether the file is saved
         """
         self.wait_until_page_loaded()
-        return self.driver.save_screenshot(self.abspath(filename, root=self.screen_root))
+        return self.driver.save_screenshot(self.abspath(filename, suffix='.png', root=self.screen_root))
 
     def screenshot(self, locator, filename):
         """Save a screenshot of the current element to the filename (PNG).
@@ -1078,7 +1143,7 @@ class Spydr:
         Returns:
             bool: Whether the file is saved
         """
-        return self.find_element(locator).screenshot(self.abspath(filename, root=self.screen_root))
+        return self.find_element(locator).screenshot(self.abspath(filename, suffix='.png', root=self.screen_root))
 
     def screenshot_as_base64(self, locator):
         """Get the screenshot of the current element as a Base64 encoded string
@@ -1231,12 +1296,13 @@ class Spydr:
             element.setAttribute(attribute, value);
         ''', self.find_element(locator), attribute, value)
 
-    def set_ini_key(self, key, value):
+    def set_ini_key(self, key, value, section=None):
         """Set the value of the given key in INI.
 
         Args:
             key (str): Key name
-            value (str): Value of the key
+            value: Value (any data type JSON supports)
+            section: INI section.  Defaults to the default section.
         """
         if self.ini:
             self.ini.set_key(key, value)
@@ -1379,7 +1445,7 @@ class Spydr:
             False/WebElement: Return False if not located.  Return WebElement if located.
         """
         self.wait_until_frame_available_and_switch(frame_locator)
-        return self.wait_until(lambda _: self.is_element_located(element_locator))
+        return self.wait_until(lambda _: self.is_located(element_locator))
 
     def switch_to_last_window_handle(self):
         """Switch to the last opened tab or window."""
@@ -1432,16 +1498,29 @@ class Spydr:
         """
         return self.find_element(locator).tag_name
 
-    def text(self, locator):
+    def text(self, locator, typecast=str):
         """The element's text.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+            typecast: Typecast the returned text.  Defaults to `str`.
 
         Returns:
             str: The text of the element
         """
-        return self.find_element(locator).text
+        return typecast(self.find_element(locator).text)
+
+    def texts(self, locator, typecast=str):
+        """All Elements' text.
+
+        Args:
+            locator (str): The locator to identify the elements or list[WebElement]
+            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Returns:
+            list[str]: Elements' text
+        """
+        return [typecast(element.text) for element in self.find_elements(locator)]
 
     def text_to_file(self, text, filename, suffix):
         """Write text to the given filename
@@ -1454,12 +1533,12 @@ class Spydr:
         Returns:
             str: Absolute path of the file
         """
-        file = self.abspath(filename, suffix=suffix)
+        file_ = self.abspath(filename, suffix=suffix)
 
-        with open(file, 'w') as file_:
-            file_.write(text)
+        with open(file_, 'w') as text_file:
+            text_file.write(text)
 
-        return file
+        return file_
 
     @property
     def timeout(self):
@@ -1514,7 +1593,31 @@ class Spydr:
             element.dispatchEvent(event);
         ''', self.find_element(locator), event)
 
-    def wait_until(self, method, poll_frequency=0.5, ignored_exceptions=None):
+    def value(self, locator, typecast=str):
+        """Get the value of the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Returns:
+            str: Value of the given element
+        """
+        return typecast(self.find_element(locator).value)
+
+    def values(self, locator, typecast=str):
+        """Get the values of the elements.
+
+        Args:
+            locator (str): The locator to identify the elements or list[WebElement]
+            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Returns:
+            list[str]: Values of the given elements
+        """
+        return [typecast(element.value) for element in self.find_elements(locator)]
+
+    def wait_until(self, method, timeout=None, poll_frequency=0.5, ignored_exceptions=None):
         """Create a WebDriverWait instance and wait until the given method is evaluated to not False.
 
         Args:
@@ -1568,6 +1671,24 @@ class Spydr:
             bool: Whether the element is enabled
         """
         return self.wait_until(lambda _: self.is_enabled(locator))
+
+    def wait_until_loading_finished(self, locator, seconds=2):
+        """Wait until `loading` element shows up and then disappears.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            seconds (int, optional): Seconds to give up waiting. Defaults to 2.
+
+        Returns:
+            bool: Whether the element is not visible
+        """
+        try:
+            self.wait(self.driver, seconds).until(lambda _: self.is_displayed(locator))
+            return self.wait_until_not_visible(locator, seconds=seconds)
+        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
+            return True
 
     def wait_until_not(self, method):
         """Create a WebDriverWait instance and wait until the given method is evaluated to False.
@@ -1842,6 +1963,9 @@ class Spydr:
         options.add_experimental_option('useAutomationExtension', False)
         options.add_experimental_option("prefs", {
             "credentials_enable_service": False,
+            "intl": {
+                "accept_languages": self.locale
+            },
             "profile": {
                 "password_manager_enabled": False
             }
@@ -1878,6 +2002,7 @@ class Spydr:
         profile.assume_untrusted_cert_issuer = False
         # profile.set_preference(
         #     'network.automatic-ntlm-auth.trusted-uris', '.companyname.com')
+        profile.set_preference('intl.accept_languages', self.locale)
 
         options = webdriver.FirefoxOptions()
         options.profile = profile
@@ -1886,6 +2011,15 @@ class Spydr:
             options.add_argument('--headless')
 
         return options
+
+    def _format_locale(self, locale):
+        locale = locale.replace('_', '-')
+        pattern = r'(-[a-zA-Z]{2})$'
+
+        if self.browser == 'firefox':
+            return re.sub(pattern, lambda m: m.group().lower(), locale)
+
+        return re.sub(pattern, lambda m: m.group().upper(), locale)
 
     def _get_logger(self):
         logger = logging.getLogger(__name__)

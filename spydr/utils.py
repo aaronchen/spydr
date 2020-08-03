@@ -1,4 +1,5 @@
 import configparser
+import json
 import os
 import re
 import yaml
@@ -22,49 +23,67 @@ HOWS = {
 
 
 class INI:
-    """Access INI file.
+    """Access INI (`key=value`) file.
 
     Args:
         file (str): Ini file
-        section (str): Section name.  Defaults to 'Spydr'.
+        default_section (str): Default section name.  Defaults to 'Spydr'.
     """
 
-    def __init__(self, file, section='Spydr'):
+    def __init__(self, file, default_section='Spydr'):
         self.file = file
-        self.section = section
+        self.default_section = self._to_key(default_section)
         self.config = configparser.ConfigParser()
-        self.ini = self.config.read(self.file)
 
-        if not self.config.sections():
-            self.config[self.section] = {}
+        self.config.read(self.file)
 
-    def set_key(self, key, value):
-        """Set key/value for INI
-
-        Args:
-            key (str): Key
-            value (str): Value
-        """
-        self.config[self.section][str(key)] = str(value)
-
-    def get_key(self, key):
+    def get_key(self, key, section=None):
         """Get value from the given key.
 
         Args:
             key (str): Key
+            section: INI section.  Defaults to the default section.
 
         Returns:
-            str: Value
+            Value (any data type JSON supports)
         """
+        key = self._to_key(key)
+        section = self._to_section(section)
+
+        if section not in self.config.sections():
+            raise WebDriverException(f'Section not found: {section}')
+
         try:
-            return self.config[self.section][str(key)]
+            return json.loads(self.config[section][key])
         except KeyError:
-            return None
+            raise WebDriverException(f'Key not found: {key}')
 
     def save(self):
         """Save INI file."""
         with open(self.file, 'w') as file:
             self.config.write(file)
+
+    def set_key(self, key, value, section=None):
+        """Set key/value for INI
+
+        Args:
+            key (str): Key
+            value: Value (any data type JSON supports)
+            section: INI section.  Defaults to the default section.
+        """
+        key = self._to_key(key)
+        section = self._to_section(section)
+
+        if section not in self.config.sections():
+            self.config[section] = {}
+
+        self.config[section][key] = json.dumps(value)
+
+    def _to_key(self, key):
+        return str(key)
+
+    def _to_section(self, section):
+        return str(section) if section else self.default_section
 
 
 class Utils:
@@ -121,19 +140,20 @@ class Utils:
         return re.sub(r'(?u)[^-\w.\/]', '', text)
 
     @staticmethod
-    def to_abspath(filename, suffix='.png', root=os.getcwd(), mkdir=True):
-        """Resolve file to absolute path and create all directories if missing.
+    def to_abspath(filename, suffix=None, root=os.getcwd(), mkdir=True):
+        """to_abspath(filename, suffix='.png', root=os.getcwd(), mkdir=True)
+        Resolve file to absolute path and create all directories if missing.
 
         Args:
             filename (str): File name
-            suffix (str, optional): File suffix. Defaults to '.png'.
+            suffix (str, optional): File suffix. Defaults to None.
             root (str, optional): Root directory. Defaults to os.getcwd().
             mkdir (bool, optional): Create directores in the path. Defaults to True.
 
         Returns:
             str: Absolute path of the file
         """
-        if not filename.lower().endswith(suffix):
+        if suffix and not filename.lower().endswith(suffix):
             filename += suffix
 
         abspath = os.path.abspath(os.path.join(root, Utils.sanitize(filename)))
