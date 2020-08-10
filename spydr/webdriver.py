@@ -3,7 +3,9 @@ import inspect
 import json
 import logging
 import os
+import random
 import re
+import string
 import urllib.parse
 import zipfile
 
@@ -27,6 +29,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from time import strftime, localtime
 from webdriver_manager.chrome import ChromeDriverManager
@@ -36,26 +39,46 @@ from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManag
 from .utils import INI, HOWS, Utils, YML
 
 
+# Add additional methods to WebElement
+class _WebElementSpydrify:
+    def __call__(self, fn):
+        @wraps(fn)
+        def wrapper(spydr_self, *args, **kwargs):
+            element_or_elements = fn(spydr_self, *args, **kwargs)
+            element_or_elements = self._spydrify(element_or_elements, spydr_self)
+            return element_or_elements
+        return wrapper
+
+    @classmethod
+    def _spydrify(cls, element_or_elements, spydr_self):
+        if isinstance(element_or_elements, WebElement):
+            element_or_elements = WebElementWrapper(element_or_elements, spydr_self)
+        elif isinstance(element_or_elements, (list, tuple)):
+            for index, element in enumerate(element_or_elements):
+                element_or_elements[index] = cls._spydrify(element, spydr_self)
+        return element_or_elements
+
+
 class Spydr:
     """Spydr WebDriver
 
     Keyword Arguments:
         auth_username (str): Username for HTTP Basic/Digest Auth. Defaults to None.
         auth_password (str): Password for HTTP Basic/Digest Auth. Defaults to None.
-        browser (str): Browser to drive.  Defaults to 'chrome'.
+        browser (str): Browser to drive. Defaults to 'chrome'.
             Supported browsers: 'chrome', 'edge', 'firefox', 'ie', 'safari'.
         extension_root (str): The directory of Extensions. Defaults to './extensions'.
         headless (bool): Headless mode. Defaults to False.
         ini (str/INI): INI File as INI instance. Defaults to None.
-        locale (str): Browser locale.  Defaults to 'en'.
+        locale (str): Browser locale. Defaults to 'en'.
         log_indent (int): Indentation for logging messages. Defaults to 2.
         log_level (str): Logging level: 'INFO' or 'DEBUG'. Defaults to None.
             When set to 'INFO', `info()` messages will be shown.
             When set to 'DEBUG', `debug()`, `info()` and called methods will be shown.
         screen_root (str): The directory of saved screenshots. Defaults to './screens'.
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
-        window_size (str): The size of the window when headless.  Defaults to '1280,720'.
-        yml (str/bytes/os.PathLike/YML): Read YAML File as YML instance.  Defaults to None.
+        window_size (str): The size of the window when headless. Defaults to '1280,720'.
+        yml (str/bytes/os.PathLike/YML): Read YAML File as YML instance. Defaults to None.
 
     Raises:
         InvalidSelectorException: Raise an error when locator is invalid
@@ -117,6 +140,8 @@ class Spydr:
 
         Args:
             filename (str): File name
+
+        Keyword Arguments:
             suffix (str, optional): File suffix. Defaults to None.
             root (str, optional): Root directory. Defaults to `os.getcwd()`.
             mkdir (bool, optional): Create directores in the path. Defaults to True.
@@ -208,7 +233,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        self.execute_script('arguments[0].blur();', self.find_element(locator))
+        self.find_element(locator).blur()
 
     def css_property(self, locator, name):
         """The value of CSS property.
@@ -220,7 +245,7 @@ class Spydr:
         Returns:
             str: CSS property value
         """
-        return self.find_element(locator).value_of_css_property(name)
+        return self.find_element(locator).css_property(name)
 
     def checkbox_to_be(self, locator, is_checked, method='click'):
         """Set the checkbox, identified by the locator, to the given state (is_checked).
@@ -230,7 +255,7 @@ class Spydr:
             is_checked (bool): whether the element to be checked
 
         Keyword Arguments:
-            method (str): Methods to toggle checkbox: click, space.  Defaults to 'click'.
+            method (str): Methods to toggle checkbox: `click`, `space`. Defaults to 'click'.
 
         Raises:
             InvalidSelectorException: Raise an error when the element is not a checkbox
@@ -257,7 +282,7 @@ class Spydr:
             is_checked (bool): whether the checkboxes to be checked
 
         Keyword Arguments:
-            method (str): Methods to toggle checkbox: click, space.  Defaults to 'click'.
+            method (str): Methods to toggle checkbox: `click`, `space`. Defaults to 'click'.
         """
         elements = self.find_elements(locator)
 
@@ -272,21 +297,30 @@ class Spydr:
         """
         self.find_element(locator).clear()
 
-    def clear_and_send_keys(self, locator, *keys):
+    def clear_and_send_keys(self, locator, *keys, lose_focus=False):
         """Clear the element first and then send the given keys.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
-        """
-        self.find_element(locator).clear_and_send_keys(*keys)
+            *keys: Any combinations of strings
 
-    def click(self, locator):
+        Keyword Arguments:
+            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
+        """
+        self.find_element(locator).clear_and_send_keys(*keys, lose_focus=lose_focus)
+
+    def click(self, locator, scroll_into_view=False, behavior='auto'):
         """Click the element.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            scroll_into_view(bool, optional): Whether to scroll the element into view before clicking. Defaults to False.
+            behavior (str, optional): Defines the transition animation.
+                One of `auto` or `smooth`. Defaults to `auto`.
         """
-        self.wait_until(lambda _: self._is_element_clicked(locator))
+        self.wait_until(lambda _: self._is_clicked(locator, scroll_into_view=scroll_into_view, behavior=behavior))
 
     def click_with_offset(self, locator, x_offset=1, y_offset=1):
         """Click the element from x and y offsets.
@@ -307,6 +341,21 @@ class Spydr:
         """Close the window."""
         self.driver.close()
 
+    def close_all_others(self):
+        """Close all other windows."""
+        windows = self.window_handles
+
+        if len(windows) > 1:
+            current_window = self.window_handle
+
+            for window in windows:
+                if window == current_window:
+                    continue
+                self.switch_to_window(window)
+                self.close()
+
+            self.switch_to_window(current_window)
+
     def ctrl_click(self, locator):
         """Ctrl-click the element.
 
@@ -318,7 +367,7 @@ class Spydr:
 
         self.actions().key_down(control).click(element).key_up(control).perform()
 
-    @property
+    @ property
     def current_url(self):
         """Get the URL of the current page.
 
@@ -327,7 +376,7 @@ class Spydr:
         """
         return self.driver.current_url
 
-    def date_from_delta(self, days, format='%m/%d/%Y'):
+    def date_from_delta(self, days, format=r'%m/%d/%Y'):
         """Get the date by the given delta from today.
 
         Examples:
@@ -347,7 +396,7 @@ class Spydr:
         delta = date.today() + timedelta(days=days)
         return delta.strftime(format)
 
-    def date_today(self, format='%m/%d/%Y'):
+    def date_today(self, format=r'%m/%d/%Y'):
         """Get Today's date.
 
         Keyword Arguments:
@@ -378,7 +427,7 @@ class Spydr:
         """
         self.driver.delete_cookie(name)
 
-    @property
+    @ property
     def desired_capabilities(self):
         """Get driver's current desired capabilities.
 
@@ -437,7 +486,7 @@ class Spydr:
         self.actions().drag_and_drop_by_offset(
             source_element, x_offset, y_offset).perform()
 
-    @property
+    @ property
     def driver(self):
         """Instance of Selenium WebDriver.
 
@@ -446,7 +495,7 @@ class Spydr:
         """
         return self.__driver
 
-    @driver.setter
+    @ driver.setter
     def driver(self, driver_):
         self.__driver = driver_
 
@@ -474,6 +523,7 @@ class Spydr:
         """
         return self.driver.execute_script(script, *args)
 
+    @ _WebElementSpydrify()
     def find_element(self, locator):
         """Find the element by the given locator.
 
@@ -512,6 +562,7 @@ class Spydr:
 
         return element
 
+    @_WebElementSpydrify()
     def find_elements(self, locator):
         """Find all elements by the given locator.
 
@@ -535,8 +586,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        self.execute_script(
-            'arguments[0].focus();', self.find_element(locator))
+        self.find_element(locator).focus()
 
     def forward(self):
         """Goes one step forward in the browser history."""
@@ -582,7 +632,7 @@ class Spydr:
 
         Args:
             key (str): Key name
-            section: INI section.  Defaults to the default section.
+            section: INI section. Defaults to the default section.
 
         Returns:
             Value (any data type JSON supports)
@@ -674,13 +724,23 @@ class Spydr:
         Returns:
             bool: Whether the attribute exists
         """
-        return self.execute_script(
-            'return arguments[0].hasAttribute(arguments[1]);', self.find_element(locator), attribute)
+        return self.find_element(locator).has_attribute(attribute)
+
+    def has_class(self, locator, class_name):
+        """Check if the element has the given CSS class.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            class_name (str): CSS class name
+
+        Returns:
+            bool: Whether the CSS class exists
+        """
+        return self.find_element(locator).has_class(class_name)
 
     def hide(self, locator):
         """Hide the element."""
-        self.execute_script(
-            'arguments[0].style.display = "none";', self.find_element(locator))
+        self.find_element(locator).hide()
 
     def highlight(self, locator, hex_color='#ff3'):
         """Highlight the element with the given color.
@@ -691,8 +751,7 @@ class Spydr:
         Keyword Arguments:
             hex_color (str, optional): Hex color. Defaults to '#ff3'.
         """
-        self.execute_script(
-            'arguments[0].style.backgroundColor = `${arguments[1]}`;', self.find_element(locator), hex_color)
+        self.find_element(locator).highlight(hex_color=hex_color)
 
     @property
     def implicitly_wait(self):
@@ -733,13 +792,13 @@ class Spydr:
             self.__ini = INI(file) if file else None
 
     def is_displayed(self, locator):
-        """Check if the element is visible.
+        """Check if the element is displayed.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Returns:
-            bool: Whether the element is visible
+            bool: Whether the element is displayed
         """
         return self.find_element(locator).is_displayed()
 
@@ -764,7 +823,7 @@ class Spydr:
             seconds (int, optional): Seconds to wait until giving up. Defaults to `self.implicitly_wait`.
 
         Returns:
-            False/WebElement: Return False if not located.  Return WebElement if located.
+            False/WebElement: Return False if not located. Return WebElement if located.
         """
         how, what = self._parse_locator(locator)
 
@@ -932,6 +991,8 @@ class Spydr:
 
         Args:
             url (str): URL of the web page
+
+        Keyword Arguments:
             new_tab (bool, optional): Whether to open in a new tab. Defaults to False.
 
         Returns:
@@ -952,6 +1013,8 @@ class Spydr:
 
         Args:
             data (str): Data to be open as inline document
+
+        Keyword Arguments:
             mediatype (str, optional): MIME type. Defaults to 'text/html'.
             encoding (str, optional): Data encoding. Defaults to 'utf-8'.
         """
@@ -981,6 +1044,8 @@ class Spydr:
 
         Args:
             filename (str): File name
+
+        Keyword Arguments:
             mediatype (str, optional): MIME type. Defaults to 'text/html'.
             encoding (str, optional): File encoding. Defaults to 'utf-8'.
 
@@ -1049,20 +1114,20 @@ class Spydr:
         """Quit the Spydr webdriver."""
         self.driver.quit()
 
-    def refresh(self):
-        """Refresh the current page."""
-        self.driver.refresh()
+    def randomized_string(self, size=10, sequence=string.ascii_letters + string.digits, is_upper=False):
+        """Generate a randomized string in the given size using the given characters.
 
-    def refresh_until_page_changed(self, seconds=10):
-        """Refresh the page (every 2 seconds) until the page changes or until the given time.
-
-        Args:
-            seconds (int, optional): Time allowed to refresh. Defaults to 10.
+        Keyword Arguments:
+            size (int, optional): Size of the string. Defaults to 10.
+            sequence (str, optional): Sequence. Defaults to string.ascii_letters+string.digits.
+            is_upper (bool, optional): Uppercase the randomized string. Defaults to False.
 
         Returns:
-            bool: Whether the page is changed
+            [type]: [description]
         """
-        return self.wait(self.driver, seconds, poll_frequency=2).until(lambda _: self._is_page_changed_after_refresh())
+        string_ = ''.join(random.choice(sequence) for _ in range(size))
+
+        return string_.upper() if is_upper else string_
 
     def rect(self, locator):
         """Get the size and location of the element.
@@ -1075,6 +1140,21 @@ class Spydr:
         """
         return self.find_element(locator).rect
 
+    def refresh(self):
+        """Refresh the current page."""
+        self.driver.refresh()
+
+    def refresh_until_page_changed(self, seconds=10):
+        """Refresh the page (every 2 seconds) until the page changes or until the given time.
+
+        Keyword Arguments:
+            seconds (int, optional): Time allowed to refresh. Defaults to 10.
+
+        Returns:
+            bool: Whether the page is changed
+        """
+        return self.wait(self.driver, seconds, poll_frequency=2).until(lambda _: self._is_page_changed_after_refresh())
+
     def remove_attribute(self, locator, attribute):
         """Remove the given attribute from the element.
 
@@ -1082,13 +1162,18 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
             attribute (str): Attribute name
         """
-        self.execute_script('''
-            var element = arguments[0];
-            var attributeName = arguments[1];
-            if (element.hasAttribute(attributeName)) {
-                element.removeAttribute(attributeName);
-            }
-        ''', self.find_element(locator), attribute)
+        self.find_element(locator).remove_attribute(attribute)
+
+    def remove_file(self, file):
+        """Remove the file.
+
+        Args:
+            file (str): File path
+        """
+        file = self.abspath(file, mkdir=False)
+
+        if os.path.exists(file):
+            os.remove(file)
 
     def right_click(self, locator):
         """Right-click on the element.
@@ -1134,7 +1219,7 @@ class Spydr:
         return self.driver.save_screenshot(self.abspath(filename, suffix='.png', root=self.screen_root))
 
     def screenshot(self, locator, filename):
-        """Save a screenshot of the current element to the filename (PNG).
+        """Save a screenshot of the element to the filename (PNG).
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1143,10 +1228,10 @@ class Spydr:
         Returns:
             bool: Whether the file is saved
         """
-        return self.find_element(locator).screenshot(self.abspath(filename, suffix='.png', root=self.screen_root))
+        return self.find_element(locator).save_screenshot(filename)
 
     def screenshot_as_base64(self, locator):
-        """Get the screenshot of the current element as a Base64 encoded string
+        """Get the screenshot of the element as a Base64 encoded string
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1157,7 +1242,7 @@ class Spydr:
         return self.find_element(locator).screenshot_as_base64
 
     def screenshot_as_png(self, locator):
-        """Get the screenshot of the current element as a binary data.
+        """Get the screenshot of the element as a binary data.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1181,35 +1266,77 @@ class Spydr:
         self.__script_timeout = seconds
         self.driver.set_script_timeout(seconds)
 
-    def scroll_into_view(self, locator, align_to=True):
-        """Scroll the element's parent to be visible.
+    def scroll_into_view(self, locator, behavior="auto", block="start", inline="nearest"):
+        """Scroll the element's parent to be displayed.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            align_to (bool, optional): When True, align the top of the element to the top.
-                When False, align the bottom of the element to the bottom. Defaults to True.
+            behavior (str, optional): Defines the transition animation.
+                One of `auto` or `smooth`. Defaults to `auto`.
+            block (str, optional): Defines vertical alignment.
+                One of `start`, `center`, `end`, or `nearest`. Defaults to `start`.
+            inline (str, optional): Defines horizontal alignment.
+                One of `start`, `center`, `end`, or `nearest`. Defaults to `nearest`.
         """
-        self.execute_script(
-            'arguments[0].scrollIntoView(arguments[1]);', self.find_element(locator), align_to)
+        self.find_element(locator).scroll_into_view(behavior=behavior, block=block, inline=inline)
 
-    def select_to_be(self, option_locator):
+    def select_to_be(self, select_locator, option_value, option_by='value'):
         """Select the given `option` in the `select` drop-down menu.
 
         Args:
-            option_locator (str/WebElement): The locator to identify the element or WebElement
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+            option_value (int/str): The value to identify the option by using `option_by` method.
+
+        Keyword Arguments:
+            option_by (str): The method to identify the option. One of `value`, `text`, or `index`. Defaults to 'value'.
 
         Raises:
-            InvalidSelectorException: Raise an error when the element is not an option
+            InvalidSelectorException: Raise an error when the element is not a select
         """
-        option_element = self.find_element(option_locator)
+        select = self.wait_until(lambda _: self._is_selectable(select_locator))
+        option = None
 
-        if option_element.tag_name != 'option':
-            raise InvalidSelectorException(
-                f'Element is not an option: {option_locator}')
+        if not select:
+            raise WebDriverException(f'Select has no option: {select_locator}')
 
-        self.click(option_element)
+        if option_by == 'value':
+            option = select.find_element(f'[value="{option_value}"]')
+        elif option_by == 'text':
+            option = select.find_element(f'//*[text()="{option_value}"]')
+        elif option_by == 'index':
+            options = select.find_elements('tag_name=option')
+            index = int(option_value)
+            option = options[index] if index < len(options) else None
+
+        if not option:
+            raise WebDriverException(f'Cannot using "{option_by}" to identify the option: {option_value}')
+
+        self.click(option)
+
+    def select_to_be_random(self, select_locator):
+        """Randomly select an `option` in the `select` menu
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+
+        Raises:
+            WebDriverException: Raise an error if failing to randomly select an option
+        """
+        select = self.wait_until(lambda _: self._is_selectable(select_locator))
+
+        if not select:
+            raise WebDriverException(f'Select has no option: {select_locator}')
+
+        options = select.find_elements('css=option')
+
+        random_option = self._random_option(options)
+
+        if random_option:
+            random_option.click()
+        else:
+            raise WebDriverException(f'Cannot randomly select an option in: {select_locator}')
 
     def select_to_be_all(self, select_locator):
         """Select all `option` in a **multiple** `select` drop-down menu.
@@ -1236,7 +1363,7 @@ class Spydr:
             select_locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            by (str): Get selected options by value, text, or index.  Defaults to 'value'.
+            by (str): Get selected options by `value`, `text`, or `index`. Defaults to `value`.
 
         Raises:
             InvalidSelectorException: Raise an error when element is not a select element
@@ -1261,10 +1388,10 @@ class Spydr:
                     if not multiple:
                         break
         else:
-            options.extend(select.get_property('selectedOptions'))
+            options.extend(select.selectedOptions())
 
         if by == 'value':
-            return [opt.get_attribute('value') for opt in options]
+            return [opt.value for opt in options]
         elif by == 'text':
             return [opt.text for opt in options]
         elif by == 'index':
@@ -1272,14 +1399,17 @@ class Spydr:
         else:
             raise WebDriverException(f'Unsupported selected options by: {by}')
 
-    def send_keys(self, locator, *keys):
+    def send_keys(self, locator, *keys, lose_focus=False):
         """Simulate typing into the element.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
             *keys: Any combinations of strings
+
+        Keyword Arguments:
+            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
         """
-        self.find_element(locator).send_keys(*keys)
+        self.find_element(locator).send_keys(*keys, lose_focus=lose_focus)
 
     def set_attribute(self, locator, attribute, value):
         """Set the given value to the attribute of the element.
@@ -1289,12 +1419,7 @@ class Spydr:
             attribute (str): Attribute name
             value (str): Attribute name
         """
-        self.execute_script('''
-            var element = arguments[0];
-            var attribute = arguments[1];
-            var value = arguments[2];
-            element.setAttribute(attribute, value);
-        ''', self.find_element(locator), attribute, value)
+        self.find_element(locator).set_attribute(attribute, value)
 
     def set_ini_key(self, key, value, section=None):
         """Set the value of the given key in INI.
@@ -1302,10 +1427,10 @@ class Spydr:
         Args:
             key (str): Key name
             value: Value (any data type JSON supports)
-            section: INI section.  Defaults to the default section.
+            section: INI section. Defaults to the default section.
         """
         if self.ini:
-            self.ini.set_key(key, value)
+            self.ini.set_key(key, value, section)
 
     def set_window_position(self, x, y, window_handle='current'):
         """Set the x and y position of the current window
@@ -1371,8 +1496,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        self.execute_script(
-            'arguments[0].style.display = "";', self.find_element(locator))
+        self.find_element(locator).show()
 
     def size(self, locator):
         """The size of the element.
@@ -1442,7 +1566,7 @@ class Spydr:
             element_locator (str): The locator to identify the element
 
         Returns:
-            False/WebElement: Return False if not located.  Return WebElement if located.
+            False/WebElement: Return False if not located. Return WebElement if located.
         """
         self.wait_until_frame_available_and_switch(frame_locator)
         return self.wait_until(lambda _: self.is_located(element_locator))
@@ -1488,7 +1612,7 @@ class Spydr:
         return self.yml.t(key, **kwargs)
 
     def tag_name(self, locator):
-        """Get the element's tagName
+        """Get the element's tagName.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1503,10 +1627,12 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
-            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Keyword Arguments:
+            typecast: Typecast the text. Defaults to `str`.
 
         Returns:
-            str: The text of the element
+            The text, by `typecast`, of the element
         """
         return typecast(self.find_element(locator).text)
 
@@ -1515,10 +1641,12 @@ class Spydr:
 
         Args:
             locator (str): The locator to identify the elements or list[WebElement]
-            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Keyword Arguments:
+            typecast: Typecast the texts. Defaults to `str`.
 
         Returns:
-            list[str]: Elements' text
+            list: list of texts, by `typecast`, of the given elements
         """
         return [typecast(element.text) for element in self.find_elements(locator)]
 
@@ -1586,22 +1714,19 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
             event (str): Event name
         """
-        self.execute_script('''
-            var element = arguments[0];
-            var eventName = arguments[1];
-            var event = new Event(eventName, {"bubbles": false, "cancelable": false});
-            element.dispatchEvent(event);
-        ''', self.find_element(locator), event)
+        self.find_element(locator).trigger(event)
 
     def value(self, locator, typecast=str):
         """Get the value of the element.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
-            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Keyword Arguments:
+            typecast: Typecast the value. Defaults to `str`.
 
         Returns:
-            str: Value of the given element
+            The value, by `typecast`, of the element
         """
         return typecast(self.find_element(locator).value)
 
@@ -1610,33 +1735,38 @@ class Spydr:
 
         Args:
             locator (str): The locator to identify the elements or list[WebElement]
-            typecast: Typecast the returned text.  Defaults to `str`.
+
+        Keyword Arguments:
+            typecast: Typecast the values. Defaults to `str`.
 
         Returns:
-            list[str]: Values of the given elements
+            list: list of values, by `typecast`, of the given elements
         """
         return [typecast(element.value) for element in self.find_elements(locator)]
 
-    def wait_until(self, method, timeout=None, poll_frequency=0.5, ignored_exceptions=None):
+    def wait_until(self, method, timeout=None, poll_frequency=0.5, ignored_exceptions=[NoSuchElementException]):
         """Create a WebDriverWait instance and wait until the given method is evaluated to not False.
 
         Args:
             method (callable): Method to call
 
         Keyword Arguments:
+            timeout (int, optional): Timeout. Defaults to `self.timeout`.
             poll_frequency (float, optional): Sleep interval between method calls. Defaults to 0.5.
-            ignored_exceptions (list[Exception], optional): Exception classes to ignore during calls. Defaults to None.
+            ignored_exceptions (list[Exception], optional): Exception classes to ignore during calls.
+                Defaults to (NoSuchElementException).
 
         Returns:
             Any applicable return from the method call
         """
-        return self.wait(self.driver, self.timeout, poll_frequency, ignored_exceptions).until(method)
+        timeout = int(timeout) if timeout else self.timeout
+        return self.wait(self.driver, timeout, poll_frequency, ignored_exceptions).until(method)
 
     def wait_until_alert_present(self):
         """Wait until alert is present.
 
         Returns:
-            False/Alert: Return False if not present.  Return Alert if present.
+            False/Alert: Return False if not present. Return Alert if present.
         """
         return self.wait_until(lambda _: self.ec.alert_is_present)
 
@@ -1653,13 +1783,52 @@ class Spydr:
         """
         return self.wait_until(lambda _: self.is_value_in_element_attribute(locator, attribute, value))
 
-    def wait_until_frame_available_and_switch(self, frame_locator):
-        """Wait until the given frame is available and switch to it.
+    def wait_until_class_contains(self, locator, class_name):
+        """Wait until the element contains the given CSS class.
 
         Args:
-            frame_locator (str/WebElement): The locator to identify the frame or WebElement
+            locator (str/WebElement): The locator to identify the element or WebElement
+            class_name (str): CSS class name
+
+        Returns:
+            bool: Whether the element contains the given CSS class
         """
-        self.wait_until(lambda _: self._is_frame_switched(frame_locator))
+        return self.wait_until(lambda _: self.has_class(locator, class_name))
+
+    def wait_until_class_excludes(self, locator, class_name):
+        """Wait until the element excludes the given CSS class.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            class_name (str): CSS class name
+
+        Returns:
+            bool: Whether the element excludes the given CSS class
+        """
+        return self.wait_until(lambda _: not self.has_class(locator, class_name))
+
+    def wait_until_displayed(self, locator):
+        """Wait until the element is displayed.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            bool: Whether the element is displayed
+        """
+        return self.wait_until(lambda _: self.is_displayed(locator))
+
+    def wait_until_displayed_and_get_elmement(self, locator):
+        """Wait until the element is displayed and return the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: WebElement
+        """
+        self.wait_until_displayed(locator)
+        return self.find_element(locator)
 
     def wait_until_enabled(self, locator):
         """Wait until the element is enabled.
@@ -1672,23 +1841,57 @@ class Spydr:
         """
         return self.wait_until(lambda _: self.is_enabled(locator))
 
+    def wait_until_frame_available_and_switch(self, frame_locator):
+        """Wait until the given frame is available and switch to it.
+
+        Args:
+            frame_locator (str/WebElement): The locator to identify the frame or WebElement
+        """
+        self.wait_until(lambda _: self._is_frame_switched(frame_locator))
+
+    def wait_until_ignored_timeout(self, method, timeout=3):
+        """Wait until the given method timed-out and ignore `TimeoutException`.
+
+        Args:
+            method ([type]): Method to call
+
+        Keyword Arguments:
+            timeout (int, optional): [description]. Defaults to 3.
+
+        Returns:
+            Any applicable return from the method call
+        """
+        self.implicitly_wait = int(timeout)
+
+        try:
+            return self.wait_until(method, timeout=timeout)
+        except TimeoutException:
+            pass
+        finally:
+            self.implicitly_wait = self.timeout
+
     def wait_until_loading_finished(self, locator, seconds=2):
         """Wait until `loading` element shows up and then disappears.
 
         Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
+            locator (str/WebElement): The locator to identify the element
 
         Keyword Arguments:
             seconds (int, optional): Seconds to give up waiting. Defaults to 2.
 
         Returns:
-            bool: Whether the element is not visible
+            bool: Whether the element is not displayed
         """
+        how, what = self._parse_locator(locator)
+        self.implicitly_wait = seconds
+
         try:
-            self.wait(self.driver, seconds).until(lambda _: self.is_displayed(locator))
-            return self.wait_until_not_visible(locator, seconds=seconds)
+            self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what))
+            return self.wait(self.driver, seconds).until(lambda wd: not wd.find_element(how, what))
         except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
+        finally:
+            self.implicitly_wait = self.timeout
 
     def wait_until_not(self, method):
         """Create a WebDriverWait instance and wait until the given method is evaluated to False.
@@ -1701,8 +1904,8 @@ class Spydr:
         """
         return self.wait(self.driver, self.timeout).until_not(method)
 
-    def wait_until_not_visible(self, locator, seconds=2):
-        """Wait until the element is not visible in the given seconds.
+    def wait_until_not_displayed(self, locator, seconds=2):
+        """Wait until the element is not displayed in the given seconds.
 
         Args:
             locator (str): The locator to identify the element
@@ -1711,7 +1914,7 @@ class Spydr:
             seconds (int, optional): Seconds to give up waiting. Defaults to 2.
 
         Returns:
-            bool: Whether the element is not visible
+            bool: Whether the element is not displayed
         """
         how, what = self._parse_locator(locator)
         self.implicitly_wait = seconds
@@ -1830,29 +2033,6 @@ class Spydr:
             bool: Whether the URL containing the given URL
         """
         return self.wait_until(self.ec.url_contains(url))
-
-    def wait_until_visible(self, locator):
-        """Wait until the element is visible.
-
-        Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
-
-        Returns:
-            bool: Whether the element is visible
-        """
-        return self.wait_until(lambda _: self.is_displayed(locator))
-
-    def wait_until_visible_and_get_elmement(self, locator):
-        """Wait until the element is visible and return the element.
-
-        Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
-
-        Returns:
-            WebElement: WebElement
-        """
-        self.wait_until_visible(locator)
-        return self.find_element(locator)
 
     @property
     def window_handle(self):
@@ -2065,9 +2245,11 @@ class Spydr:
         options.native_events = False
         return options
 
-    def _is_element_clicked(self, locator):
+    def _is_clicked(self, locator, scroll_into_view=False, behavior='auto'):
         try:
             element = self.find_element(locator)
+            if scroll_into_view:
+                element.scroll_into_view(behavior=behavior)
             if not element.is_displayed() or not element.is_enabled():
                 return False
             element.click()
@@ -2087,6 +2269,21 @@ class Spydr:
         self.refresh()
         self.wait_until_page_loaded()
         return before_page != self.page_source
+
+    def _is_selectable(self, locator):
+        select = self.find_element(locator)
+
+        if select.tag_name != 'select':
+            raise WebDriverException(f'Locator is not a select element: {locator}')
+
+        if not select.is_enabled():
+            return False
+
+        try:
+            options = select.find_elements('css=option')
+            return select if len(options) > 0 else False
+        except (NoSuchWindowException, StaleElementReferenceException):
+            return False
 
     def _multiple_select_to_be(self, element, state):
         if not isinstance(element, WebElement):
@@ -2115,6 +2312,19 @@ class Spydr:
 
         return how, what
 
+    def _random_option(self, options):
+        option = random.choice(options)
+
+        if option.value in [None, "", "0"]:
+            options.remove(option)
+
+            if len(options) > 0:
+                return self._random_option(options)
+
+            return None
+
+        return option
+
     def __getattribute__(self, fn_name):
         log_level = object.__getattribute__(self, 'log_level')
         fn_method = object.__getattribute__(self, fn_name)
@@ -2124,49 +2334,390 @@ class Spydr:
         return fn_method
 
 
-#
-# --- WebElement Method Additions ---
-#
-# Goals:
-#   - Add additional functionality to WebElement
-#   - Override WebElement methods to accommodate Spydr locator formats (Utils.parse_locator)
-#
-# Mthods to add:
-#   - WebElement.clear_and_send_keys
-#   - WebElement.css_property
-#
-# Methods to override:
-#   - WebElement.find_element
-#   - WebElement.find_elements
-#
-def _web_element_clear_and_send_keys(self, *keys):
-    self.clear()
-    self.send_keys(*keys)
-    return self
+class WebElementWrapper(WebElement):
+    """WebElement Override
 
+    Goals:
+        - Add additional functionality to WebElement
+        - Provide WebElement methods to accommodate Spydr locator formats (Utils.parse_locator)
 
-def _web_element_find_element(self, locator):
-    how, what = Utils.parse_locator(locator)
-    return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
+    Args:
+        WebElement (WebElement): WebElement instance
+        Sypdr (Spydr): Spydr instance
+    """
+    def __new__(cls, element, spydr):
+        instance = super().__new__(cls)
+        instance.__dict__.update(element.__dict__)
+        return instance
 
+    def __init__(self, element, spydr):
+        if isinstance(spydr, Spydr):
+            self.spydr = spydr
+        elif isinstance(spydr, WebElement):
+            self.spydr = spydr.spydr
 
-def _web_element_find_elements(self, *locator):
-    how, what = Utils.parse_locator(*locator)
-    return self._execute(Command.FIND_CHILD_ELEMENTS,  {"using": how, "value": what})['value']
+    def blur(self):
+        """Trigger blur event on the element."""
+        self.parent.execute_script('arguments[0].blur();', self)
 
+    def clear(self):
+        """Clears the text if it’s a text-entry element."""
+        super().clear()
 
-@property
-def _web_element_value(self):
-    return self.get_attribute('value')
+    def clear_and_send_keys(self, *keys, lose_focus=False):
+        """Clear the element and then send the given keys.
 
+        Args:
+            *keys: Any combinations of strings
 
-def _web_element__str__(self):
-    return self.get_attribute('outerHTML')
+        Keyword Arguments:
+            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
 
+        Returns:
+            WebElement: WebElement
+        """
+        self.clear()
+        self.send_keys(*keys, lose_focus=lose_focus)
+        return self
 
-WebElement.clear_and_send_keys = _web_element_clear_and_send_keys
-WebElement.css_property = WebElement.value_of_css_property
-WebElement.find_element = _web_element_find_element
-WebElement.find_elements = _web_element_find_elements
-WebElement.value = _web_element_value
-WebElement.__str__ = _web_element__str__
+    def click(self, scroll_into_view=False):
+        """Click the element.
+
+        Keyword Arguments:
+            scroll_into_view (bool, optional): Whether to scroll the element into view before clicking. Defaults to False.
+        """
+        if scroll_into_view:
+            self.scroll_into_view()
+        super().click()
+
+    def css_property(self, name):
+        """The value of CSS property.
+
+        Args:
+            name (str): CSS property name
+
+        Returns:
+            str: CSS property value
+        """
+        return self.value_of_css_property(name)
+
+    @property
+    def current_url(self):
+        """The element's current URL.
+
+        Returns:
+            str: URL
+        """
+        return self.parent.current_url
+
+    @_WebElementSpydrify()
+    def find_element(self, locator):
+        """Find the element by the given locator.
+
+        Args:
+            locator (str): The locator to identify the element
+
+        Returns:
+            WebElement: The element found
+        """
+        how, what = Utils.parse_locator(locator)
+        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
+
+    @ _WebElementSpydrify()
+    def find_elements(self, locator):
+        """Find all elements by the given locator.
+
+        Args:
+            locator (str): The locator to identify the elements
+
+        Returns:
+            list[WebElement]: All elements found
+        """
+        how, what = Utils.parse_locator(locator)
+        return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": how, "value": what})['value']
+
+    def focus(self):
+        """Trigger focus event on the element."""
+        self.parent.execute_script('arguments[0].focus();', self)
+
+    def get_attribute(self, name):
+        """Get the given attribute or property of the element.
+
+        Args:
+            name (str): Attribute name
+        """
+        return super().get_attribute(name)
+
+    def get_property(self, name):
+        """Get the given property of the element.
+
+        Args:
+            name (str): Property name
+        """
+        return super().get_property(name)
+
+    def has_attribute(self, attribute):
+        """Check if the element has the given attribute.
+
+        Args:
+            attribute (str): Attribute name
+
+        Returns:
+            bool: Whether the attribute exists
+        """
+        return self.parent.execute_script('return arguments[0].hasAttribute(arguments[1]);', self, attribute)
+
+    def has_class(self, class_name):
+        """Check if the element has the given CSS class.
+
+        Args:
+            class_name (str): CSS class name
+
+        Returns:
+            bool: Whether the CSS class exists
+        """
+        return self.parent.execute_script('return arguments[0].classList.contains(arguments[1]);', self, class_name)
+
+    def hide(self, locator):
+        """Hide the element."""
+        self.parent.execute_script('arguments[0].style.display = "none";', self)
+
+    def highlight(self, hex_color='#ff3'):
+        """Highlight the element with the given color.
+
+        Keyword Arguments:
+            hex_color (str, optional): Hex color. Defaults to '#ff3'.
+        """
+        self.parent.execute_script('arguments[0].style.backgroundColor = `${arguments[1]}`;', self, hex_color)
+
+    @ property
+    def html(self):
+        """The element's `innerHTML`.
+
+        Returns:
+            str: innerHTML
+        """
+        return self.get_attribute('innerHTML')
+
+    @property
+    def id(self):
+        """Internal ID used by selenium.
+
+        Returns:
+            str: Internal WebElement ID
+        """
+        return super().id
+
+    def is_displayed(self):
+        """Whether the element is visible to a user.
+
+        Returns:
+            bool: Whether the element is visible
+        """
+        return super().is_displayed()
+
+    def is_enabled(self):
+        """whether the element is enabled.
+
+        Returns:
+            bool: Whether the element is enabled
+        """
+        return super().is_enabled()
+
+    def is_selected(self):
+        """Whether the element is selected.
+
+        Can be used to check if a checkbox or radio button is selected.
+
+        Returns:
+            bool: Whether the element is selected
+        """
+        return super().is_selected()
+
+    @property
+    def location(self):
+        """The location of the element in the renderable canvas.
+
+        Returns:
+            dict: The coordonate of the element as dict: {'x': 0, 'y': 0}
+        """
+        return super().location
+
+    @property
+    def rect(self):
+        """A dictionary with the size and location of the element.
+
+        Returns:
+            dict: The size and location of the element as dict: {'x': 0, 'y': 0, 'width': 100, 'height': 100}
+        """
+        return super().rect
+
+    def right_click(self):
+        """Right-click on the element."""
+        self.spydr.actions().move_to_element(self).context_click().perform()
+
+    def remove_attribute(self, attribute):
+        """Remove the given attribute from the element.
+
+        Args:
+            attribute (str): Attribute name
+        """
+        self.parent.execute_script('''
+            var element = arguments[0];
+            var attributeName = arguments[1];
+            if (element.hasAttribute(attributeName)) {
+                element.removeAttribute(attributeName);
+            }
+        ''', self, attribute)
+
+    def save_screenshot(self, filename):
+        """Save a screenshot of the element to filename (PNG).
+
+        Default directory for saved screenshots is defined in: screen_root.
+
+        Args:
+            filename (str): Filename of the screenshot
+
+        Returns:
+            bool: Whether the file is saved
+        """
+        return self.screenshot(Utils.to_abspath(filename, suffix='.png', root=self.spydr.screen_root))
+
+    def scroll_into_view(self, behavior="auto", block="start", inline="nearest"):
+        """Scroll the element's parent to be displayed.
+
+        Keyword Arguments:
+            behavior (str, optional): Defines the transition animation.
+                One of `auto` or `smooth`. Defaults to `auto`.
+            block (str, optional): Defines vertical alignment.
+                One of `start`, `center`, `end`, or `nearest`. Defaults to `start`.
+            inline (str, optional): Defines horizontal alignment.
+                One of `start`, `center`, `end`, or `nearest`. Defaults to `nearest`.
+        """
+        behaviors = ('auto', 'smooth')
+        positions = ('start', 'center', 'end', 'nearest')
+
+        if behavior not in behaviors:
+            raise WebDriverException(f'Behavior is not one of {behaviors}: {behavior}')
+        if block not in positions:
+            raise WebDriverException(f'Block is not one of {positions}: {block}')
+        if inline not in positions:
+            raise WebDriverException(f'Inline is not one of {positions}: {inline}')
+
+        self.parent.execute_script(
+            'arguments[0].scrollIntoView({ behavior: arguments[1], block: arguments[2], inline: arguments[3] });',
+            self, behavior, block, inline)
+
+    @ _WebElementSpydrify()
+    def selectedOptions(self):
+        """Get select element's `selectedOptions`.
+
+        Raises:
+            WebDriverException: Raise an error if the element is not a select element.
+
+        Returns:
+            list[WebElement]: All selected options
+        """
+        if self.tag_name == 'select':
+            return self.get_property('selectedOptions')
+        else:
+            raise WebDriverException(f'WebElement is not a select: {self}')
+
+    def send_keys(self, *keys, lose_focus=False):
+        """Simulate typing into the element.
+
+        Args:
+            *keys: Any combinations of strings
+
+        Keyword Arguments:
+            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
+        """
+        super().send_keys(*keys)
+        if lose_focus:
+            self.blur()
+
+    def set_attribute(self, attribute, value):
+        """Set the given value to the attribute of the element.
+
+        Args:
+            attribute (str): Attribute name
+            value (str): Attribute name
+        """
+        self.parent.execute_script('''
+            var element = arguments[0];
+            var attribute = arguments[1];
+            var value = arguments[2];
+            element.setAttribute(attribute, value);
+        ''', self, attribute, value)
+
+    def show(self):
+        """Show the element."""
+        self.parent.execute_script('arguments[0].style.display = "";', self)
+
+    @property
+    def size(self):
+        """The size of the element.
+
+        Returns:
+            dict: The size of the element as dict: {'width': 100, 'height': 100}
+        """
+        return super().size
+
+    def submit(self):
+        """Submit a form."""
+        super().submit()
+
+    @property
+    def tag_name(self):
+        """Get the element's tagName.
+
+        Returns:
+            str: tagName
+        """
+        return super().tag_name
+
+    @property
+    def text(self):
+        """The element's text.
+
+        Returns:
+            str: The text of the element
+        """
+        return super().text
+
+    def trigger(self, event):
+        """Trigger the given event on the element.
+
+        Args:
+            event (str): Event name
+        """
+        self.parent.execute_script('''
+            var element = arguments[0];
+            var eventName = arguments[1];
+            var event = new Event(eventName, {"bubbles": false, "cancelable": false});
+            element.dispatchEvent(event);
+        ''', self, event)
+
+    @property
+    def unique_id(self):
+        """The ID of the element.
+
+        Returns:
+            str: Element's ID
+        """
+        return self.get_attribute('id')
+
+    @ property
+    def value(self):
+        """Get the value of the element.
+
+        Args:
+            typecast: Typecast the value. Defaults to `str`.
+
+        Returns:
+            The value, by `typecast`, of the element
+        """
+        return self.get_property('value')
+
+    def __str__(self):
+        return self.get_attribute('outerHTML')

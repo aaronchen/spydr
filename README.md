@@ -107,12 +107,12 @@ s.open(url)
 s.send_keys('yml=today_page.dashboard.search_field', search_string)  # using yml as locator
 ```
 
-# Using INI
+# Using INI: JSON serialization
 ``` INI
 ; conf.ini
 [Spydr]
-url = https://www.google.com
-search = webdriver
+url = "https://www.google.com"
+query = "webdriver"
 ```
 
 ``` python
@@ -121,13 +121,15 @@ from spydr.webdriver import Spydr
 s = Spydr(ini='conf.ini')
 
 url = s.get_ini_key('url')
-search = s.get_ini_key('search')
+query = s.get_ini_key('query')
 
 s.open(url)
-s.send_keys('name=q', search, s.keys.ENTER)
+s.send_keys('name=q', query, s.keys.ENTER)
 
-first_result = s.find_element('.r > a h3:eq(0)').text  # Get first search result
+first_result = s.text('.r > a h3:eq(0)')  # Get first search result
 s.set_ini_key('first_result', first_result)  # add first_result to the INI file
+all_results = s.texts('.r > a h3') # Get all results
+s.set_ini_key('all_results', all_results)  # add all results to the INI file
 s.save_ini()  # Save the INI file
 
 s.quit()

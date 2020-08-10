@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.2.4 documentation</title>
+    <title>spydr package &#8212; spydr 0.2.5 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -57,9 +57,9 @@
 
 <dl class="py class">
 <dt id="spydr.utils.INI">
-<em class="property">class </em><code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">INI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">default_section</span><span class="o">=</span><span class="default_value">'Spydr'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#INI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.INI" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">INI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">default_section</span><span class="o">=</span><span class="default_value">'Spydr'</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">'utf-8'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#INI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.INI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Access INI (<cite>key=value</cite>) file.</p>
+<p>Access INI <cite>key=value</cite> using JSON serialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -68,6 +68,17 @@
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="spydr.utils.INI.default_section">
+<em class="property">property </em><code class="sig-name descname">default_section</code><a class="headerlink" href="#spydr.utils.INI.default_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default section to get/set key/value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – Default section name</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="spydr.utils.INI.get_key">
 <code class="sig-name descname">get_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">section</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#INI.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.INI.get_key" title="Permalink to this definition">¶</a></dt>
@@ -181,6 +192,17 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt id="spydr.utils.YML.dict">
+<em class="property">property </em><code class="sig-name descname">dict</code><a class="headerlink" href="#spydr.utils.YML.dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>YAML dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – YAML dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.utils.YML.t">
 <code class="sig-name descname">t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#YML.t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.YML.t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get value from YAML file by using “dot notation” key.</p>
@@ -227,20 +249,20 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>auth_username</strong> (<em>str</em>) – Username for HTTP Basic/Digest Auth. Defaults to None.</p></li>
 <li><p><strong>auth_password</strong> (<em>str</em>) – Password for HTTP Basic/Digest Auth. Defaults to None.</p></li>
-<li><p><strong>browser</strong> (<em>str</em>) – Browser to drive.  Defaults to ‘chrome’.
+<li><p><strong>browser</strong> (<em>str</em>) – Browser to drive. Defaults to ‘chrome’.
 Supported browsers: ‘chrome’, ‘edge’, ‘firefox’, ‘ie’, ‘safari’.</p></li>
 <li><p><strong>extension_root</strong> (<em>str</em>) – The directory of Extensions. Defaults to ‘./extensions’.</p></li>
 <li><p><strong>headless</strong> (<em>bool</em>) – Headless mode. Defaults to False.</p></li>
 <li><p><strong>ini</strong> (<em>str/INI</em>) – INI File as INI instance. Defaults to None.</p></li>
-<li><p><strong>locale</strong> (<em>str</em>) – Browser locale.  Defaults to ‘en’.</p></li>
+<li><p><strong>locale</strong> (<em>str</em>) – Browser locale. Defaults to ‘en’.</p></li>
 <li><p><strong>log_indent</strong> (<em>int</em>) – Indentation for logging messages. Defaults to 2.</p></li>
 <li><p><strong>log_level</strong> (<em>str</em>) – Logging level: ‘INFO’ or ‘DEBUG’. Defaults to None.
 When set to ‘INFO’, <cite>info()</cite> messages will be shown.
 When set to ‘DEBUG’, <cite>debug()</cite>, <cite>info()</cite> and called methods will be shown.</p></li>
 <li><p><strong>screen_root</strong> (<em>str</em>) – The directory of saved screenshots. Defaults to ‘./screens’.</p></li>
 <li><p><strong>timeout</strong> (<em>int</em>) – Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.</p></li>
-<li><p><strong>window_size</strong> (<em>str</em>) – The size of the window when headless.  Defaults to ‘1280,720’.</p></li>
-<li><p><strong>yml</strong> (<em>str/bytes/os.PathLike/YML</em>) – Read YAML File as YML instance.  Defaults to None.</p></li>
+<li><p><strong>window_size</strong> (<em>str</em>) – The size of the window when headless. Defaults to ‘1280,720’.</p></li>
+<li><p><strong>yml</strong> (<em>str/bytes/os.PathLike/YML</em>) – Read YAML File as YML instance. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -260,15 +282,17 @@ When set to ‘DEBUG’, <cite>debug()</cite>, <cite>info()</cite> and called me
 <dd><p>Resolve file to absolute path and create all directories if missing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – File name</p></li>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – File name</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – File suffix. Defaults to None.</p></li>
 <li><p><strong>root</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory. Defaults to <cite>os.getcwd()</cite>.</p></li>
 <li><p><strong>mkdir</strong> (<em>bool</em><em>, </em><em>optional</em>) – Create directores in the path. Defaults to True.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>str</em> – Absolute path of the file</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – Absolute path of the file</p>
 </dd>
 </dl>
 </dd></dl>
@@ -400,7 +424,7 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: click, space.  Defaults to ‘click’.</p>
+<dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: <cite>click</cite>, <cite>space</cite>. Defaults to ‘click’.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a checkbox</p>
@@ -420,7 +444,7 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: click, space.  Defaults to ‘click’.</p>
+<dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: <cite>click</cite>, <cite>space</cite>. Defaults to ‘click’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -438,22 +462,35 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.clear_and_send_keys">
-<code class="sig-name descname">clear_and_send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">keys</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.clear_and_send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.clear_and_send_keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clear_and_send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">keys</span></em>, <em class="sig-param"><span class="n">lose_focus</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.clear_and_send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.clear_and_send_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear the element first and then send the given keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>*keys</strong> – Any combinations of strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>lose_focus</strong> (<em>bool</em><em>, </em><em>optional</em>) – Lose focus after sending keys. Defaults to False.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.click">
-<code class="sig-name descname">click</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.click" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">click</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">scroll_into_view</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">behavior</span><span class="o">=</span><span class="default_value">'auto'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.click" title="Permalink to this definition">¶</a></dt>
 <dd><p>Click the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>scroll_into_view</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scroll the element into view before clicking. Defaults to False.</p></li>
+<li><p><strong>behavior</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines the transition animation.
+One of <cite>auto</cite> or <cite>smooth</cite>. Defaults to <cite>auto</cite>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -479,6 +516,12 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <dt id="spydr.webdriver.Spydr.close">
 <code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.close_all_others">
+<code class="sig-name descname">close_all_others</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.close_all_others"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.close_all_others" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close all other windows.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -806,7 +849,7 @@ then move to the target offset and releases the mouse button.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) – Key name</p></li>
-<li><p><strong>section</strong> – INI section.  Defaults to the default section.</p></li>
+<li><p><strong>section</strong> – INI section. Defaults to the default section.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -926,6 +969,23 @@ then move to the target offset and releases the mouse button.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.has_class">
+<code class="sig-name descname">has_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.has_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.has_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element has the given CSS class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the CSS class exists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.hide">
 <code class="sig-name descname">hide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.hide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.hide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hide the element.</p>
@@ -981,13 +1041,13 @@ then move to the target offset and releases the mouse button.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.is_displayed">
 <code class="sig-name descname">is_displayed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.is_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.is_displayed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the element is visible.</p>
+<dd><p>Check if the element is displayed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>bool</em> – Whether the element is visible</p>
+<dd class="field-even"><p><em>bool</em> – Whether the element is displayed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1018,7 +1078,7 @@ then move to the target offset and releases the mouse button.</p>
 <dd class="field-even"><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to wait until giving up. Defaults to <cite>self.implicitly_wait</cite>.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>False/WebElement</em> – Return False if not located.  Return WebElement if located.</p>
+<dd class="field-odd"><p><em>False/WebElement</em> – Return False if not located. Return WebElement if located.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1207,13 +1267,13 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Load the web page by its given URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> (<em>str</em>) – URL of the web page</p></li>
-<li><p><strong>new_tab</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to open in a new tab. Defaults to False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – URL of the web page</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>list[str]</em> – List of [current_window_handle, new_tab_window_handle]</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>new_tab</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to open in a new tab. Defaults to False.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list[str]</em> – List of [current_window_handle, new_tab_window_handle]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1224,8 +1284,10 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Use Data URL to open <cite>data</cite> as inline document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>str</em>) – Data to be open as inline document</p></li>
+<dd class="field-odd"><p><strong>data</strong> (<em>str</em>) – Data to be open as inline document</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>mediatype</strong> (<em>str</em><em>, </em><em>optional</em>) – MIME type. Defaults to ‘text/html’.</p></li>
 <li><p><strong>encoding</strong> (<em>str</em><em>, </em><em>optional</em>) – Data encoding. Defaults to ‘utf-8’.</p></li>
 </ul>
@@ -1253,14 +1315,16 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Use Data URL to open file content as inline document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – File name</p></li>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – File name</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>mediatype</strong> (<em>str</em><em>, </em><em>optional</em>) – MIME type. Defaults to ‘text/html’.</p></li>
 <li><p><strong>encoding</strong> (<em>str</em><em>, </em><em>optional</em>) – File encoding. Defaults to ‘utf-8’.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>WebDriverException</strong> – Raise an error when filename is not found</p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when filename is not found</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1311,6 +1375,24 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.randomized_string">
+<code class="sig-name descname">randomized_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'</span></em>, <em class="sig-param"><span class="n">is_upper</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.randomized_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.randomized_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a randomized string in the given size using the given characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – Size of the string. Defaults to 10.</p></li>
+<li><p><strong>sequence</strong> (<em>str</em><em>, </em><em>optional</em>) – Sequence. Defaults to string.ascii_letters+string.digits.</p></li>
+<li><p><strong>is_upper</strong> (<em>bool</em><em>, </em><em>optional</em>) – Uppercase the randomized string. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>[type]</em> – [description]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.rect">
 <code class="sig-name descname">rect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.rect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the size and location of the element.</p>
@@ -1335,7 +1417,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <code class="sig-name descname">refresh_until_page_changed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.refresh_until_page_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.refresh_until_page_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refresh the page (every 2 seconds) until the page changes or until the given time.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Time allowed to refresh. Defaults to 10.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1354,6 +1436,17 @@ Offsets are relative to the top-left corner of the element.</p>
 <li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
 <li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.remove_file">
+<code class="sig-name descname">remove_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.remove_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.remove_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – File path</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1410,7 +1503,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.screenshot">
 <code class="sig-name descname">screenshot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.screenshot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save a screenshot of the current element to the filename (PNG).</p>
+<dd><p>Save a screenshot of the element to the filename (PNG).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1427,7 +1520,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.screenshot_as_base64">
 <code class="sig-name descname">screenshot_as_base64</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.screenshot_as_base64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.screenshot_as_base64" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the screenshot of the current element as a Base64 encoded string</p>
+<dd><p>Get the screenshot of the element as a Base64 encoded string</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
@@ -1441,7 +1534,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.screenshot_as_png">
 <code class="sig-name descname">screenshot_as_png</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.screenshot_as_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.screenshot_as_png" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the screenshot of the current element as a binary data.</p>
+<dd><p>Get the screenshot of the element as a binary data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
@@ -1465,29 +1558,41 @@ Offsets are relative to the top-left corner of the element.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.scroll_into_view">
-<code class="sig-name descname">scroll_into_view</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">align_to</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.scroll_into_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.scroll_into_view" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scroll the element’s parent to be visible.</p>
+<code class="sig-name descname">scroll_into_view</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">behavior</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">block</span><span class="o">=</span><span class="default_value">'start'</span></em>, <em class="sig-param"><span class="n">inline</span><span class="o">=</span><span class="default_value">'nearest'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.scroll_into_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.scroll_into_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scroll the element’s parent to be displayed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>align_to</strong> (<em>bool</em><em>, </em><em>optional</em>) – When True, align the top of the element to the top.
-When False, align the bottom of the element to the bottom. Defaults to True.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>behavior</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines the transition animation.
+One of <cite>auto</cite> or <cite>smooth</cite>. Defaults to <cite>auto</cite>.</p></li>
+<li><p><strong>block</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines vertical alignment.
+One of <cite>start</cite>, <cite>center</cite>, <cite>end</cite>, or <cite>nearest</cite>. Defaults to <cite>start</cite>.</p></li>
+<li><p><strong>inline</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines horizontal alignment.
+One of <cite>start</cite>, <cite>center</cite>, <cite>end</cite>, or <cite>nearest</cite>. Defaults to <cite>nearest</cite>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.select_to_be">
-<code class="sig-name descname">select_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">option_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">select_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">select_locator</span></em>, <em class="sig-param"><span class="n">option_value</span></em>, <em class="sig-param"><span class="n">option_by</span><span class="o">=</span><span class="default_value">'value'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the given <cite>option</cite> in the <cite>select</cite> drop-down menu.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>option_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>select_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>option_value</strong> (<em>int/str</em>) – The value to identify the option by using <cite>option_by</cite> method.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not an option</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>option_by</strong> (<em>str</em>) – The method to identify the option. One of <cite>value</cite>, <cite>text</cite>, or <cite>index</cite>. Defaults to ‘value’.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a select</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1515,6 +1620,20 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.select_to_be_random">
+<code class="sig-name descname">select_to_be_random</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">select_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be_random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly select an <cite>option</cite> in the <cite>select</cite> menu</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>select_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>WebDriverException</strong> – Raise an error if failing to randomly select an option</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.selected_options">
 <code class="sig-name descname">selected_options</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">select_locator</span></em>, <em class="sig-param"><span class="n">by</span><span class="o">=</span><span class="default_value">'value'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.selected_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.selected_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get values of <strong>selected</strong> <cite>option</cite> in a <cite>select</cite> drop-down menu.</p>
@@ -1523,7 +1642,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd class="field-odd"><p><strong>select_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>by</strong> (<em>str</em>) – Get selected options by value, text, or index.  Defaults to ‘value’.</p>
+<dd class="field-even"><p><strong>by</strong> (<em>str</em>) – Get selected options by <cite>value</cite>, <cite>text</cite>, or <cite>index</cite>. Defaults to <cite>value</cite>.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1539,7 +1658,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.send_keys">
-<code class="sig-name descname">send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">keys</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.send_keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">keys</span></em>, <em class="sig-param"><span class="n">lose_focus</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.send_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulate typing into the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1547,6 +1666,9 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
 <li><p><strong>*keys</strong> – Any combinations of strings</p></li>
 </ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>lose_focus</strong> (<em>bool</em><em>, </em><em>optional</em>) – Lose focus after sending keys. Defaults to False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1575,7 +1697,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) – Key name</p></li>
 <li><p><strong>value</strong> – Value (any data type JSON supports)</p></li>
-<li><p><strong>section</strong> – INI section.  Defaults to the default section.</p></li>
+<li><p><strong>section</strong> – INI section. Defaults to the default section.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1752,7 +1874,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>False/WebElement</em> – Return False if not located.  Return WebElement if located.</p>
+<dd class="field-even"><p><em>False/WebElement</em> – Return False if not located. Return WebElement if located.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1815,7 +1937,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.tag_name">
 <code class="sig-name descname">tag_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.tag_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the element’s tagName</p>
+<dd><p>Get the element’s tagName.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
@@ -1832,13 +1954,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>The element’s text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
-<li><p><strong>typecast</strong> – Typecast the returned text.  Defaults to <cite>str</cite>.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>str</em> – The text of the element</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>typecast</strong> – Typecast the text. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The text, by <cite>typecast</cite>, of the element</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1867,13 +1989,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>All Elements’ text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str</em>) – The locator to identify the elements or list[WebElement]</p></li>
-<li><p><strong>typecast</strong> – Typecast the returned text.  Defaults to <cite>str</cite>.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the elements or list[WebElement]</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>list[str]</em> – Elements’ text</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>typecast</strong> – Typecast the texts. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list</em> – list of texts, by <cite>typecast</cite>, of the given elements</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1937,13 +2059,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>Get the value of the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
-<li><p><strong>typecast</strong> – Typecast the returned text.  Defaults to <cite>str</cite>.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>str</em> – Value of the given element</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>typecast</strong> – Typecast the value. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The value, by <cite>typecast</cite>, of the element</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1954,13 +2076,13 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>Get the values of the elements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str</em>) – The locator to identify the elements or list[WebElement]</p></li>
-<li><p><strong>typecast</strong> – Typecast the returned text.  Defaults to <cite>str</cite>.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the elements or list[WebElement]</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>list[str]</em> – Values of the given elements</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>typecast</strong> – Typecast the values. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list</em> – list of values, by <cite>typecast</cite>, of the given elements</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1973,7 +2095,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.wait_until">
-<code class="sig-name descname">wait_until</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">poll_frequency</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">ignored_exceptions</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">wait_until</code><span class="sig-paren">(</span><em class="sig-param">method, timeout=None, poll_frequency=0.5, ignored_exceptions=[&lt;class 'selenium.common.exceptions.NoSuchElementException'&gt;]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a WebDriverWait instance and wait until the given method is evaluated to not False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1981,8 +2103,10 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
+<li><p><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – Timeout. Defaults to <cite>self.timeout</cite>.</p></li>
 <li><p><strong>poll_frequency</strong> (<em>float</em><em>, </em><em>optional</em>) – Sleep interval between method calls. Defaults to 0.5.</p></li>
-<li><p><strong>ignored_exceptions</strong> (<em>list</em><em>[</em><em>Exception</em><em>]</em><em>, </em><em>optional</em>) – Exception classes to ignore during calls. Defaults to None.</p></li>
+<li><p><strong>ignored_exceptions</strong> (<em>list</em><em>[</em><em>Exception</em><em>]</em><em>, </em><em>optional</em>) – Exception classes to ignore during calls.
+Defaults to (NoSuchElementException).</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -1997,7 +2121,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd><p>Wait until alert is present.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>False/Alert</em> – Return False if not present.  Return Alert if present.</p>
+<dd class="field-odd"><p><em>False/Alert</em> – Return False if not present. Return Alert if present.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2016,6 +2140,68 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>bool</em> – Whether value is found in the element’s attribute</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_class_contains">
+<code class="sig-name descname">wait_until_class_contains</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_class_contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_class_contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element contains the given CSS class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element contains the given CSS class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_class_excludes">
+<code class="sig-name descname">wait_until_class_excludes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_class_excludes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_class_excludes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element excludes the given CSS class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element excludes the given CSS class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_displayed">
+<code class="sig-name descname">wait_until_displayed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_displayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element is displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element is displayed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_displayed_and_get_elmement">
+<code class="sig-name descname">wait_until_displayed_and_get_elmement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_displayed_and_get_elmement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_displayed_and_get_elmement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element is displayed and return the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – WebElement</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2046,18 +2232,35 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_ignored_timeout">
+<code class="sig-name descname">wait_until_ignored_timeout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_ignored_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_ignored_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the given method timed-out and ignore <cite>TimeoutException</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>method</strong> (<em>[</em><em>type</em><em>]</em>) – Method to call</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – [description]. Defaults to 3.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Any applicable return from the method call</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.wait_until_loading_finished">
 <code class="sig-name descname">wait_until_loading_finished</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_loading_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_loading_finished" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until <cite>loading</cite> element shows up and then disappears.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to give up waiting. Defaults to 2.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>bool</em> – Whether the element is not visible</p>
+<dd class="field-odd"><p><em>bool</em> – Whether the element is not displayed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2077,9 +2280,9 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spydr.webdriver.Spydr.wait_until_not_visible">
-<code class="sig-name descname">wait_until_not_visible</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_not_visible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_not_visible" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait until the element is not visible in the given seconds.</p>
+<dt id="spydr.webdriver.Spydr.wait_until_not_displayed">
+<code class="sig-name descname">wait_until_not_displayed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_not_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_not_displayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element is not displayed in the given seconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
@@ -2088,7 +2291,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dd class="field-even"><p><strong>seconds</strong> (<em>int</em><em>, </em><em>optional</em>) – Seconds to give up waiting. Defaults to 2.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>bool</em> – Whether the element is not visible</p>
+<dd class="field-odd"><p><em>bool</em> – Whether the element is not displayed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2241,34 +2444,6 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spydr.webdriver.Spydr.wait_until_visible">
-<code class="sig-name descname">wait_until_visible</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_visible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_visible" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait until the element is visible.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>bool</em> – Whether the element is visible</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="spydr.webdriver.Spydr.wait_until_visible_and_get_elmement">
-<code class="sig-name descname">wait_until_visible_and_get_elmement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_visible_and_get_elmement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_visible_and_get_elmement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait until the element is visible and return the element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>WebElement</em> – WebElement</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="spydr.webdriver.Spydr.window_handle">
 <em class="property">property </em><code class="sig-name descname">window_handle</code><a class="headerlink" href="#spydr.webdriver.Spydr.window_handle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the handle of the current window.</p>
@@ -2308,6 +2483,445 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>scale</strong> (<em>float/str</em>) – Zoom factor: 0.8, 1.5, or ‘150%’</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="spydr.webdriver.WebElementWrapper">
+<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">WebElementWrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element</span></em>, <em class="sig-param"><span class="n">spydr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.remote.webelement.WebElement</span></code></p>
+<p>WebElement Override</p>
+<dl class="simple">
+<dt>Goals:</dt><dd><ul class="simple">
+<li><p>Add additional functionality to WebElement</p></li>
+<li><p>Provide WebElement methods to accommodate Spydr locator formats (Utils.parse_locator)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>WebElement</strong> (<em>WebElement</em>) – WebElement instance</p></li>
+<li><p><strong>Sypdr</strong> (<a class="reference internal" href="#spydr.webdriver.Spydr" title="spydr.webdriver.Spydr"><em>Spydr</em></a>) – Spydr instance</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.blur">
+<code class="sig-name descname">blur</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.blur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.blur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trigger blur event on the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the text if it’s a text-entry element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.clear_and_send_keys">
+<code class="sig-name descname">clear_and_send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">keys</span></em>, <em class="sig-param"><span class="n">lose_focus</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.clear_and_send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.clear_and_send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the element and then send the given keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*keys</strong> – Any combinations of strings</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>lose_focus</strong> (<em>bool</em><em>, </em><em>optional</em>) – Lose focus after sending keys. Defaults to False.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – WebElement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.click">
+<code class="sig-name descname">click</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scroll_into_view</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Click the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>scroll_into_view</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scroll the element into view before clicking. Defaults to False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.css_property">
+<code class="sig-name descname">css_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.css_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.css_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value of CSS property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – CSS property name</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – CSS property value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.current_url">
+<em class="property">property </em><code class="sig-name descname">current_url</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.current_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>The element’s current URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – URL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.find_element">
+<code class="sig-name descname">find_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.find_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the element by the given locator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – The element found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.find_elements">
+<code class="sig-name descname">find_elements</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.find_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all elements by the given locator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the elements</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list[WebElement]</em> – All elements found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.focus">
+<code class="sig-name descname">focus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.focus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trigger focus event on the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.get_attribute">
+<code class="sig-name descname">get_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.get_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the given attribute or property of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Attribute name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.get_property">
+<code class="sig-name descname">get_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.get_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.get_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the given property of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Property name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.has_attribute">
+<code class="sig-name descname">has_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.has_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.has_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element has the given attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the attribute exists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.has_class">
+<code class="sig-name descname">has_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.has_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.has_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element has the given CSS class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the CSS class exists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.hide">
+<code class="sig-name descname">hide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.hide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.hide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hide the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.highlight">
+<code class="sig-name descname">highlight</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hex_color</span><span class="o">=</span><span class="default_value">'#ff3'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.highlight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.highlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight the element with the given color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>hex_color</strong> (<em>str</em><em>, </em><em>optional</em>) – Hex color. Defaults to ‘#ff3’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.html">
+<em class="property">property </em><code class="sig-name descname">html</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.html" title="Permalink to this definition">¶</a></dt>
+<dd><p>The element’s <cite>innerHTML</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – innerHTML</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.id">
+<em class="property">property </em><code class="sig-name descname">id</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal ID used by selenium.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – Internal WebElement ID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.is_displayed">
+<code class="sig-name descname">is_displayed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.is_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.is_displayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the element is visible to a user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em> – Whether the element is visible</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.is_enabled">
+<code class="sig-name descname">is_enabled</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.is_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.is_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>whether the element is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em> – Whether the element is enabled</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.is_selected">
+<code class="sig-name descname">is_selected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.is_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.is_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the element is selected.</p>
+<p>Can be used to check if a checkbox or radio button is selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em> – Whether the element is selected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.location">
+<em class="property">property </em><code class="sig-name descname">location</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.location" title="Permalink to this definition">¶</a></dt>
+<dd><p>The location of the element in the renderable canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – The coordonate of the element as dict: {‘x’: 0, ‘y’: 0}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.rect">
+<em class="property">property </em><code class="sig-name descname">rect</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary with the size and location of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – The size and location of the element as dict: {‘x’: 0, ‘y’: 0, ‘width’: 100, ‘height’: 100}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.remove_attribute">
+<code class="sig-name descname">remove_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.remove_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.remove_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the given attribute from the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.right_click">
+<code class="sig-name descname">right_click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.right_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.right_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-click on the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.save_screenshot">
+<code class="sig-name descname">save_screenshot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.save_screenshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a screenshot of the element to filename (PNG).</p>
+<p>Default directory for saved screenshots is defined in: screen_root.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Filename of the screenshot</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the file is saved</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.scroll_into_view">
+<code class="sig-name descname">scroll_into_view</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">behavior</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">block</span><span class="o">=</span><span class="default_value">'start'</span></em>, <em class="sig-param"><span class="n">inline</span><span class="o">=</span><span class="default_value">'nearest'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.scroll_into_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.scroll_into_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scroll the element’s parent to be displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>behavior</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines the transition animation.
+One of <cite>auto</cite> or <cite>smooth</cite>. Defaults to <cite>auto</cite>.</p></li>
+<li><p><strong>block</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines vertical alignment.
+One of <cite>start</cite>, <cite>center</cite>, <cite>end</cite>, or <cite>nearest</cite>. Defaults to <cite>start</cite>.</p></li>
+<li><p><strong>inline</strong> (<em>str</em><em>, </em><em>optional</em>) – Defines horizontal alignment.
+One of <cite>start</cite>, <cite>center</cite>, <cite>end</cite>, or <cite>nearest</cite>. Defaults to <cite>nearest</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.selectedOptions">
+<code class="sig-name descname">selectedOptions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.selectedOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.selectedOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get select element’s <cite>selectedOptions</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error if the element is not a select element.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list[WebElement]</em> – All selected options</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.send_keys">
+<code class="sig-name descname">send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">keys</span></em>, <em class="sig-param"><span class="n">lose_focus</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate typing into the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*keys</strong> – Any combinations of strings</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>lose_focus</strong> (<em>bool</em><em>, </em><em>optional</em>) – Lose focus after sending keys. Defaults to False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.set_attribute">
+<code class="sig-name descname">set_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.set_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.set_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the given value to the attribute of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – Attribute name</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em> – The size of the element as dict: {‘width’: 100, ‘height’: 100}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.submit">
+<code class="sig-name descname">submit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit a form.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.tag_name">
+<em class="property">property </em><code class="sig-name descname">tag_name</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.tag_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the element’s tagName.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – tagName</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.text">
+<em class="property">property </em><code class="sig-name descname">text</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>The element’s text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – The text of the element</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.trigger">
+<code class="sig-name descname">trigger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#WebElementWrapper.trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trigger the given event on the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>str</em>) – Event name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.unique_id">
+<em class="property">property </em><code class="sig-name descname">unique_id</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.unique_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ID of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – Element’s ID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.WebElementWrapper.value">
+<em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#spydr.webdriver.WebElementWrapper.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>typecast</strong> – Typecast the value. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value, by <cite>typecast</cite>, of the element</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2368,7 +2982,7 @@ When False, align the bottom of the element to the bottom. Defaults to True.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

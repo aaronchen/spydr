@@ -23,19 +23,36 @@ HOWS = {
 
 
 class INI:
-    """Access INI (`key=value`) file.
+    """Access INI `key=value` using JSON serialization.
 
     Args:
         file (str): Ini file
         default_section (str): Default section name.  Defaults to 'Spydr'.
     """
 
-    def __init__(self, file, default_section='Spydr'):
+    def __init__(self, file, default_section='Spydr', encoding='utf-8'):
         self.file = file
-        self.default_section = self._to_key(default_section)
+        self.default_section = default_section
+        self.encoding = encoding
         self.config = configparser.ConfigParser()
 
-        self.config.read(self.file)
+        self.config.read(self.file, encoding=self.encoding)
+
+        if self.default_section not in self.config.sections():
+            self.config[self.default_section] = {}
+
+    @property
+    def default_section(self):
+        """Default section to get/set key/value.
+
+        Returns:
+            str: Default section name
+        """
+        return self.__section
+
+    @default_section.setter
+    def default_section(self, section):
+        self.__section = str(section)
 
     def get_key(self, key, section=None):
         """Get value from the given key.
@@ -60,7 +77,7 @@ class INI:
 
     def save(self):
         """Save INI file."""
-        with open(self.file, 'w') as file:
+        with open(self.file, 'w', encoding=self.encoding) as file:
             self.config.write(file)
 
     def set_key(self, key, value, section=None):
@@ -77,7 +94,10 @@ class INI:
         if section not in self.config.sections():
             self.config[section] = {}
 
-        self.config[section][key] = json.dumps(value)
+        self.config[section][key] = json.dumps(value, ensure_ascii=self._is_ascii())
+
+    def _is_ascii(self):
+        return self.encoding != 'utf-8'
 
     def _to_key(self, key):
         return str(key)
@@ -181,6 +201,15 @@ class YML:
                 self.__yml = yaml.safe_load(open(file, 'r').read())
             except FileNotFoundError:
                 raise WebDriverException(f'File not found: {file}')
+
+    @property
+    def dict(self):
+        """YAML dict.
+
+        Returns:
+            dict: YAML dict
+        """
+        return self.__yml
 
     def t(self, key, **kwargs):
         """Get value from YAML file by using "dot notation" key.
