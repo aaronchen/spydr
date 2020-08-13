@@ -24,12 +24,10 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.alert import Alert
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from time import strftime, localtime
 from webdriver_manager.chrome import ChromeDriverManager
@@ -39,23 +37,23 @@ from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManag
 from .utils import INI, HOWS, Utils, YML
 
 
-# Add additional methods to WebElement
+# Spydrify WebElement
 class _WebElementSpydrify:
     def __call__(self, fn):
         @wraps(fn)
-        def wrapper(spydr_self, *args, **kwargs):
-            element_or_elements = fn(spydr_self, *args, **kwargs)
-            element_or_elements = self._spydrify(element_or_elements, spydr_self)
+        def wrapper(spydr_or_element_self, *args, **kwargs):
+            element_or_elements = fn(spydr_or_element_self, *args, **kwargs)
+            element_or_elements = self._spydrify(spydr_or_element_self, element_or_elements)
             return element_or_elements
         return wrapper
 
     @classmethod
-    def _spydrify(cls, element_or_elements, spydr_self):
+    def _spydrify(cls, spydr_or_element_self, element_or_elements):
         if isinstance(element_or_elements, WebElement):
-            element_or_elements = WebElementWrapper(element_or_elements, spydr_self)
+            element_or_elements = SpydrElement(spydr_or_element_self, element_or_elements)
         elif isinstance(element_or_elements, (list, tuple)):
             for index, element in enumerate(element_or_elements):
-                element_or_elements[index] = cls._spydrify(element, spydr_self)
+                element_or_elements[index] = cls._spydrify(spydr_or_element_self, element)
         return element_or_elements
 
 
@@ -89,14 +87,8 @@ class Spydr:
         Spydr: An instance of Spydr Webdriver
     """
 
-    browsers = ('chrome', 'edge', 'firefox', 'ie', 'safari')
-    """tuple: Supported Browsers"""
-
-    by = By
-    """selenium.webdriver.common.by.By: Set of supported locator strategies"""
-
     ec = expected_conditions
-    """Pre-defined Expected Conditions"""
+    """selenium.webdriver.support.expected_conditions: Pre-defined Selenium Expected Conditions"""
 
     keys = Keys
     """selenium.webdriver.common.keys.Keys: Pre-defined keys codes"""
@@ -142,9 +134,9 @@ class Spydr:
             filename (str): File name
 
         Keyword Arguments:
-            suffix (str, optional): File suffix. Defaults to None.
-            root (str, optional): Root directory. Defaults to `os.getcwd()`.
-            mkdir (bool, optional): Create directores in the path. Defaults to True.
+            suffix (str): File suffix. Defaults to None.
+            root (str): Root directory. Defaults to `os.getcwd()`.
+            mkdir (bool): Create directores in the path. Defaults to True.
 
         Returns:
             str: Absolute path of the file
@@ -176,7 +168,7 @@ class Spydr:
         """Accept the alert available.
 
         Keyword Arguments:
-            alert (Alert, optional): Alert instance. Defaults to None.
+            alert (Alert): Alert instance. Defaults to None.
         """
         if isinstance(alert, Alert):
             alert.accept()
@@ -187,7 +179,7 @@ class Spydr:
         """Dismiss the alert available.
 
         Keyword Arguments:
-            alert (Alert, optional): Alert instance. Defaults to None.
+            alert (Alert): Alert instance. Defaults to None.
         """
         if isinstance(alert, Alert):
             alert.dismiss()
@@ -201,7 +193,7 @@ class Spydr:
             keys_to_send (str): Text to send
 
         Keyword Arguments:
-            alert (Alert, optional): Alert instance. Defaults to None.
+            alert (Alert): Alert instance. Defaults to None.
         """
         if isinstance(alert, Alert):
             alert.send_keys(keys_to_send)
@@ -212,7 +204,7 @@ class Spydr:
         """Get the text of the alert.
 
         Keyword Arguments:
-            alert (Alert, optional): Alert Instance. Defaults to None.
+            alert (Alert): Alert Instance. Defaults to None.
         """
         if isinstance(alert, Alert):
             alert.text
@@ -297,7 +289,7 @@ class Spydr:
         """
         self.find_element(locator).clear()
 
-    def clear_and_send_keys(self, locator, *keys, lose_focus=False):
+    def clear_and_send_keys(self, locator, *keys, blur=False, wait_until_enabled=False):
         """Clear the element first and then send the given keys.
 
         Args:
@@ -305,22 +297,35 @@ class Spydr:
             *keys: Any combinations of strings
 
         Keyword Arguments:
-            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
+            blur (bool): Lose focus after sending keys. Defaults to False.
+            wait_until_enabled (bool): Whether to wait until the element `is_enabled()` before clearing and sending keys. Defaults to False.
         """
-        self.find_element(locator).clear_and_send_keys(*keys, lose_focus=lose_focus)
+        self.find_element(locator).clear_and_send_keys(*keys, blur=blur, wait_until_enabled=wait_until_enabled)
 
-    def click(self, locator, scroll_into_view=False, behavior='auto'):
+    def click(self, locator, switch_to_new_target=False, scroll_into_view=False, behavior='auto'):
         """Click the element.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            scroll_into_view(bool, optional): Whether to scroll the element into view before clicking. Defaults to False.
-            behavior (str, optional): Defines the transition animation.
-                One of `auto` or `smooth`. Defaults to `auto`.
+            switch_to_new_target (bool): Whether to switch to a newly-opened window after clicking. Defautls to False.
+            scroll_into_view (bool): Whether to scroll the element into view before clicking. Defaults to False.
+            behavior (str): Defines the transition animation for `scroll_into_view`.
+                One of `auto` or `smooth`. Defaults to 'auto'.
+
+        Returns:
+            tuple, optional: If `switch_to_new_target`, it returns a tuple of (window_handle_before_clicking, window_handle_after_clicking)
         """
+        if switch_to_new_target:
+            before_window = self.window_handle
+            before_windows = self.window_handles
+
         self.wait_until(lambda _: self._is_clicked(locator, scroll_into_view=scroll_into_view, behavior=behavior))
+
+        if switch_to_new_target and len(self.window_handles) > len(before_windows):
+            self.switch_to_last_window_handle()
+            return (before_window, self.window_handle)
 
     def click_with_offset(self, locator, x_offset=1, y_offset=1):
         """Click the element from x and y offsets.
@@ -329,8 +334,8 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            x_offset (int, optional): X offset from the left of the element. Defaults to 1.
-            y_offset (int, optional): Y offset from the top of the element. Defaults to 1.
+            x_offset (int): X offset from the left of the element. Defaults to 1.
+            y_offset (int): Y offset from the top of the element. Defaults to 1.
         """
         element = self.find_element(locator)
         self.wait_until_enabled(element)
@@ -388,7 +393,7 @@ class Spydr:
             days (int): Delta days from today
 
         Keyword Arguments:
-            format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+            format (str): Date format. Defaults to '%m/%d/%Y'.
 
         Returns:
             str: Delta date from today
@@ -400,7 +405,7 @@ class Spydr:
         """Get Today's date.
 
         Keyword Arguments:
-            format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+            format (str): Date format. Defaults to '%m/%d/%Y'.
 
         Returns:
             str: Today's date in the given format
@@ -523,7 +528,7 @@ class Spydr:
         """
         return self.driver.execute_script(script, *args)
 
-    @ _WebElementSpydrify()
+    @_WebElementSpydrify()
     def find_element(self, locator):
         """Find the element by the given locator.
 
@@ -549,16 +554,13 @@ class Spydr:
                 try:
                     element = self.find_elements(f'css={new_what}')[int(nth)]
                 except IndexError:
-                    raise NoSuchElementException(
-                        f'{locator} does not have {nth} element')
+                    raise NoSuchElementException(f'{locator} does not have {nth} element')
 
         if not element:
-            element = self.wait_until(
-                lambda _: self.is_located(locator))
+            element = self.wait_until(lambda _: self.is_located(locator))
 
             if not isinstance(element, WebElement):
-                raise NoSuchElementException(
-                    f'Cannot locate element in the given time using: {locator}')
+                raise NoSuchElementException(f'Cannot locate element in the given time using: {locator}')
 
         return element
 
@@ -688,7 +690,7 @@ class Spydr:
         """Get the x and y position of the given window.
 
         Keyword Arguments:
-            window_handle (str, optional): The handle of the window. Defaults to 'current'.
+            window_handle (str): The handle of the window. Defaults to 'current'.
 
         Returns:
             dict: The position of the window as dict: {'x': 0, 'y': 0}
@@ -707,7 +709,7 @@ class Spydr:
         """Get the width and height of the given window.
 
         Keyword Arguments:
-            window_handle (str, optional): The handle of the window. Defaults to 'current'.
+            window_handle (str): The handle of the window. Defaults to 'current'.
 
         Returns:
             dict: The height and width of the window as dict: {'width': 100, 'height': 100}
@@ -747,11 +749,9 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
-
-        Keyword Arguments:
             hex_color (str, optional): Hex color. Defaults to '#ff3'.
         """
-        self.find_element(locator).highlight(hex_color=hex_color)
+        self.find_element(locator).highlight(hex_color)
 
     @property
     def implicitly_wait(self):
@@ -820,7 +820,7 @@ class Spydr:
             locator (str): The locator to identify the element
 
         Keyword Arguments:
-            seconds (int, optional): Seconds to wait until giving up. Defaults to `self.implicitly_wait`.
+            seconds (int): Seconds to wait until giving up. Defaults to `self.implicitly_wait`.
 
         Returns:
             False/WebElement: Return False if not located. Return WebElement if located.
@@ -893,8 +893,19 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        self.execute_script(
-            'arguments[0].click();', self.find_element(locator))
+        self.execute_script('arguments[0].click();', self.find_element(locator))
+
+    def load_cookies(self, filename):
+        """Load Cookies from a JSON file.
+
+        Args:
+            filename (str): File name
+        """
+        file_ = self.abspath(filename, suffix='.json', mkdir=False)
+        with open(file_, "r") as cookie_file:
+            cookies = json.load(cookie_file)
+            for cookie in cookies:
+                self.add_cookie(cookie)
 
     def location(self, locator):
         """The location of the element in the renderable canvas.
@@ -914,8 +925,7 @@ class Spydr:
 
     def maximize_to_screen(self):
         """Maximize the current window to match the screen size."""
-        size = self.execute_script(
-            'return { width: window.screen.width, height: window.screen.height };')
+        size = self.execute_script('return { width: window.screen.width, height: window.screen.height };')
         self.set_window_position(0, 0)
         self.set_window_size(size['width'], size['height'])
 
@@ -950,12 +960,11 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            x_offset (int, optional): X offset. Defaults to 1.
-            y_offset (int, optional): Y offset. Defaults to 1.
+            x_offset (int): X offset. Defaults to 1.
+            y_offset (int): Y offset. Defaults to 1.
         """
         element = self.find_element(locator)
-        self.actions().move_to_element_with_offset(
-            element, x_offset, y_offset).perform()
+        self.actions().move_to_element_with_offset(element, x_offset, y_offset).perform()
 
     def new_tab(self):
         """Open a new tab.
@@ -993,7 +1002,7 @@ class Spydr:
             url (str): URL of the web page
 
         Keyword Arguments:
-            new_tab (bool, optional): Whether to open in a new tab. Defaults to False.
+            new_tab (bool): Whether to open in a new tab. Defaults to False.
 
         Returns:
             list[str]: List of [current_window_handle, new_tab_window_handle]
@@ -1015,8 +1024,8 @@ class Spydr:
             data (str): Data to be open as inline document
 
         Keyword Arguments:
-            mediatype (str, optional): MIME type. Defaults to 'text/html'.
-            encoding (str, optional): Data encoding. Defaults to 'utf-8'.
+            mediatype (str): MIME type. Defaults to 'text/html'.
+            encoding (str): Data encoding. Defaults to 'utf-8'.
         """
         base64_encoded = base64.b64encode(bytes(data, encoding))
         base64_data = str(base64_encoded, encoding)
@@ -1046,8 +1055,8 @@ class Spydr:
             filename (str): File name
 
         Keyword Arguments:
-            mediatype (str, optional): MIME type. Defaults to 'text/html'.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+            mediatype (str): MIME type. Defaults to 'text/html'.
+            encoding (str): File encoding. Defaults to 'utf-8'.
 
         Raises:
             WebDriverException: Raise an error when filename is not found
@@ -1067,8 +1076,8 @@ class Spydr:
             url (str): URL of the web page
 
         Keyword Arguments:
-            username (str, optional): Username. Defaults to auth_username or None.
-            password (str, optional): Password. Defaults to auth_password or None.
+            username (str): Username. Defaults to auth_username or None.
+            password (str): Password. Defaults to auth_password or None.
         """
         username = username or self.auth_username
         password = password or self.auth_password
@@ -1117,10 +1126,12 @@ class Spydr:
     def randomized_string(self, size=10, sequence=string.ascii_letters + string.digits, is_upper=False):
         """Generate a randomized string in the given size using the given characters.
 
-        Keyword Arguments:
+        Args:
             size (int, optional): Size of the string. Defaults to 10.
-            sequence (str, optional): Sequence. Defaults to string.ascii_letters+string.digits.
-            is_upper (bool, optional): Uppercase the randomized string. Defaults to False.
+
+        Keyword Arguments:    
+            sequence (str): Sequence. Defaults to string.ascii_letters+string.digits.
+            is_upper (bool): Uppercase the randomized string. Defaults to False.
 
         Returns:
             [type]: [description]
@@ -1148,7 +1159,7 @@ class Spydr:
         """Refresh the page (every 2 seconds) until the page changes or until the given time.
 
         Keyword Arguments:
-            seconds (int, optional): Time allowed to refresh. Defaults to 10.
+            seconds (int): Time allowed to refresh. Defaults to 10.
 
         Returns:
             bool: Whether the page is changed
@@ -1191,13 +1202,22 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            x_offset (int, optional): X offset from the left of the element. Defaults to 1.
-            y_offset (int, optional): Y offset from the top of the element. Defaults to 1.
+            x_offset (int): X offset from the left of the element. Defaults to 1.
+            y_offset (int): Y offset from the top of the element. Defaults to 1.
         """
         element = self.find_element(locator)
 
-        self.actions().move_to_element_with_offset(
-            element, x_offset, y_offset).context_click().perform()
+        self.actions().move_to_element_with_offset(element, x_offset, y_offset).context_click().perform()
+
+    def save_cookies(self, filename):
+        """Save cookies as a JSON file.
+
+        Args:
+            filename (str): File name
+        """
+        file_ = self.abspath(filename, suffix='.json')
+        with open(file_, "w") as cookie_file:
+            json.dump(self.get_cookies(), cookie_file, indent=2)
 
     def save_ini(self):
         """Save INI file."""
@@ -1273,12 +1293,9 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            behavior (str, optional): Defines the transition animation.
-                One of `auto` or `smooth`. Defaults to `auto`.
-            block (str, optional): Defines vertical alignment.
-                One of `start`, `center`, `end`, or `nearest`. Defaults to `start`.
-            inline (str, optional): Defines horizontal alignment.
-                One of `start`, `center`, `end`, or `nearest`. Defaults to `nearest`.
+            behavior (str): Defines the transition animation. One of `auto` or `smooth`. Defaults to 'auto'.
+            block (str): Defines vertical alignment. One of `start`, `center`, `end`, or `nearest`. Defaults to 'start'.
+            inline (str): Defines horizontal alignment. One of `start`, `center`, `end`, or `nearest`. Defaults to 'nearest'.
         """
         self.find_element(locator).scroll_into_view(behavior=behavior, block=block, inline=inline)
 
@@ -1315,11 +1332,14 @@ class Spydr:
 
         self.click(option)
 
-    def select_to_be_random(self, select_locator):
+    def select_to_be_random(self, select_locator, ignored_options=[None, "", "0"]):
         """Randomly select an `option` in the `select` menu
 
         Args:
             select_locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            ignored_options (list): Options to exlcude from selection. Defaults to [None, "", "0"].
 
         Raises:
             WebDriverException: Raise an error if failing to randomly select an option
@@ -1331,7 +1351,7 @@ class Spydr:
 
         options = select.find_elements('css=option')
 
-        random_option = self._random_option(options)
+        random_option = self._random_option(options, ignored_options=ignored_options)
 
         if random_option:
             random_option.click()
@@ -1363,7 +1383,7 @@ class Spydr:
             select_locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            by (str): Get selected options by `value`, `text`, or `index`. Defaults to `value`.
+            by (str): Get selected options by `value`, `text`, or `index`. Defaults to 'value'.
 
         Raises:
             InvalidSelectorException: Raise an error when element is not a select element
@@ -1376,8 +1396,7 @@ class Spydr:
         options = []
 
         if select.tag_name != 'select':
-            raise InvalidSelectorException(
-                f'Element is not a select: {select_locator}')
+            raise InvalidSelectorException(f'Element is not a select: {select_locator}')
 
         if self.browser == 'ie':
             multiple = select.get_attribute('multiple')
@@ -1399,7 +1418,7 @@ class Spydr:
         else:
             raise WebDriverException(f'Unsupported selected options by: {by}')
 
-    def send_keys(self, locator, *keys, lose_focus=False):
+    def send_keys(self, locator, *keys, blur=False, wait_until_enabled=False):
         """Simulate typing into the element.
 
         Args:
@@ -1407,9 +1426,10 @@ class Spydr:
             *keys: Any combinations of strings
 
         Keyword Arguments:
-            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
+            blur (bool): Lose focus after sending keys. Defaults to False.
+            wait_until_enabled (bool): Whether to wait until the element `is_enabled()` before sending keys. Defaults to False.
         """
-        self.find_element(locator).send_keys(*keys, lose_focus=lose_focus)
+        self.find_element(locator).send_keys(*keys, blur=blur, wait_until_enabled=wait_until_enabled)
 
     def set_attribute(self, locator, attribute, value):
         """Set the given value to the attribute of the element.
@@ -1440,7 +1460,7 @@ class Spydr:
             y (int): y-coordinate in pixels
 
         Keyword Arguments:
-            window_handle (str, optional): Window handle. Defaults to 'current'.
+            window_handle (str): Window handle. Defaults to 'current'.
 
         Returns:
             dict: Window rect as dict: {'x': 0, 'y': 0, 'width': 100, 'height': 100}
@@ -1451,10 +1471,10 @@ class Spydr:
         """Set the x, y, width, and height of the current window.
 
         Keyword Arguments:
-            x (int, optional): x-coordinate in pixels. Defaults to None.
-            y (int, optional): y-coordinate in pixels. Defaults to None.
-            width (int, optional): Window width in pixels. Defaults to None.
-            height (int, optional): Window height in pixels. Defaults to None.
+            x (int): x-coordinate in pixels. Defaults to None.
+            y (int): y-coordinate in pixels. Defaults to None.
+            width (int): Window width in pixels. Defaults to None.
+            height (int): Window height in pixels. Defaults to None.
 
         Returns:
             dict: Window rect as dict: {'x': 0, 'y': 0, 'width': 100, 'height': 100}
@@ -1469,7 +1489,7 @@ class Spydr:
             height (int, optional): Window height in pixels. Defaults to None.
 
         Keyword Arguments:
-            window_handle (str, optional): Window handle. Defaults to 'current'.
+            window_handle (str): Window handle. Defaults to 'current'.
 
         Returns:
             dict: Window rect as dict: {'x': 0, 'y': 0, 'width': 100, 'height': 100}
@@ -1487,8 +1507,7 @@ class Spydr:
         to_element = self.find_element(to_locator)
         shift = self.keys.SHIFT
 
-        self.actions().key_down(shift).click(from_element).click(
-            to_element).key_up(shift).perform()
+        self.actions().key_down(shift).click(from_element).click(to_element).key_up(shift).perform()
 
     def show(self, locator):
         """Show the element.
@@ -1689,8 +1708,8 @@ class Spydr:
         """Get current local timestamp with optional prefix and/or suffix.
 
         Keyword Arguments:
-            prefix (str, optional): Prefix for timestamp. Defaults to ''.
-            suffix (str, optional): Suffix for timestamp. Defaults to ''.
+            prefix (str): Prefix for timestamp. Defaults to ''.
+            suffix (str): Suffix for timestamp. Defaults to ''.
 
         Returns:
             str: Timestamp with optional prefix and suffix
@@ -1751,10 +1770,9 @@ class Spydr:
             method (callable): Method to call
 
         Keyword Arguments:
-            timeout (int, optional): Timeout. Defaults to `self.timeout`.
-            poll_frequency (float, optional): Sleep interval between method calls. Defaults to 0.5.
-            ignored_exceptions (list[Exception], optional): Exception classes to ignore during calls.
-                Defaults to (NoSuchElementException).
+            timeout (int): Timeout. Defaults to `self.timeout`.
+            poll_frequency (float): Sleep interval between method calls. Defaults to 0.5.
+            ignored_exceptions (list[Exception]): Exception classes to ignore during calls. Defaults to (NoSuchElementException).
 
         Returns:
             Any applicable return from the method call
@@ -1856,7 +1874,7 @@ class Spydr:
             method ([type]): Method to call
 
         Keyword Arguments:
-            timeout (int, optional): [description]. Defaults to 3.
+            timeout (int): [description]. Defaults to 3.
 
         Returns:
             Any applicable return from the method call
@@ -1877,7 +1895,7 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element
 
         Keyword Arguments:
-            seconds (int, optional): Seconds to give up waiting. Defaults to 2.
+            seconds (int): Seconds to give up waiting. Defaults to 2.
 
         Returns:
             bool: Whether the element is not displayed
@@ -1911,7 +1929,7 @@ class Spydr:
             locator (str): The locator to identify the element
 
         Keyword Arguments:
-            seconds (int, optional): Seconds to give up waiting. Defaults to 2.
+            seconds (int): Seconds to give up waiting. Defaults to 2.
 
         Returns:
             bool: Whether the element is not displayed
@@ -2023,16 +2041,27 @@ class Spydr:
         """
         return self.wait_until(self.ec.title_contains(title))
 
-    def wait_until_url_contains(self, url):
+    def wait_until_url_contains(self, url, timeout=None):
         """Wait until the URL of the current window contains the given URL.
 
         Args:
             url (str): URL to match
 
+        Keyword Arguments:
+            timeout (int): Timeout. Defaults to `self.timeout`.
+
         Returns:
             bool: Whether the URL containing the given URL
         """
-        return self.wait_until(self.ec.url_contains(url))
+        timeout = int(timeout) if timeout else self.timeout
+        self.implicitly_wait = timeout
+
+        try:
+            return self.wait_until(self.ec.url_contains(url), timeout=timeout)
+        except TimeoutException:
+            return False
+        finally:
+            self.implicitly_wait = self.timeout
 
     @property
     def window_handle(self):
@@ -2138,8 +2167,7 @@ class Spydr:
         options.add_argument('ignore-certificate-errors')
         options.add_argument('ignore-ssl-errors=yes')
 
-        options.add_experimental_option(
-            "excludeSwitches", ['enable-automation', 'enable-logging'])
+        options.add_experimental_option("excludeSwitches", ['enable-automation', 'enable-logging'])
         options.add_experimental_option('useAutomationExtension', False)
         options.add_experimental_option("prefs", {
             "credentials_enable_service": False,
@@ -2157,8 +2185,7 @@ class Spydr:
         else:
             # Extension can only be installed when not headless
             if self.auth_username and self.auth_password:
-                options.add_encoded_extension(self._auth_extension_as_base64(
-                    self.auth_username, self.auth_password))
+                options.add_encoded_extension(self._auth_extension_as_base64(self.auth_username, self.auth_password))
 
         return options
 
@@ -2217,11 +2244,12 @@ class Spydr:
         return logger
 
     def _get_webdriver(self):
+        browsers = ('chrome', 'edge', 'firefox', 'ie', 'safari')
         path = os.getcwd()
         config = {'path': path, 'log_level': 50}
 
-        if self.browser not in self.browsers:
-            raise WebDriverException(f'Unsupported browser: {self.browser}')
+        if self.browser not in browsers:
+            raise WebDriverException(f'Browser must be one of {browsers}: {self.browser}')
 
         if self.browser == 'chrome':
             return webdriver.Chrome(
@@ -2312,14 +2340,14 @@ class Spydr:
 
         return how, what
 
-    def _random_option(self, options):
+    def _random_option(self, options, ignored_options=[None, "", "0"]):
         option = random.choice(options)
 
-        if option.value in [None, "", "0"]:
+        if option.value in ignored_options:
             options.remove(option)
 
             if len(options) > 0:
-                return self._random_option(options)
+                return self._random_option(options, ignored_options=ignored_options)
 
             return None
 
@@ -2334,27 +2362,27 @@ class Spydr:
         return fn_method
 
 
-class WebElementWrapper(WebElement):
-    """WebElement Override
+class SpydrElement(WebElement):
+    """Wrap WebElement with Spydr-specific implementations.
 
     Goals:
         - Add additional functionality to WebElement
-        - Provide WebElement methods to accommodate Spydr locator formats (Utils.parse_locator)
+        - Provide Spydr locator formats (Utils.parse_locator) to WebElement
 
     Args:
-        WebElement (WebElement): WebElement instance
-        Sypdr (Spydr): Spydr instance
+        spydr_or_element_self (Spydr/SpydrElement): Spydr or SpydrElement self
+        element (WebElement): WebElement instance
     """
-    def __new__(cls, element, spydr):
+    def __new__(cls, spydr_or_element_self, element):
         instance = super().__new__(cls)
         instance.__dict__.update(element.__dict__)
         return instance
 
-    def __init__(self, element, spydr):
-        if isinstance(spydr, Spydr):
-            self.spydr = spydr
-        elif isinstance(spydr, WebElement):
-            self.spydr = spydr.spydr
+    def __init__(self, spydr_or_element_self, element):
+        if isinstance(spydr_or_element_self, Spydr):
+            self.spydr = spydr_or_element_self
+        elif isinstance(spydr_or_element_self, WebElement):
+            self.spydr = spydr_or_element_self.spydr
 
     def blur(self):
         """Trigger blur event on the element."""
@@ -2364,27 +2392,31 @@ class WebElementWrapper(WebElement):
         """Clears the text if it’s a text-entry element."""
         super().clear()
 
-    def clear_and_send_keys(self, *keys, lose_focus=False):
+    def clear_and_send_keys(self, *keys, blur=False, wait_until_enabled=False):
         """Clear the element and then send the given keys.
 
         Args:
             *keys: Any combinations of strings
 
         Keyword Arguments:
-            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
+            blur (bool): Lose focus after sending keys. Defaults to False.
+            wait_until_enabled (bool): Whether to wait until the element `is_enabled()` before clearing and sending keys. Defaults to False.
 
         Returns:
             WebElement: WebElement
         """
+        if wait_until_enabled:
+            self.spydr.wait_until_enabled(self)
+
         self.clear()
-        self.send_keys(*keys, lose_focus=lose_focus)
+        self.send_keys(*keys, blur=blur)
         return self
 
     def click(self, scroll_into_view=False):
         """Click the element.
 
         Keyword Arguments:
-            scroll_into_view (bool, optional): Whether to scroll the element into view before clicking. Defaults to False.
+            scroll_into_view (bool): Whether to scroll the element into view before clicking. Defaults to False.
         """
         if scroll_into_view:
             self.scroll_into_view()
@@ -2423,7 +2455,7 @@ class WebElementWrapper(WebElement):
         how, what = Utils.parse_locator(locator)
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
 
-    @ _WebElementSpydrify()
+    @_WebElementSpydrify()
     def find_elements(self, locator):
         """Find all elements by the given locator.
 
@@ -2485,7 +2517,7 @@ class WebElementWrapper(WebElement):
     def highlight(self, hex_color='#ff3'):
         """Highlight the element with the given color.
 
-        Keyword Arguments:
+        Args:
             hex_color (str, optional): Hex color. Defaults to '#ff3'.
         """
         self.parent.execute_script('arguments[0].style.backgroundColor = `${arguments[1]}`;', self, hex_color)
@@ -2498,6 +2530,15 @@ class WebElementWrapper(WebElement):
             str: innerHTML
         """
         return self.get_attribute('innerHTML')
+
+    @property
+    def html_id(self):
+        """The ID of the element.
+
+        Returns:
+            str: Element's ID
+        """
+        return self.get_attribute('id')
 
     @property
     def id(self):
@@ -2587,12 +2628,9 @@ class WebElementWrapper(WebElement):
         """Scroll the element's parent to be displayed.
 
         Keyword Arguments:
-            behavior (str, optional): Defines the transition animation.
-                One of `auto` or `smooth`. Defaults to `auto`.
-            block (str, optional): Defines vertical alignment.
-                One of `start`, `center`, `end`, or `nearest`. Defaults to `start`.
-            inline (str, optional): Defines horizontal alignment.
-                One of `start`, `center`, `end`, or `nearest`. Defaults to `nearest`.
+            behavior (str): Defines the transition animation. One of `auto` or `smooth`. Defaults to 'auto'.
+            block (str): Defines vertical alignment. One of `start`, `center`, `end`, or `nearest`. Defaults to 'start'.
+            inline (str): Defines horizontal alignment. One of `start`, `center`, `end`, or `nearest`. Defaults to 'nearest'.
         """
         behaviors = ('auto', 'smooth')
         positions = ('start', 'center', 'end', 'nearest')
@@ -2608,7 +2646,7 @@ class WebElementWrapper(WebElement):
             'arguments[0].scrollIntoView({ behavior: arguments[1], block: arguments[2], inline: arguments[3] });',
             self, behavior, block, inline)
 
-    @ _WebElementSpydrify()
+    @_WebElementSpydrify()
     def selectedOptions(self):
         """Get select element's `selectedOptions`.
 
@@ -2623,17 +2661,22 @@ class WebElementWrapper(WebElement):
         else:
             raise WebDriverException(f'WebElement is not a select: {self}')
 
-    def send_keys(self, *keys, lose_focus=False):
+    def send_keys(self, *keys, blur=False, wait_until_enabled=False):
         """Simulate typing into the element.
 
         Args:
             *keys: Any combinations of strings
 
         Keyword Arguments:
-            lose_focus (bool, optional): Lose focus after sending keys. Defaults to False.
+            blur (bool): Lose focus after sending keys. Defaults to False.
+            wait_until_enabled (bool): Whether to wait until the element `is_enabled()` before sending keys. Defaults to False.
         """
+        if wait_until_enabled:
+            self.spydr.wait_until_enabled(self)
+
         super().send_keys(*keys)
-        if lose_focus:
+
+        if blur:
             self.blur()
 
     def set_attribute(self, attribute, value):
@@ -2697,15 +2740,6 @@ class WebElementWrapper(WebElement):
             var event = new Event(eventName, {"bubbles": false, "cancelable": false});
             element.dispatchEvent(event);
         ''', self, event)
-
-    @property
-    def unique_id(self):
-        """The ID of the element.
-
-        Returns:
-            str: Element's ID
-        """
-        return self.get_attribute('id')
 
     @ property
     def value(self):
