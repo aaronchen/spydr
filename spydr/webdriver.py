@@ -1385,6 +1385,16 @@ class Spydr:
         """
         self.find_element(locator).scroll_into_view(behavior=behavior, block=block, inline=inline)
 
+    def scroll_to(self, locator, x, y):
+        """Scroll the elment to the given x- and y-coordinates. (IE not supported)
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            x (int): x-coordinate
+            y (int): y-coordinate
+        """
+        self.find_element(locator).scroll_to(x, y)
+
     def select_to_be(self, select_locator, option_value, option_by='value'):
         """Select the given `option` in the `select` drop-down menu.
 
@@ -1811,6 +1821,24 @@ class Spydr:
             str: Title of the current page
         """
         return self.driver.title
+
+    def toggle_attribute(self, locator, name):
+        """Toggle a Boolean attribute of the given element. (IE not supported)
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            name ([type]): Attribute name
+        """
+        self.find_element(locator).toggle_attribute(name)
+
+    def toggle_class(self, locator, class_name):
+        """Toggole the given CSS class of the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            class_name (str): CSS class name
+        """
+        self.find_element(locator).toggle_class(class_name)
 
     def trigger(self, locator, event):
         """Trigger the given event on the element.
@@ -2797,16 +2825,29 @@ class SpydrElement(WebElement):
         behaviors = ('auto', 'smooth')
         positions = ('start', 'center', 'end', 'nearest')
 
-        if behavior not in behaviors:
-            raise WebDriverException(f'Behavior is not one of {behaviors}: {behavior}')
-        if block not in positions:
-            raise WebDriverException(f'Block is not one of {positions}: {block}')
-        if inline not in positions:
-            raise WebDriverException(f'Inline is not one of {positions}: {inline}')
+        if self.spydr.browser in ('ie', 'safari'):
+            align_to_top = False if block == 'end' else True
+            self.parent.execute_script('arguments[0].scrollIntoView(arguments[1]);', self, align_to_top)
+        else:
+            if behavior not in behaviors:
+                raise WebDriverException(f'Behavior is not one of {behaviors}: {behavior}')
+            if block not in positions:
+                raise WebDriverException(f'Block is not one of {positions}: {block}')
+            if inline not in positions:
+                raise WebDriverException(f'Inline is not one of {positions}: {inline}')
 
-        self.parent.execute_script(
-            'arguments[0].scrollIntoView({ behavior: arguments[1], block: arguments[2], inline: arguments[3] });',
-            self, behavior, block, inline)
+            self.parent.execute_script(
+                'arguments[0].scrollIntoView({ behavior: arguments[1], block: arguments[2], inline: arguments[3] });',
+                self, behavior, block, inline)
+
+    def scroll_to(self, x, y):
+        """Scroll the elment to the given x- and y-coordinates. (IE not supported)
+
+        Args:
+            x (int): x-coordinate
+            y (int): y-coordinate
+        """
+        self.parent.execute_script('arguments[0].scrollTo(arguments[1], arguments[2]);', self, int(x), int(y))
 
     @_WebElementSpydrify()
     def selectedOptions(self):
@@ -2893,6 +2934,22 @@ class SpydrElement(WebElement):
     @text.setter
     def text(self, text_):
         self.parent.execute_script('return arguments[0].textContent = `${arguments[1]}`;', self, text_)
+
+    def toggle_attribute(self, name):
+        """Toggle a Boolean attribute. (IE not supported)
+
+        Args:
+            name ([type]): Attribute name
+        """
+        self.parent.execute_script('return arguments[0].toggleAttribute(arguments[1]);', self, name)
+
+    def toggle_class(self, class_name):
+        """Toggole the given CSS class of the element.
+
+        Args:
+            class_name (str): CSS class name
+        """
+        self.parent.execute_script('return arguments[0].classList.toggle(arguments[1]);', self, class_name)
 
     def trigger(self, event):
         """Trigger the given event on the element.

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.2.7 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -1431,6 +1431,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">scroll_into_view</span><span class="p">(</span><span class="n">behavior</span><span class="o">=</span><span class="n">behavior</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="n">inline</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.scroll_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.scroll_to">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scroll the elment to the given x- and y-coordinates. (IE not supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            x (int): x-coordinate</span>
+<span class="sd">            y (int): y-coordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">scroll_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.select_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">option_value</span><span class="p">,</span> <span class="n">option_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select the given `option` in the `select` drop-down menu.</span>
 
@@ -1857,6 +1867,24 @@
 <span class="sd">            str: Title of the current page</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+
+<div class="viewcode-block" id="Spydr.toggle_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.toggle_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Toggle a Boolean attribute of the given element. (IE not supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            name ([type]): Attribute name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">toggle_attribute</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.toggle_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.toggle_class">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Toggole the given CSS class of the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            class_name (str): CSS class name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">toggle_class</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.trigger"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.trigger">[docs]</a>    <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger the given event on the element.</span>
@@ -2843,16 +2871,29 @@
         <span class="n">behaviors</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;smooth&#39;</span><span class="p">)</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">behavior</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">behaviors</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Behavior is not one of </span><span class="si">{</span><span class="n">behaviors</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">behavior</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">block</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Block is not one of </span><span class="si">{</span><span class="n">positions</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inline</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Inline is not one of </span><span class="si">{</span><span class="n">positions</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">inline</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">browser</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ie&#39;</span><span class="p">,</span> <span class="s1">&#39;safari&#39;</span><span class="p">):</span>
+            <span class="n">align_to_top</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">block</span> <span class="o">==</span> <span class="s1">&#39;end&#39;</span> <span class="k">else</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].scrollIntoView(arguments[1]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">align_to_top</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">behavior</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">behaviors</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Behavior is not one of </span><span class="si">{</span><span class="n">behaviors</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">behavior</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">block</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Block is not one of </span><span class="si">{</span><span class="n">positions</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inline</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Inline is not one of </span><span class="si">{</span><span class="n">positions</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">inline</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
-            <span class="s1">&#39;arguments[0].scrollIntoView({ behavior: arguments[1], block: arguments[2], inline: arguments[3] });&#39;</span><span class="p">,</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">inline</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
+                <span class="s1">&#39;arguments[0].scrollIntoView({ behavior: arguments[1], block: arguments[2], inline: arguments[3] });&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">inline</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpydrElement.scroll_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.scroll_to">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scroll the elment to the given x- and y-coordinates. (IE not supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (int): x-coordinate</span>
+<span class="sd">            y (int): y-coordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].scrollTo(arguments[1], arguments[2]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="SpydrElement.selectedOptions"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.selectedOptions">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">selectedOptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2940,6 +2981,22 @@
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].textContent = `$</span><span class="si">{arguments[1]}</span><span class="s1">`;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">text_</span><span class="p">)</span>
 
+<div class="viewcode-block" id="SpydrElement.toggle_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.toggle_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Toggle a Boolean attribute. (IE not supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name ([type]): Attribute name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].toggleAttribute(arguments[1]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpydrElement.toggle_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.toggle_class">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Toggole the given CSS class of the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_name (str): CSS class name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].classList.toggle(arguments[1]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="SpydrElement.trigger"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.trigger">[docs]</a>    <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger the given event on the element.</span>
 
@@ -2998,7 +3055,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

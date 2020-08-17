@@ -1,7 +1,7 @@
 # spydr
-<u>S</u>elenium <u>Py</u>thon Web<u>Dr</u>iver Wrapper - Commonly used WebDriver functionality in a package.
+Selenium Python WebDriver Wrapper - Commonly used WebDriver functionality in a package.
 
-[spydr WebDriver - Spydr](file:///C:/Users/ChenAaro/Projects/spydr/docs/source/spydr.html#spydr.webdriver.Spydr)
+[spydr WebDriver - Spydr](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.Spydr)
 
 [spydr WebElement - SpydrElement](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.SpydrElement)
 
