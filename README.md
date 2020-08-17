@@ -1,9 +1,9 @@
 # spydr
 Selenium Python WebDriver Wrapper - Commonly used WebDriver functionality in a package.
 
-[spydr WebDriver - Spydr](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.Spydr)
+[spydr WebDriver - Spydr documentation](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.Spydr)
 
-[spydr WebElement - SpydrElement](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.SpydrElement)
+[spydr WebElement - SpydrElement documentation](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.SpydrElement)
 
 # Install
 
@@ -133,6 +133,25 @@ s.set_ini_key('all_results', all_results)  # add all results to the INI file
 s.save_ini()  # Save the INI file
 
 s.quit()
+```
+
+# SpydrElement (WebElement wrapped with Spydr specfic functionality)
+
+``` python
+from spydr.webdriver import Spydr
+
+s = Spydr()
+
+# ...
+
+table = s.find_element('#table')
+
+td = table.find_element('css=td[data-id="12345"]')
+
+if td.parent_element.last_child.text == 'complete':
+    td.next_element.find_element('.comment').send_keys('Comment here', blur=True)
+else:
+    td.parent_element.first_child.find_element('css=a.update').click()
 ```
 
 # Development Environment

@@ -1738,7 +1738,7 @@ class Spydr:
         return self.find_element(locator).tag_name
 
     def text(self, locator, typecast=str):
-        """The element's text.
+        """The the element's text. (Only works when the element is in the viewport)
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1750,6 +1750,17 @@ class Spydr:
             The text, by `typecast`, of the element
         """
         return typecast(self.find_element(locator).text)
+
+    def text_content(self, locator):
+        """Get the element's text. (Works whether the element is in the viewport or not)
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            str: The text of the element
+        """
+        return self.find_element(locator).text_content
 
     def texts(self, locator, typecast=str):
         """All Elements' text.
@@ -2924,7 +2935,7 @@ class SpydrElement(WebElement):
 
     @property
     def text(self):
-        """The element's text.
+        """The the element's text. (Only works when the element is in the viewport)
 
         Returns:
             str: The text of the element
@@ -2934,6 +2945,15 @@ class SpydrElement(WebElement):
     @text.setter
     def text(self, text_):
         self.parent.execute_script('return arguments[0].textContent = `${arguments[1]}`;', self, text_)
+
+    @property
+    def text_content(self):
+        """Get the element's text. (Works whether the element is in the viewport or not)
+
+        Returns:
+            str: The text of the element
+        """
+        return self.parent.execute_script('return arguments[0].textContent;', self)
 
     def toggle_attribute(self, name):
         """Toggle a Boolean attribute. (IE not supported)
