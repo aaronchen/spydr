@@ -151,6 +151,15 @@ class Spydr:
         """
         return ActionChains(self.driver)
 
+    def add_class(self, locator, class_name):
+        """Add the given CSS class to the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            class_name (str): CSS class name
+        """
+        self.find_element(locator).add_class(class_name)
+
     def add_cookie(self, cookie):
         """Add a cookie to your current session.
 
@@ -281,6 +290,17 @@ class Spydr:
         for element in elements:
             self.checkbox_to_be(element, is_checked, method=method)
 
+    def children(self, locator):
+        """Get the children elements of the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            list[WebElement]: The children elements of the given element.
+        """
+        return self.find_element(locator).children
+
     def clear(self, locator):
         """Clear the text of a text input element.
 
@@ -318,14 +338,16 @@ class Spydr:
             tuple, optional: If `switch_to_new_target`, it returns a tuple of (window_handle_before_clicking, window_handle_after_clicking)
         """
         if switch_to_new_target:
-            before_window = self.window_handle
-            before_windows = self.window_handles
+            window_handle_before_clicking = self.window_handle
+            num_of_windows = len(self.window_handles)
 
         self.wait_until(lambda _: self._is_clicked(locator, scroll_into_view=scroll_into_view, behavior=behavior))
 
-        if switch_to_new_target and len(self.window_handles) > len(before_windows):
-            self.switch_to_last_window_handle()
-            return (before_window, self.window_handle)
+        if switch_to_new_target:
+            self.wait_until_number_of_windows_to_be(num_of_windows + 1)
+            window_handle_after_clicking = self.window_handles[-1]
+            self.switch_to_window(window_handle_after_clicking)
+            return (window_handle_before_clicking, window_handle_after_clicking)
 
     def click_with_offset(self, locator, x_offset=1, y_offset=1):
         """Click the element from x and y offsets.
@@ -372,7 +394,7 @@ class Spydr:
 
         self.actions().key_down(control).click(element).key_up(control).perform()
 
-    @ property
+    @property
     def current_url(self):
         """Get the URL of the current page.
 
@@ -432,7 +454,7 @@ class Spydr:
         """
         self.driver.delete_cookie(name)
 
-    @ property
+    @property
     def desired_capabilities(self):
         """Get driver's current desired capabilities.
 
@@ -491,7 +513,7 @@ class Spydr:
         self.actions().drag_and_drop_by_offset(
             source_element, x_offset, y_offset).perform()
 
-    @ property
+    @property
     def driver(self):
         """Instance of Selenium WebDriver.
 
@@ -500,7 +522,7 @@ class Spydr:
         """
         return self.__driver
 
-    @ driver.setter
+    @driver.setter
     def driver(self, driver_):
         self.__driver = driver_
 
@@ -581,6 +603,17 @@ class Spydr:
         elements = self.driver.find_elements(how, what)
 
         return elements
+
+    def first_child(self, locator):
+        """Get the first child element of the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: The first child element of the given element.
+        """
+        return self.find_element(locator).first_child
 
     def focus(self, locator):
         """Trigger focus event on the element.
@@ -895,6 +928,17 @@ class Spydr:
         """
         self.execute_script('arguments[0].click();', self.find_element(locator))
 
+    def last_child(self, locator):
+        """Get the last child element of the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: The last child element of the element element.
+        """
+        return self.find_element(locator).last_child
+
     def load_cookies(self, filename):
         """Load Cookies from a JSON file.
 
@@ -965,6 +1009,17 @@ class Spydr:
         """
         element = self.find_element(locator)
         self.actions().move_to_element_with_offset(element, x_offset, y_offset).perform()
+
+    def next_element(self, locator):
+        """Get the next element of the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: The next element of the given element.
+        """
+        return self.find_element(locator).next_element
 
     def new_tab(self):
         """Open a new tab.
@@ -1119,6 +1174,28 @@ class Spydr:
         """
         return self.driver.page_source
 
+    def parent_element(self, locator):
+        """Get the parent element of the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: The parent element of the given element.
+        """
+        return self.find_element(locator).parent_element
+
+    def previous_element(self, locator):
+        """Get the previous element of the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            WebElement: The previous element of the given element.
+        """
+        return self.find_element(locator).previous_element
+
     def quit(self):
         """Quit the Spydr webdriver."""
         self.driver.quit()
@@ -1174,6 +1251,15 @@ class Spydr:
             attribute (str): Attribute name
         """
         self.find_element(locator).remove_attribute(attribute)
+
+    def remove_class(self, locator, class_name):
+        """Remove the given CSS class to the element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            class_name (str): CSS class name
+        """
+        self.find_element(locator).remove_class(class_name)
 
     def remove_file(self, file):
         """Remove the file.
@@ -2384,9 +2470,27 @@ class SpydrElement(WebElement):
         elif isinstance(spydr_or_element_self, WebElement):
             self.spydr = spydr_or_element_self.spydr
 
+    def add_class(self, class_name):
+        """Add the given CSS class to the element.
+
+        Args:
+            class_name (str): CSS class name
+        """
+        self.parent.execute_script('return arguments[0].classList.add(arguments[1]);', self, class_name)
+
     def blur(self):
         """Trigger blur event on the element."""
         self.parent.execute_script('arguments[0].blur();', self)
+
+    @property
+    @_WebElementSpydrify()
+    def children(self):
+        """Get the children elements.
+
+        Returns:
+            list[WebElement]: The children elements of the current element.
+        """
+        return self.parent.execute_script('return arguments[0].children;', self)
 
     def clear(self):
         """Clears the text if it’s a text-entry element."""
@@ -2468,6 +2572,16 @@ class SpydrElement(WebElement):
         how, what = Utils.parse_locator(locator)
         return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": how, "value": what})['value']
 
+    @property
+    @_WebElementSpydrify()
+    def first_child(self):
+        """Get the first child element.
+
+        Returns:
+            WebElement: The first child element of the current element.
+        """
+        return self.parent.execute_script('return arguments[0].firstElementChild;', self)
+
     def focus(self):
         """Trigger focus event on the element."""
         self.parent.execute_script('arguments[0].focus();', self)
@@ -2522,7 +2636,7 @@ class SpydrElement(WebElement):
         """
         self.parent.execute_script('arguments[0].style.backgroundColor = `${arguments[1]}`;', self, hex_color)
 
-    @ property
+    @property
     def html(self):
         """The element's `innerHTML`.
 
@@ -2576,6 +2690,16 @@ class SpydrElement(WebElement):
         return super().is_selected()
 
     @property
+    @_WebElementSpydrify()
+    def last_child(self):
+        """Get the last child element.
+
+        Returns:
+            WebElement: The last child element of the current element.
+        """
+        return self.parent.execute_script('return arguments[0].lastElementChild;', self)
+
+    @property
     def location(self):
         """The location of the element in the renderable canvas.
 
@@ -2583,6 +2707,36 @@ class SpydrElement(WebElement):
             dict: The coordonate of the element as dict: {'x': 0, 'y': 0}
         """
         return super().location
+
+    @property
+    @_WebElementSpydrify()
+    def next_element(self):
+        """Get the next element.
+
+        Returns:
+            WebElement: The next element of the current element.
+        """
+        return self.parent.execute_script('return arguments[0].nextElementSibling;', self)
+
+    @property
+    @_WebElementSpydrify()
+    def parent_element(self):
+        """Get the parent element.
+
+        Returns:
+            WebElement: The parent element of the current element.
+        """
+        return self.parent.execute_script('return arguments[0].parentElement;', self)
+
+    @property
+    @_WebElementSpydrify()
+    def previous_element(self):
+        """Get the previous element.
+
+        Returns:
+            WebElement: The previous element of the current element.
+        """
+        return self.parent.execute_script('return arguments[0].previousElementSibling;', self)
 
     @property
     def rect(self):
@@ -2610,6 +2764,14 @@ class SpydrElement(WebElement):
                 element.removeAttribute(attributeName);
             }
         ''', self, attribute)
+
+    def remove_class(self, class_name):
+        """Remove the given CSS class to the element.
+
+        Args:
+            class_name (str): CSS class name
+        """
+        self.parent.execute_script('return arguments[0].classList.remove(arguments[1]);', self, class_name)
 
     def save_screenshot(self, filename):
         """Save a screenshot of the element to filename (PNG).
@@ -2728,6 +2890,10 @@ class SpydrElement(WebElement):
         """
         return super().text
 
+    @text.setter
+    def text(self, text_):
+        self.parent.execute_script('return arguments[0].textContent = `${arguments[1]}`;', self, text_)
+
     def trigger(self, event):
         """Trigger the given event on the element.
 
@@ -2741,7 +2907,7 @@ class SpydrElement(WebElement):
             element.dispatchEvent(event);
         ''', self, event)
 
-    @ property
+    @property
     def value(self):
         """Get the value of the element.
 

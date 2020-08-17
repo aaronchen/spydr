@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.2.6 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.2.7 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -197,6 +197,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ActionChains</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.add_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.add_class">[docs]</a>    <span class="k">def</span> <span class="nf">add_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the given CSS class to the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            class_name (str): CSS class name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">add_class</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.add_cookie"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.add_cookie">[docs]</a>    <span class="k">def</span> <span class="nf">add_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cookie</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a cookie to your current session.</span>
 
@@ -327,6 +336,17 @@
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_to_be</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.children"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.children">[docs]</a>    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the children elements of the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[WebElement]: The children elements of the given element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">children</span></div>
+
 <div class="viewcode-block" id="Spydr.clear"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the text of a text input element.</span>
 
@@ -364,14 +384,16 @@
 <span class="sd">            tuple, optional: If `switch_to_new_target`, it returns a tuple of (window_handle_before_clicking, window_handle_after_clicking)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">switch_to_new_target</span><span class="p">:</span>
-            <span class="n">before_window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_handle</span>
-            <span class="n">before_windows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_handles</span>
+            <span class="n">window_handle_before_clicking</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_handle</span>
+            <span class="n">num_of_windows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_handles</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_clicked</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">scroll_into_view</span><span class="o">=</span><span class="n">scroll_into_view</span><span class="p">,</span> <span class="n">behavior</span><span class="o">=</span><span class="n">behavior</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">switch_to_new_target</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_handles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">before_windows</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">switch_to_last_window_handle</span><span class="p">()</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">before_window</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_handle</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">switch_to_new_target</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_number_of_windows_to_be</span><span class="p">(</span><span class="n">num_of_windows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">window_handle_after_clicking</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_handles</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">switch_to_window</span><span class="p">(</span><span class="n">window_handle_after_clicking</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">window_handle_before_clicking</span><span class="p">,</span> <span class="n">window_handle_after_clicking</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.click_with_offset"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.click_with_offset">[docs]</a>    <span class="k">def</span> <span class="nf">click_with_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_offset</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Click the element from x and y offsets.</span>
@@ -418,7 +440,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">control</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">control</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the URL of the current page.</span>
 
@@ -478,7 +500,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">desired_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get driver&#39;s current desired capabilities.</span>
 
@@ -537,7 +559,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">drag_and_drop_by_offset</span><span class="p">(</span>
             <span class="n">source_element</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instance of Selenium WebDriver.</span>
 
@@ -546,7 +568,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__driver</span>
 
-    <span class="o">@</span> <span class="n">driver</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@driver</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver_</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__driver</span> <span class="o">=</span> <span class="n">driver_</span>
 
@@ -627,6 +649,17 @@
         <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">elements</span></div>
+
+<div class="viewcode-block" id="Spydr.first_child"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.first_child">[docs]</a>    <span class="k">def</span> <span class="nf">first_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the first child element of the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The first child element of the given element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">first_child</span></div>
 
 <div class="viewcode-block" id="Spydr.focus"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.focus">[docs]</a>    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger focus event on the element.</span>
@@ -941,6 +974,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].click();&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="Spydr.last_child"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.last_child">[docs]</a>    <span class="k">def</span> <span class="nf">last_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the last child element of the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The last child element of the element element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">last_child</span></div>
+
 <div class="viewcode-block" id="Spydr.load_cookies"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.load_cookies">[docs]</a>    <span class="k">def</span> <span class="nf">load_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load Cookies from a JSON file.</span>
 
@@ -1011,6 +1055,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">move_to_element_with_offset</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.next_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.next_element">[docs]</a>    <span class="k">def</span> <span class="nf">next_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the next element of the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The next element of the given element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">next_element</span></div>
 
 <div class="viewcode-block" id="Spydr.new_tab"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.new_tab">[docs]</a>    <span class="k">def</span> <span class="nf">new_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Open a new tab.</span>
@@ -1165,6 +1220,28 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
 
+<div class="viewcode-block" id="Spydr.parent_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.parent_element">[docs]</a>    <span class="k">def</span> <span class="nf">parent_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the parent element of the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The parent element of the given element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">parent_element</span></div>
+
+<div class="viewcode-block" id="Spydr.previous_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.previous_element">[docs]</a>    <span class="k">def</span> <span class="nf">previous_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the previous element of the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The previous element of the given element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">previous_element</span></div>
+
 <div class="viewcode-block" id="Spydr.quit"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Quit the Spydr webdriver.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></div>
@@ -1220,6 +1297,15 @@
 <span class="sd">            attribute (str): Attribute name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">remove_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.remove_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.remove_class">[docs]</a>    <span class="k">def</span> <span class="nf">remove_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove the given CSS class to the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            class_name (str): CSS class name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">remove_class</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.remove_file"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove the file.</span>
@@ -2430,9 +2516,27 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spydr_or_element_self</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span> <span class="o">=</span> <span class="n">spydr_or_element_self</span><span class="o">.</span><span class="n">spydr</span>
 
+<div class="viewcode-block" id="SpydrElement.add_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.add_class">[docs]</a>    <span class="k">def</span> <span class="nf">add_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the given CSS class to the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_name (str): CSS class name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].classList.add(arguments[1]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="SpydrElement.blur"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.blur">[docs]</a>    <span class="k">def</span> <span class="nf">blur</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger blur event on the element.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].blur();&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the children elements.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[WebElement]: The children elements of the current element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].children;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SpydrElement.clear"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clears the text if it’s a text-entry element.&quot;&quot;&quot;</span>
@@ -2514,6 +2618,16 @@
         <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">how</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">what</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
 
+    <span class="nd">@property</span>
+    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">first_child</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the first child element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The first child element of the current element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].firstElementChild;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
 <div class="viewcode-block" id="SpydrElement.focus"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.focus">[docs]</a>    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger focus event on the element.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].focus();&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
@@ -2568,7 +2682,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].style.backgroundColor = `$</span><span class="si">{arguments[1]}</span><span class="s1">`;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">hex_color</span><span class="p">)</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The element&#39;s `innerHTML`.</span>
 
@@ -2622,6 +2736,16 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
+    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">last_child</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the last child element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The last child element of the current element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].lastElementChild;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The location of the element in the renderable canvas.</span>
 
@@ -2629,6 +2753,36 @@
 <span class="sd">            dict: The coordonate of the element as dict: {&#39;x&#39;: 0, &#39;y&#39;: 0}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">location</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">next_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the next element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The next element of the current element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].nextElementSibling;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">parent_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the parent element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The parent element of the current element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].parentElement;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">previous_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the previous element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The previous element of the current element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].previousElementSibling;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2656,6 +2810,14 @@
 <span class="s1">                element.removeAttribute(attributeName);</span>
 <span class="s1">            }</span>
 <span class="s1">        &#39;&#39;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpydrElement.remove_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.remove_class">[docs]</a>    <span class="k">def</span> <span class="nf">remove_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove the given CSS class to the element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_name (str): CSS class name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].classList.remove(arguments[1]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SpydrElement.save_screenshot"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save a screenshot of the element to filename (PNG).</span>
@@ -2774,6 +2936,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">text</span>
 
+    <span class="nd">@text</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].textContent = `$</span><span class="si">{arguments[1]}</span><span class="s1">`;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">text_</span><span class="p">)</span>
+
 <div class="viewcode-block" id="SpydrElement.trigger"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.trigger">[docs]</a>    <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger the given event on the element.</span>
 
@@ -2787,7 +2953,7 @@
 <span class="s1">            element.dispatchEvent(event);</span>
 <span class="s1">        &#39;&#39;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
 
-    <span class="o">@</span> <span class="nb">property</span>
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the value of the element.</span>
 
@@ -2832,7 +2998,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.2.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

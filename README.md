@@ -1,7 +1,9 @@
 # spydr
-Selenium WebDriver (Python binding) wrapper with Selenium IDE-like functionality
+<u>S</u>elenium <u>Py</u>thon Web<u>Dr</u>iver Wrapper - Commonly used WebDriver functionality in a package.
 
-[spydr Documentation](https://aaronchen.github.io/spydr/source/spydr.html#module-spydr.webdriver)
+[spydr WebDriver - Spydr](file:///C:/Users/ChenAaro/Projects/spydr/docs/source/spydr.html#spydr.webdriver.Spydr)
+
+[spydr WebElement - SpydrElement](https://aaronchen.github.io/spydr/source/spydr.html#spydr.webdriver.SpydrElement)
 
 # Install
 
@@ -51,9 +53,7 @@ s.info('JSFiddle: Test "Open New Tab/Winodw"')
 s.maximize_window()
 s.open('https://jsfiddle.net/s7gcx1du/')
 s.switch_to_frame('name=result')
-s.click('link_text=New Window') # Open Google Search
-s.wait_until_number_of_windows_to_be(2)
-s.switch_to_last_window_handle()
+s.click('link_text=New Window', switch_to_new_target=True)
 s.save_screenshot(s.timestamp(prefix='sample-'))
 s.quit()
 ```

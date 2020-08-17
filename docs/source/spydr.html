@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.2.6 documentation</title>
+    <title>spydr package &#8212; spydr 0.2.7 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -309,6 +309,20 @@ When set to ‘DEBUG’, <cite>debug()</cite>, <cite>info()</cite> and called me
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.add_class">
+<code class="sig-name descname">add_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.add_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.add_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the given CSS class to the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.add_cookie">
 <code class="sig-name descname">add_cookie</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cookie</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.add_cookie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.add_cookie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a cookie to your current session.</p>
@@ -428,6 +442,20 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: <cite>click</cite>, <cite>space</cite>. Defaults to ‘click’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.children">
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the children elements of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list[WebElement]</em> – The children elements of the given element.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -762,6 +790,20 @@ then move to the target offset and releases the mouse button.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>list[WebElement]</em> – All elements found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.first_child">
+<code class="sig-name descname">first_child</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.first_child"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.first_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the first child element of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – The first child element of the given element.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1152,6 +1194,20 @@ then move to the target offset and releases the mouse button.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.last_child">
+<code class="sig-name descname">last_child</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.last_child"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.last_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last child element of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – The last child element of the element element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.load_cookies">
 <code class="sig-name descname">load_cookies</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.load_cookies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.load_cookies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load Cookies from a JSON file.</p>
@@ -1258,6 +1314,20 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>str</em> – Window handle of the new window</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.next_element">
+<code class="sig-name descname">next_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.next_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.next_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next element of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – The next element of the given element.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1370,6 +1440,34 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.parent_element">
+<code class="sig-name descname">parent_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.parent_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.parent_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parent element of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – The parent element of the given element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.previous_element">
+<code class="sig-name descname">previous_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.previous_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.previous_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the previous element of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – The previous element of the given element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.quit">
 <code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quit the Spydr webdriver.</p>
@@ -1438,6 +1536,20 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
 <li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.remove_class">
+<code class="sig-name descname">remove_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.remove_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.remove_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the given CSS class to the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p></li>
 </ul>
 </dd>
 </dl>
@@ -2529,9 +2641,31 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd>
 </dl>
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.add_class">
+<code class="sig-name descname">add_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.add_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.add_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the given CSS class to the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.blur">
 <code class="sig-name descname">blur</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.blur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.blur" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger blur event on the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.children">
+<em class="property">property </em><code class="sig-name descname">children</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the children elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list[WebElement]</em> – The children elements of the current element.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2620,6 +2754,17 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>list[WebElement]</em> – All elements found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.first_child">
+<em class="property">property </em><code class="sig-name descname">first_child</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.first_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the first child element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – The first child element of the current element.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2765,12 +2910,56 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.last_child">
+<em class="property">property </em><code class="sig-name descname">last_child</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.last_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last child element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – The last child element of the current element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.location">
 <em class="property">property </em><code class="sig-name descname">location</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.location" title="Permalink to this definition">¶</a></dt>
 <dd><p>The location of the element in the renderable canvas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>dict</em> – The coordonate of the element as dict: {‘x’: 0, ‘y’: 0}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.next_element">
+<em class="property">property </em><code class="sig-name descname">next_element</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.next_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – The next element of the current element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.parent_element">
+<em class="property">property </em><code class="sig-name descname">parent_element</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.parent_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parent element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – The parent element of the current element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.previous_element">
+<em class="property">property </em><code class="sig-name descname">previous_element</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.previous_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the previous element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – The previous element of the current element.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2793,6 +2982,17 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.remove_class">
+<code class="sig-name descname">remove_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.remove_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.remove_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the given CSS class to the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3004,7 +3204,7 @@ Offsets are relative to the top-left corner of the element.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.2.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

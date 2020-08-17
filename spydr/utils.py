@@ -73,7 +73,7 @@ class INI:
         try:
             return json.loads(self.config[section][key])
         except KeyError:
-            raise WebDriverException(f'Key not found: {key}')
+            return None
 
     def save(self):
         """Save INI file."""
