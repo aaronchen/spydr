@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.3.1 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.3.2 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -132,9 +132,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Spydr: An instance of Spydr Webdriver</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ec</span> <span class="o">=</span> <span class="n">expected_conditions</span>
-    <span class="sd">&quot;&quot;&quot;selenium.webdriver.support.expected_conditions: Pre-defined Selenium Expected Conditions&quot;&quot;&quot;</span>
 
     <span class="n">keys</span> <span class="o">=</span> <span class="n">Keys</span>
     <span class="sd">&quot;&quot;&quot;selenium.webdriver.common.keys.Keys: Pre-defined keys codes&quot;&quot;&quot;</span>
@@ -1441,14 +1438,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">scroll_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Spydr.select_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">option_value</span><span class="p">,</span> <span class="n">option_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select the given `option` in the `select` drop-down menu.</span>
+<div class="viewcode-block" id="Spydr.select_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">option_value</span><span class="p">,</span> <span class="n">selected</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">option_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set `selected` state of the given `option` in the `select` drop-down menu.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            | # Deselect option: &lt;option value=&quot;3&quot;&gt;Three&lt;/option&gt;</span>
+<span class="sd">            | select_to_be(&#39;#group&#39;, 3, selected=False)</span>
+<span class="sd">            | # Select option: &lt;option value=&quot;5&quot;&gt;Volvo&lt;/option&gt;</span>
+<span class="sd">            | select_to_be(&#39;#car&#39;, &#39;Volvo&#39;, option_by=&#39;text&#39;)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            select_locator (str/WebElement): The locator to identify the element or WebElement</span>
 <span class="sd">            option_value (int/str): The value to identify the option by using `option_by` method.</span>
 
 <span class="sd">        Keyword Arguments:</span>
+<span class="sd">            selected (bool): Option `selected` state to be</span>
 <span class="sd">            option_by (str): The method to identify the option. One of `value`, `text`, or `index`. Defaults to &#39;value&#39;.</span>
 
 <span class="sd">        Raises:</span>
@@ -1472,7 +1476,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">option</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot using &quot;</span><span class="si">{</span><span class="n">option_by</span><span class="si">}</span><span class="s1">&quot; to identify the option: </span><span class="si">{</span><span class="n">option_value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">!=</span> <span class="n">selected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.select_to_be_random"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be_random">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be_random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">ignored_options</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Randomly select an `option` in the `select` menu</span>
@@ -1957,7 +1962,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            False/Alert: Return False if not present. Return Alert if present.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">alert_is_present</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">expected_conditions</span><span class="o">.</span><span class="n">alert_is_present</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_attribute_contains"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_attribute_contains">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_attribute_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element&#39;s attribute contains the given value.</span>
@@ -2124,7 +2129,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether number of windows matching the given number</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">number_of_windows_to_be</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="n">expected_conditions</span><span class="o">.</span><span class="n">number_of_windows_to_be</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_page_loaded"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_page_loaded">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_page_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until `document.readyState` is `complete`.&quot;&quot;&quot;</span>
@@ -2210,7 +2215,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the title containing the given title</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">title_contains</span><span class="p">(</span><span class="n">title</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="n">expected_conditions</span><span class="o">.</span><span class="n">title_contains</span><span class="p">(</span><span class="n">title</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_url_contains"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_url_contains">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_url_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the URL of the current window contains the given URL.</span>
@@ -2228,7 +2233,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">timeout</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">url_contains</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="n">expected_conditions</span><span class="o">.</span><span class="n">url_contains</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">finally</span><span class="p">:</span>
@@ -3042,6 +3047,33 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="SpydrElement.wait_until_displayed"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.wait_until_displayed">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the element is displayed.</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            timeout (int, optional): Wait timeout. Defaults to Spydr driver timeout.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element is displayed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpydrElement.wait_until_not_displayed"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.wait_until_not_displayed">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_not_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the element is not displayed.</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            timeout (int, optional): Wait timeout. Defaults to Spydr driver timeout.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element is not displayed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_wait_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">driver</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">timeout</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;outerHTML&#39;</span><span class="p">)</span></div>
 </pre></div>
@@ -3075,7 +3107,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

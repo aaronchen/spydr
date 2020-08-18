@@ -17,7 +17,7 @@ spydr.webdriver module
 
 .. automodule:: spydr.webdriver
    :members:
-   :exclude-members: ec
+   :exclude-members:
    :undoc-members:
    :show-inheritance:
 

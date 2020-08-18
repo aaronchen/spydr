@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.3.1 documentation</title>
+    <title>spydr package &#8212; spydr 0.3.2 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -1717,8 +1717,15 @@ Offsets are relative to the top-left corner of the element.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.select_to_be">
-<code class="sig-name descname">select_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">select_locator</span></em>, <em class="sig-param"><span class="n">option_value</span></em>, <em class="sig-param"><span class="n">option_by</span><span class="o">=</span><span class="default_value">'value'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select the given <cite>option</cite> in the <cite>select</cite> drop-down menu.</p>
+<code class="sig-name descname">select_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">select_locator</span></em>, <em class="sig-param"><span class="n">option_value</span></em>, <em class="sig-param"><span class="n">selected</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">option_by</span><span class="o">=</span><span class="default_value">'value'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set <cite>selected</cite> state of the given <cite>option</cite> in the <cite>select</cite> drop-down menu.</p>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line"># Deselect option: &lt;option value=”3”&gt;Three&lt;/option&gt;</div>
+<div class="line">select_to_be(‘#group’, 3, selected=False)</div>
+<div class="line"># Select option: &lt;option value=”5”&gt;Volvo&lt;/option&gt;</div>
+<div class="line">select_to_be(‘#car’, ‘Volvo’, option_by=’text’)</div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1727,7 +1734,10 @@ Offsets are relative to the top-left corner of the element.</p>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>option_by</strong> (<em>str</em>) – The method to identify the option. One of <cite>value</cite>, <cite>text</cite>, or <cite>index</cite>. Defaults to ‘value’.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>selected</strong> (<em>bool</em>) – Option <cite>selected</cite> state to be</p></li>
+<li><p><strong>option_by</strong> (<em>str</em>) – The method to identify the option. One of <cite>value</cite>, <cite>text</cite>, or <cite>index</cite>. Defaults to ‘value’.</p></li>
+</ul>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a select</p>
@@ -3252,6 +3262,34 @@ Offsets are relative to the top-left corner of the element.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.wait_until_displayed">
+<code class="sig-name descname">wait_until_displayed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.wait_until_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.wait_until_displayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element is displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – Wait timeout. Defaults to Spydr driver timeout.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element is displayed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.wait_until_not_displayed">
+<code class="sig-name descname">wait_until_not_displayed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.wait_until_not_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.wait_until_not_displayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element is not displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – Wait timeout. Defaults to Spydr driver timeout.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element is not displayed</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -3308,7 +3346,7 @@ Offsets are relative to the top-left corner of the element.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

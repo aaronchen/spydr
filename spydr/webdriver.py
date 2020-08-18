@@ -87,9 +87,6 @@ class Spydr:
         Spydr: An instance of Spydr Webdriver
     """
 
-    ec = expected_conditions
-    """selenium.webdriver.support.expected_conditions: Pre-defined Selenium Expected Conditions"""
-
     keys = Keys
     """selenium.webdriver.common.keys.Keys: Pre-defined keys codes"""
 
@@ -1395,14 +1392,21 @@ class Spydr:
         """
         self.find_element(locator).scroll_to(x, y)
 
-    def select_to_be(self, select_locator, option_value, option_by='value'):
-        """Select the given `option` in the `select` drop-down menu.
+    def select_to_be(self, select_locator, option_value, selected=True, option_by='value'):
+        """Set `selected` state of the given `option` in the `select` drop-down menu.
+
+        Examples:
+            | # Deselect option: <option value="3">Three</option>
+            | select_to_be('#group', 3, selected=False)
+            | # Select option: <option value="5">Volvo</option>
+            | select_to_be('#car', 'Volvo', option_by='text')
 
         Args:
             select_locator (str/WebElement): The locator to identify the element or WebElement
             option_value (int/str): The value to identify the option by using `option_by` method.
 
         Keyword Arguments:
+            selected (bool): Option `selected` state to be
             option_by (str): The method to identify the option. One of `value`, `text`, or `index`. Defaults to 'value'.
 
         Raises:
@@ -1426,7 +1430,8 @@ class Spydr:
         if not option:
             raise WebDriverException(f'Cannot using "{option_by}" to identify the option: {option_value}')
 
-        self.click(option)
+        if option.is_selected() != selected:
+            self.click(option)
 
     def select_to_be_random(self, select_locator, ignored_options=[None, "", "0"]):
         """Randomly select an `option` in the `select` menu
@@ -1911,7 +1916,7 @@ class Spydr:
         Returns:
             False/Alert: Return False if not present. Return Alert if present.
         """
-        return self.wait_until(lambda _: self.ec.alert_is_present)
+        return self.wait_until(lambda _: expected_conditions.alert_is_present)
 
     def wait_until_attribute_contains(self, locator, attribute, value):
         """Wait until the element's attribute contains the given value.
@@ -2078,7 +2083,7 @@ class Spydr:
         Returns:
             bool: Whether number of windows matching the given number
         """
-        return self.wait_until(self.ec.number_of_windows_to_be(number))
+        return self.wait_until(expected_conditions.number_of_windows_to_be(number))
 
     def wait_until_page_loaded(self):
         """Wait until `document.readyState` is `complete`."""
@@ -2164,7 +2169,7 @@ class Spydr:
         Returns:
             bool: Whether the title containing the given title
         """
-        return self.wait_until(self.ec.title_contains(title))
+        return self.wait_until(expected_conditions.title_contains(title))
 
     def wait_until_url_contains(self, url, timeout=None):
         """Wait until the URL of the current window contains the given URL.
@@ -2182,7 +2187,7 @@ class Spydr:
         self.implicitly_wait = timeout
 
         try:
-            return self.wait_until(self.ec.url_contains(url), timeout=timeout)
+            return self.wait_until(expected_conditions.url_contains(url), timeout=timeout)
         except TimeoutException:
             return False
         finally:
@@ -2995,6 +3000,33 @@ class SpydrElement(WebElement):
             The value, by `typecast`, of the element
         """
         return self.get_property('value')
+
+    def wait_until_displayed(self, timeout=None):
+        """Wait until the element is displayed.
+
+        Keyword Args:
+            timeout (int, optional): Wait timeout. Defaults to Spydr driver timeout.
+
+        Returns:
+            bool: Whether the element is displayed
+        """
+        return self._wait_until(lambda _: self.is_displayed(), timeout=timeout)
+
+    def wait_until_not_displayed(self, timeout=None):
+        """Wait until the element is not displayed.
+
+        Keyword Args:
+            timeout (int, optional): Wait timeout. Defaults to Spydr driver timeout.
+
+        Returns:
+            bool: Whether the element is not displayed
+        """
+        return self._wait_until(lambda _: not self.is_displayed(), timeout=timeout)
+
+    def _wait_until(self, method, timeout=None):
+        driver = self.spydr.driver
+        timeout = int(timeout) if timeout is not None else self.spydr.timeout
+        return self.spydr.wait(driver, timeout).until(method)
 
     def __str__(self):
         return self.get_attribute('outerHTML')

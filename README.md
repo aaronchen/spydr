@@ -135,7 +135,7 @@ s.save_ini()  # Save the INI file
 s.quit()
 ```
 
-# SpydrElement (WebElement wrapped with Spydr specfic functionality)
+# SpydrElement (WebElement with Spydr functionality)
 
 ``` python
 from spydr.webdriver import Spydr
