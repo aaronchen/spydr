@@ -65,9 +65,8 @@ class Spydr:
         auth_password (str): Password for HTTP Basic/Digest Auth. Defaults to None.
         browser (str): Browser to drive. Defaults to 'chrome'.
             Supported browsers: 'chrome', 'edge', 'firefox', 'ie', 'safari'.
-        extension_root (str): The directory of Extensions. Defaults to './extensions'.
         headless (bool): Headless mode. Defaults to False.
-        ini (str/INI): INI File as INI instance. Defaults to None.
+        ini (str/INI): INI File. Defaults to None.
         locale (str): Browser locale. Defaults to 'en'.
         log_indent (int): Indentation for logging messages. Defaults to 2.
         log_level (str): Logging level: 'INFO' or 'DEBUG'. Defaults to None.
@@ -76,7 +75,7 @@ class Spydr:
         screen_root (str): The directory of saved screenshots. Defaults to './screens'.
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
         window_size (str): The size of the window when headless. Defaults to '1280,720'.
-        yml (str/bytes/os.PathLike/YML): Read YAML File as YML instance. Defaults to None.
+        yml (str/bytes/os.PathLike/YML): YAML File. Defaults to None.
 
     Raises:
         InvalidSelectorException: Raise an error when locator is invalid
@@ -97,7 +96,6 @@ class Spydr:
                  auth_username=None,
                  auth_password=None,
                  browser='chrome',
-                 extension_root='./extensions',
                  headless=False,
                  ini=None,
                  locale='en',
@@ -110,7 +108,6 @@ class Spydr:
         self.auth_username = auth_username
         self.auth_password = auth_password
         self.browser = browser.lower()
-        self.extension_root = extension_root
         self.headless = headless
         self.ini = ini
         self.log_indent = log_indent if isinstance(log_indent, int) else 2
@@ -192,30 +189,37 @@ class Spydr:
         else:
             self.switch_to_alert().dismiss()
 
-    def alert_sendkeys(self, keys_to_send, alert=None):
-        """Send keys to the alert.
+    def alert_sendkeys(self, keys_to_send, alert=None, accept=True):
+        """Send keys to the alert available and accept it.
 
         Args:
             keys_to_send (str): Text to send
 
         Keyword Arguments:
             alert (Alert): Alert instance. Defaults to None.
+            accept (bool): Whether to accept the alert after sending keys.
         """
-        if isinstance(alert, Alert):
-            alert.send_keys(keys_to_send)
-        else:
-            self.switch_to_alert().send_keys(keys_to_send)
+        alert = alert if isinstance(alert, Alert) else self.switch_to_alert()
 
-    def alert_text(self, alert=None):
-        """Get the text of the alert.
+        alert.send_keys(keys_to_send)
+
+        if accept:
+            alert.accept()
+
+    def alert_text(self, alert=None, dismiss=True):
+        """Get the text of the alert available and dismiss it.
 
         Keyword Arguments:
             alert (Alert): Alert Instance. Defaults to None.
+            dismiss (bool): Whether to dismiss the alert.
         """
-        if isinstance(alert, Alert):
-            alert.text
-        else:
-            self.switch_to_alert().text
+        alert = alert if isinstance(alert, Alert) else self.switch_to_alert()
+        text = alert.text
+
+        if dismiss:
+            alert.dismiss()
+
+        return text
 
     def back(self):
         """Goes one step backward in the browser history"""
@@ -250,13 +254,15 @@ class Spydr:
 
         Args:
             locator (str/WebElement): The locator to identify the checkbox or WebElement
-            is_checked (bool): whether the element to be checked
+            is_checked (bool): whether the checkbox is to be checked
 
         Keyword Arguments:
-            method (str): Methods to toggle checkbox: `click`, `space`. Defaults to 'click'.
+            method (str): Methods to toggle checkbox: `click`, `space`. 
+                Use `space` when the element can not be clicked. Defaults to 'click'.
 
         Raises:
             InvalidSelectorException: Raise an error when the element is not a checkbox
+            WebDriverException: Raise an error when unknown method is specified
         """
         element = self.find_element(locator)
 
@@ -264,7 +270,7 @@ class Spydr:
             raise InvalidSelectorException(
                 f'Element is not a checkbox: {locator}')
 
-        if element.is_selected() != is_checked:
+        if element.is_selected() != is_checked and element.is_enabled():
             if method == 'click':
                 self.js_click(element)
             elif method == 'space':
@@ -272,20 +278,26 @@ class Spydr:
             else:
                 raise WebDriverException(f'Unknown method: {method}')
 
-    def checkboxes_to_be(self, locator, is_checked, method='click'):
+    def checkboxes_to_be(self, locator, is_checked, method='click', only_on_values=None):
         """Set all checkboxes, identified by the locator, to the given state (is_checked).
 
         Args:
             locator (str): The locator to identify all the checkboxes
-            is_checked (bool): whether the checkboxes to be checked
+            is_checked (bool): whether the checkboxes are to be checked
 
         Keyword Arguments:
-            method (str): Methods to toggle checkbox: `click`, `space`. Defaults to 'click'.
+            method (str): Methods to toggle checkbox: `click`, `space`. 
+                Use `space` when the element can not be clicked. Defaults to 'click'.
+            only_on_values (list/tuple): When given, only checkboxes with values in the list are set to `is_checked`
+                while others are set to `not is_checked`. Defaults to None.
         """
         elements = self.find_elements(locator)
 
         for element in elements:
-            self.checkbox_to_be(element, is_checked, method=method)
+            if isinstance(only_on_values, (list, tuple)) and element.value.strip() not in only_on_values:
+                self.checkbox_to_be(element, not is_checked, method=method)
+            else:
+                self.checkbox_to_be(element, is_checked, method=method)
 
     def children(self, locator):
         """Get the children elements of the given element.
@@ -403,11 +415,6 @@ class Spydr:
     def date_from_delta(self, days, format=r'%m/%d/%Y'):
         """Get the date by the given delta from today.
 
-        Examples:
-            | date_today() => 2020/12/10
-            | date_from_delta(1) => 2020/12/11
-            | date_from_delta(-1) => 2020/12/09
-
         Args:
             days (int): Delta days from today
 
@@ -416,6 +423,11 @@ class Spydr:
 
         Returns:
             str: Delta date from today
+
+        Examples:
+            | date_today() # 2020/12/10
+            | date_from_delta(1) # 2020/12/11
+            | date_from_delta(-1) # 2020/12/09
         """
         delta = date.today() + timedelta(days=days)
         return delta.strftime(format)
@@ -1197,6 +1209,34 @@ class Spydr:
         """Quit the Spydr webdriver."""
         self.driver.quit()
 
+    def radio_to_be(self, locator, is_checked, method='click'):
+        """Set the radio button, identified by the locator, to the given state (is_checked).
+
+        Args:
+            locator (str/WebElement): The locator to identify the radio button or WebElement
+            is_checked (bool): whether the radio button is to be checked
+
+        Keyword Arguments:
+            method (str): Methods to toggle checkbox: `click`, `space`. 
+                Use `space` when the element can not be clicked. Defaults to 'click'.
+
+        Raises:
+            WebDriverException: Raise an error when unknown method is specified
+        """
+        radio = self.find_element(locator)
+
+        if is_checked:
+            if not radio.is_selected() and radio.is_enabled():
+                if method == 'click':
+                    self.click(radio)
+                elif method == 'space':
+                    radio.send_keys(self.keys.SPACE)
+                else:
+                    raise WebDriverException(f'Unknown method: {method}')
+        else:
+            if radio.is_selected() and radio.is_enabled():
+                self.execute_script('arguments[0].checked = false;', radio)
+
     def randomized_string(self, size=10, sequence=string.ascii_letters + string.digits, is_upper=False):
         """Generate a randomized string in the given size using the given characters.
 
@@ -1229,16 +1269,18 @@ class Spydr:
         """Refresh the current page."""
         self.driver.refresh()
 
-    def refresh_until_page_changed(self, seconds=10):
-        """Refresh the page (every 2 seconds) until the page changes or until the given time.
+    def refresh_until_page_changed(self, frequency=2, timeout=10, body_text_diff=True):
+        """Refresh the page (every `frequency`) until the page changes or until `timeout`.
 
         Keyword Arguments:
-            seconds (int): Time allowed to refresh. Defaults to 10.
+            frequency (int): Refresh frequency
+            timeout (int): Time allowed to refresh. Defaults to 10.
+            body_text_diff (bool): Compare `body` text when True.  Compare `page_source` when False.
 
         Returns:
             bool: Whether the page is changed
         """
-        return self.wait(self.driver, seconds, poll_frequency=2).until(lambda _: self._is_page_changed_after_refresh())
+        return self.wait(self.driver, timeout, poll_frequency=frequency).until(lambda _: self._is_page_changed_after_refresh(body_text_diff))
 
     def remove_attribute(self, locator, attribute):
         """Remove the given attribute from the element.
@@ -1395,12 +1437,6 @@ class Spydr:
     def select_to_be(self, select_locator, option_value, selected=True, option_by='value'):
         """Set `selected` state of the given `option` in the `select` drop-down menu.
 
-        Examples:
-            | # Deselect option: <option value="3">Three</option>
-            | select_to_be('#group', 3, selected=False)
-            | # Select option: <option value="5">Volvo</option>
-            | select_to_be('#car', 'Volvo', option_by='text')
-
         Args:
             select_locator (str/WebElement): The locator to identify the element or WebElement
             option_value (int/str): The value to identify the option by using `option_by` method.
@@ -1411,6 +1447,12 @@ class Spydr:
 
         Raises:
             InvalidSelectorException: Raise an error when the element is not a select
+
+        Examples:
+            | # Deselect option: <option value="3">Three</option>
+            | select_to_be('#group', 3, selected=False)
+            | # Select option: <option value="5">Volvo</option>
+            | select_to_be('#car', 'Volvo', option_by='text')
         """
         select = self.wait_until(lambda _: self._is_selectable(select_locator))
         option = None
@@ -1648,7 +1690,6 @@ class Spydr:
         """
         self.find_element(locator).submit()
 
-    @property
     def switch_to_active_element(self):
         """Switch to active element.
 
@@ -1657,7 +1698,6 @@ class Spydr:
         """
         return self.driver.switch_to.active_element
 
-    @property
     def switch_to_alert(self):
         """Switch to alert.
 
@@ -1710,16 +1750,6 @@ class Spydr:
     def t(self, key, **kwargs):
         """Get value from YML instance by using "dot notation" key.
 
-        Examples:
-            | # YAML
-            | today:
-            |   dashboard:
-            |     search: '#search'
-            |     name: 'Name is {name}'
-            |
-            | t('today.dashboard.search') => '#search'
-            | t('today.dashboard.name', name='Spydr') => 'Name is Spydr'
-
         Args:
             key (str): Dot notation key
 
@@ -1728,6 +1758,16 @@ class Spydr:
 
         Returns:
             value of dot notation key
+
+        Examples:
+            | # YAML
+            | today:
+            |   dashboard:
+            |     search: '#search'
+            |     name: 'Name is {name}'
+            |
+            | t('today.dashboard.search') # '#search'
+            | t('today.dashboard.name', name='Spydr') # 'Name is Spydr'
         """
         return self.yml.t(key, **kwargs)
 
@@ -1907,7 +1947,7 @@ class Spydr:
         Returns:
             Any applicable return from the method call
         """
-        timeout = int(timeout) if timeout else self.timeout
+        timeout = int(timeout) if timeout is not None else self.timeout
         return self.wait(self.driver, timeout, poll_frequency, ignored_exceptions).until(method)
 
     def wait_until_alert_present(self):
@@ -2183,7 +2223,7 @@ class Spydr:
         Returns:
             bool: Whether the URL containing the given URL
         """
-        timeout = int(timeout) if timeout else self.timeout
+        timeout = int(timeout) if timeout is not None else self.timeout
         self.implicitly_wait = timeout
 
         try:
@@ -2282,9 +2322,8 @@ class Spydr:
         bytes_ = self._auth_extension_as_bytes(username, password)
         filename = self.abspath('spydr_auth', suffix=suffix, root=self.extension_root)
 
-        f = open(filename, 'wb')
-        f.write(bytes_)
-        f.close()
+        with open(filename, 'wb') as crx_file:
+            crx_file.write(bytes_)
 
         return filename
 
@@ -2375,8 +2414,7 @@ class Spydr:
 
     def _get_webdriver(self):
         browsers = ('chrome', 'edge', 'firefox', 'ie', 'safari')
-        path = os.getcwd()
-        config = {'path': path, 'log_level': 50}
+        config = {'path': os.getcwd(), 'log_level': 50}
 
         if self.browser not in browsers:
             raise WebDriverException(f'Browser must be one of {browsers}: {self.browser}')
@@ -2422,11 +2460,12 @@ class Spydr:
         except NoSuchFrameException:
             return False
 
-    def _is_page_changed_after_refresh(self):
-        before_page = self.page_source
+    def _is_page_changed_after_refresh(self, body_text_diff=True):
+        before_page = self.find_element('//body').text_content if body_text_diff else self.page_source
         self.refresh()
         self.wait_until_page_loaded()
-        return before_page != self.page_source
+        after_page = self.find_element('//body').text_content if body_text_diff else self.page_source
+        return before_page != after_page
 
     def _is_selectable(self, locator):
         select = self.find_element(locator)
@@ -2947,10 +2986,6 @@ class SpydrElement(WebElement):
         """
         return super().text
 
-    @text.setter
-    def text(self, text_):
-        self.parent.execute_script('return arguments[0].textContent = `${arguments[1]}`;', self, text_)
-
     @property
     def text_content(self):
         """Get the element's text. (Works whether the element is in the viewport or not)
@@ -2959,6 +2994,10 @@ class SpydrElement(WebElement):
             str: The text of the element
         """
         return self.parent.execute_script('return arguments[0].textContent;', self)
+
+    @text_content.setter
+    def text_content(self, text_):
+        self.parent.execute_script('return arguments[0].textContent = `${arguments[1]}`;', self, text_)
 
     def toggle_attribute(self, name):
         """Toggle a Boolean attribute. (IE not supported)
