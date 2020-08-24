@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.3.3 documentation</title>
+    <title>spydr package &#8212; spydr 0.3.4 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.4 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -416,7 +416,7 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.checkbox_to_be">
-<code class="sig-name descname">checkbox_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'click'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.checkbox_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.checkbox_to_be" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">checkbox_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.checkbox_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.checkbox_to_be" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the checkbox, identified by the locator, to the given state (is_checked).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -425,14 +425,10 @@ Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 <li><p><strong>is_checked</strong> (<em>bool</em>) – whether the checkbox is to be checked</p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: <cite>click</cite>, <cite>space</cite>.
-Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click’.</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a checkbox</p></li>
-<li><p><strong>WebDriverException</strong> – Raise an error when unknown method is specified</p></li>
+<li><p><strong>WebDriverException</strong> – Raise an error when failing to set the given state</p></li>
 </ul>
 </dd>
 </dl>
@@ -440,7 +436,7 @@ Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.checkboxes_to_be">
-<code class="sig-name descname">checkboxes_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'click'</span></em>, <em class="sig-param"><span class="n">only_on_values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.checkboxes_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.checkboxes_to_be" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">checkboxes_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em>, <em class="sig-param"><span class="n">on_values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.checkboxes_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.checkboxes_to_be" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set all checkboxes, identified by the locator, to the given state (is_checked).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -450,12 +446,8 @@ Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: <cite>click</cite>, <cite>space</cite>.
-Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click’.</p></li>
-<li><p><strong>only_on_values</strong> (<em>list/tuple</em>) – When given, only checkboxes with values in the list are set to <cite>is_checked</cite>
-while others are set to <cite>not is_checked</cite>. Defaults to None.</p></li>
-</ul>
+<dd class="field-even"><p><strong>on_values</strong> (<em>list/tuple</em>) – When given, only checkboxes with values in the list are set to <cite>is_checked</cite>
+while others are set to <cite>not is_checked</cite>. Defaults to None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -554,6 +546,24 @@ One of <cite>auto</cite> or <cite>smooth</cite>. Defaults to ‘auto’.</p></li
 <dt id="spydr.webdriver.Spydr.close_all_others">
 <code class="sig-name descname">close_all_others</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.close_all_others"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.close_all_others" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close all other windows.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.closest">
+<code class="sig-name descname">closest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">parent_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.closest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverse the element, by locator, and its parents until it finds an element that matches the parent locator.
+Will return itself or the matching ancestor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>parent_locator</strong> (<em>str</em>) – Parent locator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – WebElement</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1489,7 +1499,7 @@ Offsets are relative to the top-left corner of the element.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.radio_to_be">
-<code class="sig-name descname">radio_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'click'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.radio_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.radio_to_be" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">radio_to_be</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">is_checked</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.radio_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.radio_to_be" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the radio button, identified by the locator, to the given state (is_checked).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1498,19 +1508,18 @@ Offsets are relative to the top-left corner of the element.</p>
 <li><p><strong>is_checked</strong> (<em>bool</em>) – whether the radio button is to be checked</p></li>
 </ul>
 </dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>method</strong> (<em>str</em>) – Methods to toggle checkbox: <cite>click</cite>, <cite>space</cite>.
-Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click’.</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when unknown method is specified</p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a radio button</p></li>
+<li><p><strong>WebDriverException</strong> – Raise an error when failing to set the given state</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.randomized_string">
-<code class="sig-name descname">randomized_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'</span></em>, <em class="sig-param"><span class="n">is_upper</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.randomized_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.randomized_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">randomized_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">sequence</span><span class="o">=</span><span class="default_value">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'</span></em>, <em class="sig-param"><span class="n">digits</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">punctuation</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">whitespace</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_upper</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.randomized_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.randomized_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a randomized string in the given size using the given characters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1518,7 +1527,10 @@ Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>sequence</strong> (<em>str</em>) – Sequence. Defaults to string.ascii_letters+string.digits.</p></li>
+<li><p><strong>sequence</strong> (<em>str</em>) – Sequence. Defaults to string.ascii_letters.</p></li>
+<li><p><strong>digits</strong> (<em>bool</em>) – Add <cite>string.digits</cite> to sequence.</p></li>
+<li><p><strong>punctuation</strong> (<em>bool</em>) – Add <cite>string.punctuation</cite> to sequence.</p></li>
+<li><p><strong>whitespace</strong> (<em>bool</em>) – Add whitespace to sequence.</p></li>
 <li><p><strong>is_upper</strong> (<em>bool</em>) – Uppercase the randomized string. Defaults to False.</p></li>
 </ul>
 </dd>
@@ -2812,6 +2824,21 @@ Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.closest">
+<code class="sig-name descname">closest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.closest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverse the current element and its parents until it finds an element that matches the given locator.
+Will return itself or the matching ancestor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>WebElement</em> – WebElement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.css_property">
 <code class="sig-name descname">css_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.css_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.css_property" title="Permalink to this definition">¶</a></dt>
 <dd><p>The value of CSS property.</p>
@@ -3013,6 +3040,12 @@ Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click
 <dd class="field-odd"><p><em>bool</em> – Whether the element is selected</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.js_click">
+<code class="sig-name descname">js_click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.js_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.js_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>HTMLElement.click()</cite> using JavaScript.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -3385,7 +3418,7 @@ Use <cite>space</cite> when the element can not be clicked. Defaults to ‘click
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.4 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

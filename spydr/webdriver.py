@@ -249,36 +249,27 @@ class Spydr:
         """
         return self.find_element(locator).css_property(name)
 
-    def checkbox_to_be(self, locator, is_checked, method='click'):
+    def checkbox_to_be(self, locator, is_checked):
         """Set the checkbox, identified by the locator, to the given state (is_checked).
 
         Args:
             locator (str/WebElement): The locator to identify the checkbox or WebElement
             is_checked (bool): whether the checkbox is to be checked
 
-        Keyword Arguments:
-            method (str): Methods to toggle checkbox: `click`, `space`. 
-                Use `space` when the element can not be clicked. Defaults to 'click'.
-
         Raises:
             InvalidSelectorException: Raise an error when the element is not a checkbox
-            WebDriverException: Raise an error when unknown method is specified
+            WebDriverException: Raise an error when failing to set the given state
         """
         element = self.find_element(locator)
 
         if element.tag_name != 'input' and element.get_attribute('type') != 'checkbox':
-            raise InvalidSelectorException(
-                f'Element is not a checkbox: {locator}')
+            raise InvalidSelectorException(f'Element is not a checkbox: {locator}')
 
         if element.is_selected() != is_checked and element.is_enabled():
-            if method == 'click':
-                self.js_click(element)
-            elif method == 'space':
-                element.send_keys(self.keys.SPACE)
-            else:
-                raise WebDriverException(f'Unknown method: {method}')
+            if not self._is_checkbox_or_radio_clicked(element):
+                raise WebDriverException(f'Failed to click on the element: {locator}')
 
-    def checkboxes_to_be(self, locator, is_checked, method='click', only_on_values=None):
+    def checkboxes_to_be(self, locator, is_checked, on_values=None):
         """Set all checkboxes, identified by the locator, to the given state (is_checked).
 
         Args:
@@ -286,18 +277,17 @@ class Spydr:
             is_checked (bool): whether the checkboxes are to be checked
 
         Keyword Arguments:
-            method (str): Methods to toggle checkbox: `click`, `space`. 
-                Use `space` when the element can not be clicked. Defaults to 'click'.
-            only_on_values (list/tuple): When given, only checkboxes with values in the list are set to `is_checked`
+            on_values (list/tuple): When given, only checkboxes with values in the list are set to `is_checked`
                 while others are set to `not is_checked`. Defaults to None.
         """
         elements = self.find_elements(locator)
+        on_values = [str(item) for item in on_values] if isinstance(on_values, (list, tuple)) else None
 
         for element in elements:
-            if isinstance(only_on_values, (list, tuple)) and element.value.strip() not in only_on_values:
-                self.checkbox_to_be(element, not is_checked, method=method)
+            if on_values and element.value.strip() not in on_values:
+                self.checkbox_to_be(element, not is_checked)
             else:
-                self.checkbox_to_be(element, is_checked, method=method)
+                self.checkbox_to_be(element, is_checked)
 
     def children(self, locator):
         """Get the children elements of the given element.
@@ -370,8 +360,7 @@ class Spydr:
         """
         element = self.find_element(locator)
         self.wait_until_enabled(element)
-        self.actions().move_to_element_with_offset(
-            element, x_offset, y_offset).click().perform()
+        self.actions().move_to_element_with_offset(element, x_offset, y_offset).click().perform()
 
     def close(self):
         """Close the window."""
@@ -391,6 +380,19 @@ class Spydr:
                 self.close()
 
             self.switch_to_window(current_window)
+
+    def closest(self, locator, parent_locator):
+        """Traverse the element, by locator, and its parents until it finds an element that matches the parent locator.
+        Will return itself or the matching ancestor.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            parent_locator (str): Parent locator
+
+        Returns:
+            WebElement: WebElement
+        """
+        return self.find_element(locator).closest(parent_locator)
 
     def ctrl_click(self, locator):
         """Ctrl-click the element.
@@ -492,8 +494,7 @@ class Spydr:
             y_offset (int): Y offset from the top of the element. Defaults to 1.
         """
         element = self.find_element(locator)
-        self.actions().move_to_element_with_offset(
-            element, x_offset, y_offset).double_click().perform()
+        self.actions().move_to_element_with_offset(element, x_offset, y_offset).double_click().perform()
 
     def drag_and_drop(self, source_locator, target_locator):
         """Hold down the left mouse button on the source element,
@@ -519,8 +520,7 @@ class Spydr:
             y_offset (int): Y offset to move to
         """
         source_element = self.find_element(source_locator)
-        self.actions().drag_and_drop_by_offset(
-            source_element, x_offset, y_offset).perform()
+        self.actions().drag_and_drop_by_offset(source_element, x_offset, y_offset).perform()
 
     @property
     def driver(self):
@@ -935,7 +935,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        self.execute_script('arguments[0].click();', self.find_element(locator))
+        self.find_element(locator).js_click()
 
     def last_child(self, locator):
         """Get the last child element of the given element.
@@ -1209,47 +1209,55 @@ class Spydr:
         """Quit the Spydr webdriver."""
         self.driver.quit()
 
-    def radio_to_be(self, locator, is_checked, method='click'):
+    def radio_to_be(self, locator, is_checked):
         """Set the radio button, identified by the locator, to the given state (is_checked).
 
         Args:
             locator (str/WebElement): The locator to identify the radio button or WebElement
             is_checked (bool): whether the radio button is to be checked
 
-        Keyword Arguments:
-            method (str): Methods to toggle checkbox: `click`, `space`. 
-                Use `space` when the element can not be clicked. Defaults to 'click'.
-
         Raises:
-            WebDriverException: Raise an error when unknown method is specified
+            InvalidSelectorException: Raise an error when the element is not a radio button
+            WebDriverException: Raise an error when failing to set the given state
         """
         radio = self.find_element(locator)
 
+        if radio.tag_name != 'input' and radio.get_attribute('type') != 'radio':
+            raise InvalidSelectorException(f'Element is not a radio button: {locator}')
+
         if is_checked:
             if not radio.is_selected() and radio.is_enabled():
-                if method == 'click':
-                    self.click(radio)
-                elif method == 'space':
-                    radio.send_keys(self.keys.SPACE)
-                else:
-                    raise WebDriverException(f'Unknown method: {method}')
+                if not self._is_checkbox_or_radio_clicked(radio):
+                    raise WebDriverException(f'Failed to click on the element: {locator}')
         else:
             if radio.is_selected() and radio.is_enabled():
                 self.execute_script('arguments[0].checked = false;', radio)
 
-    def randomized_string(self, size=10, sequence=string.ascii_letters + string.digits, is_upper=False):
+    def randomized_string(self, size=10, sequence=string.ascii_letters, digits=True, punctuation=False, whitespace=False, is_upper=False):
         """Generate a randomized string in the given size using the given characters.
 
         Args:
             size (int, optional): Size of the string. Defaults to 10.
 
         Keyword Arguments:    
-            sequence (str): Sequence. Defaults to string.ascii_letters+string.digits.
+            sequence (str): Sequence. Defaults to string.ascii_letters.
+            digits (bool): Add `string.digits` to sequence.
+            punctuation (bool): Add `string.punctuation` to sequence.
+            whitespace (bool): Add whitespace to sequence.
             is_upper (bool): Uppercase the randomized string. Defaults to False.
 
         Returns:
             [type]: [description]
         """
+        if not isinstance(sequence, str):
+            sequence = string.ascii_letters
+        if digits:
+            sequence += string.digits
+        if punctuation:
+            sequence += string.punctuation
+        if whitespace:
+            sequence += ' '
+
         string_ = ''.join(random.choice(sequence) for _ in range(size))
 
         return string_.upper() if is_upper else string_
@@ -2376,8 +2384,7 @@ class Spydr:
         profile = webdriver.FirefoxProfile()
         profile.accept_untrusted_certs = True
         profile.assume_untrusted_cert_issuer = False
-        # profile.set_preference(
-        #     'network.automatic-ntlm-auth.trusted-uris', '.companyname.com')
+        # profile.set_preference('network.automatic-ntlm-auth.trusted-uris', '.companyname.com')
         profile.set_preference('intl.accept_languages', self.locale)
 
         options = webdriver.FirefoxOptions()
@@ -2425,8 +2432,9 @@ class Spydr:
         elif self.browser == 'edge':
             return webdriver.Edge(EdgeChromiumDriverManager(**config).install())
         elif self.browser == 'firefox':
-            return webdriver.Firefox(
-                executable_path=GeckoDriverManager(**config).install(), options=self._firefox_options(), service_log_path=os.path.devnull)
+            return webdriver.Firefox(executable_path=GeckoDriverManager(**config).install(),
+                                     options=self._firefox_options(),
+                                     service_log_path=os.path.devnull)
         elif self.browser == 'ie':
             return webdriver.Ie(executable_path=IEDriverManager(**config).install(), options=self._ie_options())
         elif self.browser == 'safari':
@@ -2440,6 +2448,24 @@ class Spydr:
         options.ignore_zoom_level = True
         options.native_events = False
         return options
+
+    def _is_checkbox_or_radio_clicked(self, element):
+        is_selected = element.is_selected()
+        implicitly_wait = self.implicitly_wait
+
+        self.implicitly_wait = 0
+
+        try:
+            element.click()
+        except:
+            try:
+                element.send_keys(self.keys.SPACE, blur=True)
+            except:
+                element.js_click()
+        finally:
+            self.implicitly_wait = implicitly_wait
+
+        return True if element.is_selected() is not is_selected else False
 
     def _is_clicked(self, locator, scroll_into_view=False, behavior='auto'):
         try:
@@ -2494,8 +2520,7 @@ class Spydr:
                 if option.is_selected() != state:
                     option.click()
         else:
-            raise WebDriverException(
-                f'Element is not a multiple select: {element}')
+            raise WebDriverException(f'Element is not a multiple select: {element}')
 
     def _parse_locator(self, locator):
         how, what = Utils.parse_locator(locator)
@@ -2608,6 +2633,36 @@ class SpydrElement(WebElement):
         if scroll_into_view:
             self.scroll_into_view()
         super().click()
+
+    @_WebElementSpydrify()
+    def closest(self, locator):
+        """Traverse the current element and its parents until it finds an element that matches the given locator.
+        Will return itself or the matching ancestor.
+
+        Args:
+            locator (str): The locator to identify the element
+
+        Returns:
+            WebElement: WebElement
+        """
+        how, what = self.spydr._parse_locator(locator)
+
+        if how == HOWS['css']:
+            return self.parent.execute_script('return arguments[0].closest(`${arguments[1]}`);', self, what)
+        elif how == HOWS['class']:
+            return self.parent.execute_script('return arguments[0].closest(`.${arguments[1]}`);', self, what)
+        elif how == HOWS['id']:
+            return self.parent.execute_script('return arguments[0].closest(`#${arguments[1]}`);', self, what)
+        elif how == HOWS['link_text']:
+            return self.find_element(f'xpath=./ancestor-or-self::a[normalize-space(.)="{what}"]')
+        elif how == HOWS['name']:
+            return self.parent.execute_script('return arguments[0].closest(`[name="${arguments[1]}"]`);', self, what)
+        elif how == HOWS['partial_link_text']:
+            return self.find_element(f'xpath=./ancestor-or-self::a[contains(normalize-space(.), "{what}")]')
+        elif how == HOWS['tag_name']:
+            return self.parent.execute_script('return arguments[0].closest(`${arguments[1]}`);', self, what)
+        elif how == HOWS['xpath']:
+            return self.find_element(f'xpath=./ancestor-or-self::{what.lstrip("/")}')
 
     def css_property(self, name):
         """The value of CSS property.
@@ -2771,6 +2826,10 @@ class SpydrElement(WebElement):
             bool: Whether the element is selected
         """
         return super().is_selected()
+
+    def js_click(self):
+        """Call `HTMLElement.click()` using JavaScript."""
+        self.parent.execute_script('arguments[0].click();', self)
 
     @property
     @_WebElementSpydrify()
