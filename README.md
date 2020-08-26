@@ -16,10 +16,11 @@ Spydr WebDriver supports **_locator_** using the following `how=what` strategies
 - `css=.btn`
 - `class=btn-primary`
 - `id=frame1`
-- `link_text=text`
+- `link_text=Click here`
 - `name=j_username`
-- `partial_link_text=text`
+- `partial_link_text=Go to`
 - `tag_name=span`
+- `text=Save As Draft`
 - `xpath=//span/a`
 - `yml=today_page.dashboard.search_field`
 

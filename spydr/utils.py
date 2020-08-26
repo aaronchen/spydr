@@ -16,6 +16,7 @@ HOWS = {
     'name': By.NAME,
     'partial_link_text': By.PARTIAL_LINK_TEXT,
     'tag_name': By.TAG_NAME,
+    'text': By.XPATH,
     'xpath': By.XPATH,
     'yml': 'yml'
 }
@@ -138,6 +139,8 @@ class Utils:
             somehow, what = matched.group(1, 2)
             if somehow in HOWS:
                 how = HOWS[somehow]
+                if somehow == 'text':
+                    what = f'//*[contains(text(), "{what}")]'
 
         if how is None:
             # Cannot raise InvalidSelectorException as it is ignored in webdriver.wait_until.

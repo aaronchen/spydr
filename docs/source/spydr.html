@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.3.4 documentation</title>
+    <title>spydr package &#8212; spydr 0.3.5 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
 <span id="spydr-utils-module"></span><h2>spydr.utils module<a class="headerlink" href="#module-spydr.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="py data">
 <dt id="spydr.utils.HOWS">
-<code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">HOWS</code><em class="property"> = {'class': 'class name', 'css': 'css selector', 'id': 'id', 'link_text': 'link text', 'name': 'name', 'partial_link_text': 'partial link text', 'tag_name': 'tag name', 'xpath': 'xpath', 'yml': 'yml'}</em><a class="headerlink" href="#spydr.utils.HOWS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">HOWS</code><em class="property"> = {'class': 'class name', 'css': 'css selector', 'id': 'id', 'link_text': 'link text', 'name': 'name', 'partial_link_text': 'partial link text', 'tag_name': 'tag name', 'text': 'xpath', 'xpath': 'xpath', 'yml': 'yml'}</em><a class="headerlink" href="#spydr.utils.HOWS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of HOW strategies to identify elements.</p>
 </dd></dl>
 
@@ -551,8 +551,8 @@ One of <cite>auto</cite> or <cite>smooth</cite>. Defaults to ‘auto’.</p></li
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.closest">
 <code class="sig-name descname">closest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">parent_locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.closest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Traverse the element, by locator, and its parents until it finds an element that matches the parent locator.
-Will return itself or the matching ancestor.</p>
+<dd><p>Traverse the element, by locator, and its parents until it finds an element, by parent locator, that matches.
+Will return itself or the matching ancestor. (IE not supported)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2746,7 +2746,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="simple">
 <dt>Goals:</dt><dd><ul class="simple">
 <li><p>Add additional functionality to WebElement</p></li>
-<li><p>Provide Spydr locator formats (Utils.parse_locator) to WebElement</p></li>
+<li><p>Add Spydr locator formats to WebElement</p></li>
 </ul>
 </dd>
 </dl>
@@ -2827,7 +2827,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dt id="spydr.webdriver.SpydrElement.closest">
 <code class="sig-name descname">closest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.closest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Traverse the current element and its parents until it finds an element that matches the given locator.
-Will return itself or the matching ancestor.</p>
+Will return itself or the matching ancestor. (IE not supported)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
@@ -3418,7 +3418,7 @@ Will return itself or the matching ancestor.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

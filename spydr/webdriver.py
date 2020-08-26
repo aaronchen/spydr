@@ -25,7 +25,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
@@ -382,8 +381,8 @@ class Spydr:
             self.switch_to_window(current_window)
 
     def closest(self, locator, parent_locator):
-        """Traverse the element, by locator, and its parents until it finds an element that matches the parent locator.
-        Will return itself or the matching ancestor.
+        """Traverse the element, by locator, and its parents until it finds an element, by parent locator, that matches.
+        Will return itself or the matching ancestor. (IE not supported)
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -581,11 +580,11 @@ class Spydr:
         if how == HOWS['css']:
             matched = re.search(r'(.*):eq\((\d+)\)', what)
             if matched:
-                new_what, nth = matched.group(1, 2)
+                new_what, index = matched.group(1, 2)
                 try:
-                    element = self.find_elements(f'css={new_what}')[int(nth)]
+                    element = self.find_elements(f'css={new_what}')[int(index)]
                 except IndexError:
-                    raise NoSuchElementException(f'{locator} does not have {nth} element')
+                    raise NoSuchElementException(f'{locator} does not have ":eq({index})" element')
 
         if not element:
             element = self.wait_until(lambda _: self.is_located(locator))
@@ -2561,7 +2560,7 @@ class SpydrElement(WebElement):
 
     Goals:
         - Add additional functionality to WebElement
-        - Provide Spydr locator formats (Utils.parse_locator) to WebElement
+        - Add Spydr locator formats to WebElement
 
     Args:
         spydr_or_element_self (Spydr/SpydrElement): Spydr or SpydrElement self
@@ -2637,7 +2636,7 @@ class SpydrElement(WebElement):
     @_WebElementSpydrify()
     def closest(self, locator):
         """Traverse the current element and its parents until it finds an element that matches the given locator.
-        Will return itself or the matching ancestor.
+        Will return itself or the matching ancestor. (IE not supported)
 
         Args:
             locator (str): The locator to identify the element
@@ -2645,7 +2644,7 @@ class SpydrElement(WebElement):
         Returns:
             WebElement: WebElement
         """
-        how, what = self.spydr._parse_locator(locator)
+        how, what = self._parse_locator(locator)
 
         if how == HOWS['css']:
             return self.parent.execute_script('return arguments[0].closest(`${arguments[1]}`);', self, what)
@@ -2694,8 +2693,8 @@ class SpydrElement(WebElement):
         Returns:
             WebElement: The element found
         """
-        how, what = Utils.parse_locator(locator)
-        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": how, "value": what})['value']
+        how, what = self._parse_locator(locator)
+        return super().find_element(how, what)
 
     @_WebElementSpydrify()
     def find_elements(self, locator):
@@ -2707,8 +2706,8 @@ class SpydrElement(WebElement):
         Returns:
             list[WebElement]: All elements found
         """
-        how, what = Utils.parse_locator(locator)
-        return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": how, "value": what})['value']
+        how, what = self._parse_locator(locator)
+        return super().find_elements(how, what)
 
     @property
     @_WebElementSpydrify()
@@ -3120,6 +3119,9 @@ class SpydrElement(WebElement):
             bool: Whether the element is not displayed
         """
         return self._wait_until(lambda _: not self.is_displayed(), timeout=timeout)
+
+    def _parse_locator(self, locator):
+        return self.spydr._parse_locator(locator)
 
     def _wait_until(self, method, timeout=None):
         driver = self.spydr.driver
