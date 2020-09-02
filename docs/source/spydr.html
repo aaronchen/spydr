@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.3.5 documentation</title>
+    <title>spydr package &#8212; spydr 0.3.6 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -1025,6 +1025,24 @@ then move to the target offset and releases the mouse button.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.has_attribute_value">
+<code class="sig-name descname">has_attribute_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">attribute</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.has_attribute_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.has_attribute_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element’s attribute contains the given <cite>value</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – value to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether value is found in the element’s attribute</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.has_class">
 <code class="sig-name descname">has_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.has_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.has_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the element has the given CSS class.</p>
@@ -1037,6 +1055,23 @@ then move to the target offset and releases the mouse button.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>bool</em> – Whether the CSS class exists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.has_text">
+<code class="sig-name descname">has_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.has_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.has_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element contains the given <cite>text</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element has the given text</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1166,36 +1201,18 @@ then move to the target offset and releases the mouse button.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spydr.webdriver.Spydr.is_text_in_element">
-<code class="sig-name descname">is_text_in_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.is_text_in_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.is_text_in_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the element contains the given <cite>text</cite>.</p>
+<dt id="spydr.webdriver.Spydr.is_text_matched">
+<code class="sig-name descname">is_text_matched</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.is_text_matched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.is_text_matched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the given text matches the elememnt’s text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
-<li><p><strong>text</strong> (<em>str</em>) – Text to check</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to match</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>bool</em> – Whether the element has the given text</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="spydr.webdriver.Spydr.is_value_in_element_attribute">
-<code class="sig-name descname">is_value_in_element_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">attribute</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.is_value_in_element_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.is_value_in_element_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the element’s attribute contains the given <cite>value</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
-<li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
-<li><p><strong>value</strong> (<em>str</em>) – value to check</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>bool</em> – Whether value is found in the element’s attribute</p>
+<dd class="field-even"><p><em>bool</em> – Whether the given text matches the element’s text</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1631,7 +1648,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.right_click_with_offset">
 <code class="sig-name descname">right_click_with_offset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">x_offset</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">y_offset</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.right_click_with_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.right_click_with_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Right-click on the element with x and y offsets</p>
+<dd><p>Right-click on the element with x and y offsets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
@@ -2853,12 +2870,38 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.ctrl_click">
+<code class="sig-name descname">ctrl_click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.ctrl_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.ctrl_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ctrl-click the element.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.current_url">
 <em class="property">property </em><code class="sig-name descname">current_url</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.current_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>The element’s current URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>str</em> – URL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.double_click">
+<code class="sig-name descname">double_click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.double_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.double_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Double-click the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.double_click_with_offset">
+<code class="sig-name descname">double_click_with_offset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_offset</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">y_offset</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.double_click_with_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.double_click_with_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Double-click the element from x and y offsets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_offset</strong> (<em>int</em>) – X offset from the left of the element. Defaults to 1.</p></li>
+<li><p><strong>y_offset</strong> (<em>int</em>) – Y offset from the top of the element. Defaults to 1.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2945,6 +2988,23 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.has_attribute_value">
+<code class="sig-name descname">has_attribute_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.has_attribute_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.has_attribute_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element’s attribute contains the given <cite>value</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – value to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether value is found in the element’s attribute</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.has_class">
 <code class="sig-name descname">has_class</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">class_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.has_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.has_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the element has the given CSS class.</p>
@@ -2954,6 +3014,20 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>bool</em> – Whether the CSS class exists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.has_text">
+<code class="sig-name descname">has_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.has_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.has_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element contains the given <cite>text</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element has the given text</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3038,6 +3112,20 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>bool</em> – Whether the element is selected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.is_text_matched">
+<code class="sig-name descname">is_text_matched</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.is_text_matched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.is_text_matched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the given text matches the elememnt’s text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to match</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the given text matches</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3140,6 +3228,20 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 <dt id="spydr.webdriver.SpydrElement.right_click">
 <code class="sig-name descname">right_click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.right_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.right_click" title="Permalink to this definition">¶</a></dt>
 <dd><p>Right-click on the element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.right_click_with_offset">
+<code class="sig-name descname">right_click_with_offset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_offset</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">y_offset</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.right_click_with_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.right_click_with_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-click on the element with x and y offsets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_offset</strong> (<em>int</em>) – X offset from the left of the element. Defaults to 1.</p></li>
+<li><p><strong>y_offset</strong> (<em>int</em>) – Y offset from the top of the element. Defaults to 1.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -3418,7 +3520,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

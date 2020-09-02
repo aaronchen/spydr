@@ -399,10 +399,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        element = self.find_element(locator)
-        control = self.keys.CONTROL
-
-        self.actions().key_down(control).click(element).key_up(control).perform()
+        self.find_element(locator).ctrl_click()
 
     @property
     def current_url(self):
@@ -479,8 +476,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        element = self.find_element(locator)
-        self.actions().move_to_element(element).double_click().perform()
+        self.find_element(locator).double_click()
 
     def double_click_with_offset(self, locator, x_offset=1, y_offset=1):
         """Double-click the element from x and y offsets.
@@ -492,8 +488,7 @@ class Spydr:
             x_offset (int): X offset from the left of the element. Defaults to 1.
             y_offset (int): Y offset from the top of the element. Defaults to 1.
         """
-        element = self.find_element(locator)
-        self.actions().move_to_element_with_offset(element, x_offset, y_offset).double_click().perform()
+        self.find_element(locator).double_click_with_offset(x_offset=x_offset, y_offset=y_offset)
 
     def drag_and_drop(self, source_locator, target_locator):
         """Hold down the left mouse button on the source element,
@@ -769,6 +764,19 @@ class Spydr:
         """
         return self.find_element(locator).has_attribute(attribute)
 
+    def has_attribute_value(self, locator, attribute, value):
+        """Check if the element's attribute contains the given `value`.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            attribute (str): Attribute name
+            value (str): value to check
+
+        Returns:
+            bool: Whether value is found in the element's attribute
+        """
+        return value in self.find_element(locator).has_attribute_value(attribute, value)
+
     def has_class(self, locator, class_name):
         """Check if the element has the given CSS class.
 
@@ -780,6 +788,18 @@ class Spydr:
             bool: Whether the CSS class exists
         """
         return self.find_element(locator).has_class(class_name)
+
+    def has_text(self, locator, text):
+        """Check if the element contains the given `text`.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text to check
+
+        Returns:
+            bool: Whether the element has the given text
+        """
+        return self.find_element(locator).has_text(text)
 
     def hide(self, locator):
         """Hide the element."""
@@ -868,10 +888,10 @@ class Spydr:
         """
         how, what = self._parse_locator(locator)
 
-        orig_implicitly_wait = self.implicitly_wait
-        seconds = seconds if seconds else orig_implicitly_wait
+        implicitly_wait = self.implicitly_wait
+        seconds = seconds if seconds is not None else implicitly_wait
 
-        if seconds != orig_implicitly_wait:
+        if seconds != implicitly_wait:
             self.implicitly_wait = seconds
 
         try:
@@ -879,8 +899,8 @@ class Spydr:
         except (NoSuchElementException, NoSuchWindowException, StaleElementReferenceException, TimeoutException):
             return False
         finally:
-            if seconds != orig_implicitly_wait:
-                self.implicitly_wait = orig_implicitly_wait
+            if seconds != implicitly_wait:
+                self.implicitly_wait = implicitly_wait
 
     def is_page_loaded(self):
         """Check if `document.readyState` is `complete`.
@@ -903,30 +923,17 @@ class Spydr:
         """
         return self.find_element(locator).is_selected()
 
-    def is_text_in_element(self, locator, text):
-        """Check if the element contains the given `text`.
+    def is_text_matched(self, locator, text):
+        """Whether the given text matches the elememnt's text.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
-            text (str): Text to check
+            text (str): Text to match
 
         Returns:
-            bool: Whether the element has the given text
+             bool: Whether the given text matches the element's text
         """
-        return text in self.find_element(locator).text
-
-    def is_value_in_element_attribute(self, locator, attribute, value):
-        """Check if the element's attribute contains the given `value`.
-
-        Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
-            attribute (str): Attribute name
-            value (str): value to check
-
-        Returns:
-            bool: Whether value is found in the element's attribute
-        """
-        return value in self.find_element(locator).get_attribute(attribute)
+        return self.find_element(locator).is_text_matched(text)
 
     def js_click(self, locator):
         """Call `HTMLElement.click()` using JavaScript.
@@ -1238,7 +1245,7 @@ class Spydr:
         Args:
             size (int, optional): Size of the string. Defaults to 10.
 
-        Keyword Arguments:    
+        Keyword Arguments:
             sequence (str): Sequence. Defaults to string.ascii_letters.
             digits (bool): Add `string.digits` to sequence.
             punctuation (bool): Add `string.punctuation` to sequence.
@@ -1324,11 +1331,10 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
-        element = self.find_element(locator)
-        self.actions().move_to_element(element).context_click().perform()
+        self.find_element(locator).right_click()
 
     def right_click_with_offset(self, locator, x_offset=1, y_offset=1):
-        """Right-click on the element with x and y offsets
+        """Right-click on the element with x and y offsets.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1337,9 +1343,7 @@ class Spydr:
             x_offset (int): X offset from the left of the element. Defaults to 1.
             y_offset (int): Y offset from the top of the element. Defaults to 1.
         """
-        element = self.find_element(locator)
-
-        self.actions().move_to_element_with_offset(element, x_offset, y_offset).context_click().perform()
+        self.find_element(locator).right_click_with_offset(x_offset=x_offset, y_offset=y_offset)
 
     def save_cookies(self, filename):
         """Save cookies as a JSON file.
@@ -1561,12 +1565,12 @@ class Spydr:
 
         if by == 'value':
             return [opt.value for opt in options]
-        elif by == 'text':
+        if by == 'text':
             return [opt.text for opt in options]
-        elif by == 'index':
+        if by == 'index':
             return [opt.get_property('index') for opt in options]
-        else:
-            raise WebDriverException(f'Unsupported selected options by: {by}')
+
+        raise WebDriverException(f'Unsupported selected options by: {by}')
 
     def send_keys(self, locator, *keys, blur=False, wait_until_enabled=False):
         """Simulate typing into the element.
@@ -2169,7 +2173,8 @@ class Spydr:
         Returns:
             bool: Whether the element's text containing the given text
         """
-        return self.wait_until(lambda _: self.is_text_in_element(locator, text))
+        try_fn = self._try_and_catch(lambda: self.has_text(locator, text))
+        return self.wait_until(lambda _: try_fn())
 
     def wait_until_text_equal_to(self, locator, text):
         """Wait until the element's text equal to the given text.
@@ -2181,7 +2186,8 @@ class Spydr:
         Returns:
             bool: Whether the element's text equal to the given text
         """
-        return self.wait_until(lambda _: text == self.find_element(locator).text)
+        try_fn = self._try_and_catch(lambda: self.is_text_matched(locator, text))
+        return self.wait_until(lambda _: try_fn())
 
     def wait_until_text_excludes(self, locator, text):
         """Wait until the element's text to exclude the given text.
@@ -2193,7 +2199,8 @@ class Spydr:
         Returns:
             bool: Whether the element's text excluding the given text
         """
-        return self.wait_until(lambda _: text not in self.find_element(locator).text)
+        try_fn = self._try_and_catch(lambda: not self.has_text(locator, text))
+        return self.wait_until(lambda _: try_fn())
 
     def wait_until_text_not_equal_to(self, locator, text):
         """Wait until the element's text not equal to the given text.
@@ -2205,7 +2212,8 @@ class Spydr:
         Returns:
             bool: Whether the element's text not equal to the given text
         """
-        return self.wait_until(lambda _: text != self.find_element(locator).text)
+        try_fn = self._try_and_catch(lambda: not self.is_text_matched(locator, text))
+        return self.wait_until(lambda _: try_fn())
 
     def wait_until_title_contains(self, title):
         """Wait until the title of the current page contains the given title.
@@ -2428,15 +2436,15 @@ class Spydr:
         if self.browser == 'chrome':
             return webdriver.Chrome(
                 executable_path=ChromeDriverManager(**config).install(), options=self._chrome_options())
-        elif self.browser == 'edge':
+        if self.browser == 'edge':
             return webdriver.Edge(EdgeChromiumDriverManager(**config).install())
-        elif self.browser == 'firefox':
+        if self.browser == 'firefox':
             return webdriver.Firefox(executable_path=GeckoDriverManager(**config).install(),
                                      options=self._firefox_options(),
                                      service_log_path=os.path.devnull)
-        elif self.browser == 'ie':
+        if self.browser == 'ie':
             return webdriver.Ie(executable_path=IEDriverManager(**config).install(), options=self._ie_options())
-        elif self.browser == 'safari':
+        if self.browser == 'safari':
             return webdriver.Safari()
 
     def _ie_options(self):
@@ -2546,6 +2554,15 @@ class Spydr:
 
         return option
 
+    def _try_and_catch(self, fn, exceptions=(NoSuchElementException, StaleElementReferenceException), exception_return=False):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            try:
+                return fn(*args, **kwargs)
+            except exceptions:
+                return exception_return
+        return wrapper
+
     def __getattribute__(self, fn_name):
         log_level = object.__getattribute__(self, 'log_level')
         fn_method = object.__getattribute__(self, fn_name)
@@ -2648,19 +2665,19 @@ class SpydrElement(WebElement):
 
         if how == HOWS['css']:
             return self.parent.execute_script('return arguments[0].closest(`${arguments[1]}`);', self, what)
-        elif how == HOWS['class']:
+        if how == HOWS['class']:
             return self.parent.execute_script('return arguments[0].closest(`.${arguments[1]}`);', self, what)
-        elif how == HOWS['id']:
+        if how == HOWS['id']:
             return self.parent.execute_script('return arguments[0].closest(`#${arguments[1]}`);', self, what)
-        elif how == HOWS['link_text']:
+        if how == HOWS['link_text']:
             return self.find_element(f'xpath=./ancestor-or-self::a[normalize-space(.)="{what}"]')
-        elif how == HOWS['name']:
+        if how == HOWS['name']:
             return self.parent.execute_script('return arguments[0].closest(`[name="${arguments[1]}"]`);', self, what)
-        elif how == HOWS['partial_link_text']:
+        if how == HOWS['partial_link_text']:
             return self.find_element(f'xpath=./ancestor-or-self::a[contains(normalize-space(.), "{what}")]')
-        elif how == HOWS['tag_name']:
+        if how == HOWS['tag_name']:
             return self.parent.execute_script('return arguments[0].closest(`${arguments[1]}`);', self, what)
-        elif how == HOWS['xpath']:
+        if how == HOWS['xpath']:
             return self.find_element(f'xpath=./ancestor-or-self::{what.lstrip("/")}')
 
     def css_property(self, name):
@@ -2674,6 +2691,11 @@ class SpydrElement(WebElement):
         """
         return self.value_of_css_property(name)
 
+    def ctrl_click(self):
+        """Ctrl-click the element."""
+        control = Keys.CONTROL
+        self._actions().key_down(control).click(self).key_up(control).perform()
+
     @property
     def current_url(self):
         """The element's current URL.
@@ -2682,6 +2704,19 @@ class SpydrElement(WebElement):
             str: URL
         """
         return self.parent.current_url
+
+    def double_click(self):
+        """Double-click the element."""
+        self._actions().move_to_element(self).double_click().perform()
+
+    def double_click_with_offset(self, x_offset=1, y_offset=1):
+        """Double-click the element from x and y offsets.
+
+        Keyword Arguments:
+            x_offset (int): X offset from the left of the element. Defaults to 1.
+            y_offset (int): Y offset from the top of the element. Defaults to 1.
+        """
+        self._actions().move_to_element_with_offset(self, x_offset, y_offset).double_click().perform()
 
     @_WebElementSpydrify()
     def find_element(self, locator):
@@ -2750,6 +2785,18 @@ class SpydrElement(WebElement):
         """
         return self.parent.execute_script('return arguments[0].hasAttribute(arguments[1]);', self, attribute)
 
+    def has_attribute_value(self, attribute, value):
+        """Check if the element's attribute contains the given `value`.
+
+        Args:
+            attribute (str): Attribute name
+            value (str): value to check
+
+        Returns:
+            bool: Whether value is found in the element's attribute
+        """
+        return value in self.get_attribute(attribute)
+
     def has_class(self, class_name):
         """Check if the element has the given CSS class.
 
@@ -2760,6 +2807,17 @@ class SpydrElement(WebElement):
             bool: Whether the CSS class exists
         """
         return self.parent.execute_script('return arguments[0].classList.contains(arguments[1]);', self, class_name)
+
+    def has_text(self, text):
+        """Check if the element contains the given `text`.
+
+        Args:
+            text (str): Text to check
+
+        Returns:
+            bool: Whether the element has the given text
+        """
+        return text in self.text
 
     def hide(self, locator):
         """Hide the element."""
@@ -2826,6 +2884,17 @@ class SpydrElement(WebElement):
         """
         return super().is_selected()
 
+    def is_text_matched(self, text):
+        """Whether the given text matches the elememnt's text.
+
+        Args:
+            text (str): Text to match
+
+        Returns:
+             bool: Whether the given text matches
+        """
+        return text == self.text
+
     def js_click(self):
         """Call `HTMLElement.click()` using JavaScript."""
         self.parent.execute_script('arguments[0].click();', self)
@@ -2890,7 +2959,16 @@ class SpydrElement(WebElement):
 
     def right_click(self):
         """Right-click on the element."""
-        self.spydr.actions().move_to_element(self).context_click().perform()
+        self._actions().move_to_element(self).context_click().perform()
+
+    def right_click_with_offset(self, x_offset=1, y_offset=1):
+        """Right-click on the element with x and y offsets.
+
+        Keyword Arguments:
+            x_offset (int): X offset from the left of the element. Defaults to 1.
+            y_offset (int): Y offset from the top of the element. Defaults to 1.
+        """
+        self._actions().move_to_element_with_offset(self, x_offset, y_offset).context_click().perform()
 
     def remove_attribute(self, attribute):
         """Remove the given attribute from the element.
@@ -3120,13 +3198,15 @@ class SpydrElement(WebElement):
         """
         return self._wait_until(lambda _: not self.is_displayed(), timeout=timeout)
 
+    def _actions(self):
+        return ActionChains(self.parent)
+
     def _parse_locator(self, locator):
         return self.spydr._parse_locator(locator)
 
     def _wait_until(self, method, timeout=None):
-        driver = self.spydr.driver
         timeout = int(timeout) if timeout is not None else self.spydr.timeout
-        return self.spydr.wait(driver, timeout).until(method)
+        return self.spydr.wait(self.parent, timeout).until(method)
 
     def __str__(self):
         return self.get_attribute('outerHTML')
