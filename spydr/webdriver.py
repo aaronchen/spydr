@@ -582,7 +582,7 @@ class Spydr:
                     raise NoSuchElementException(f'{locator} does not have ":eq({index})" element')
 
         if not element:
-            element = self.wait_until(lambda _: self.is_located(locator))
+            element = self.is_located(locator)
 
             if not isinstance(element, WebElement):
                 raise NoSuchElementException(f'Cannot locate element in the given time using: {locator}')
@@ -852,16 +852,28 @@ class Spydr:
         else:
             self.__ini = INI(file) if file else None
 
-    def is_displayed(self, locator):
+    def is_displayed(self, locator, seconds=None):
         """Check if the element is displayed.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
 
+        Keyword Arguments:
+            seconds (int): Seconds to wait until giving up. Defaults to `self.implicitly_wait`.
+
         Returns:
             bool: Whether the element is displayed
         """
-        return self.find_element(locator).is_displayed()
+        implicitly_wait = self.implicitly_wait
+        seconds = int(seconds) if seconds is not None else implicitly_wait
+        self.implicitly_wait = seconds
+
+        try:
+            return self.find_element(locator).is_displayed()
+        except (NoSuchElementException, TimeoutException):
+            return False
+        finally:
+            self.implicitly_wait = implicitly_wait
 
     def is_enabled(self, locator):
         """Check if the element is enabled.
@@ -2060,17 +2072,18 @@ class Spydr:
         Returns:
             Any applicable return from the method call
         """
-        self.implicitly_wait = int(timeout)
+        _timeout = self.timeout
+        self.timeout = int(timeout)
 
         try:
-            return self.wait_until(method, timeout=timeout)
+            return self.wait_until(method, timeout=self.timeout)
         except TimeoutException:
             pass
         finally:
-            self.implicitly_wait = self.timeout
+            self.timeout = _timeout
 
     def wait_until_loading_finished(self, locator, seconds=2):
-        """Wait until `loading` element shows up and then disappears.
+        """Wait until `loading-liking` element shows up and then disappears.
 
         Args:
             locator (str/WebElement): The locator to identify the element
@@ -2082,6 +2095,7 @@ class Spydr:
             bool: Whether the element is not displayed
         """
         how, what = self._parse_locator(locator)
+        implicitly_wait = self.implicitly_wait
         self.implicitly_wait = seconds
 
         try:
@@ -2090,7 +2104,7 @@ class Spydr:
         except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
         finally:
-            self.implicitly_wait = self.timeout
+            self.implicitly_wait = implicitly_wait
 
     def wait_until_not(self, method):
         """Create a WebDriverWait instance and wait until the given method is evaluated to False.
@@ -2116,6 +2130,7 @@ class Spydr:
             bool: Whether the element is not displayed
         """
         how, what = self._parse_locator(locator)
+        implicitly_wait = self.implicitly_wait
         self.implicitly_wait = seconds
 
         try:
@@ -2123,7 +2138,7 @@ class Spydr:
         except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
         finally:
-            self.implicitly_wait = self.timeout
+            self.implicitly_wait = implicitly_wait
 
     def wait_until_number_of_windows_to_be(self, number):
         """Wait until number of windows matches the given number.
@@ -2233,20 +2248,21 @@ class Spydr:
             url (str): URL to match
 
         Keyword Arguments:
-            timeout (int): Timeout. Defaults to `self.timeout`.
+            timeout (int): Timeout. Defaults to `self.page_load_timeout`.
 
         Returns:
             bool: Whether the URL containing the given URL
         """
-        timeout = int(timeout) if timeout is not None else self.timeout
-        self.implicitly_wait = timeout
+        page_load_timeout = self.page_load_timeout
+        timeout = int(timeout) if timeout is not None else page_load_timeout
+        self.page_load_timeout = timeout
 
         try:
             return self.wait_until(expected_conditions.url_contains(url), timeout=timeout)
         except TimeoutException:
             return False
         finally:
-            self.implicitly_wait = self.timeout
+            self.page_load_timeout = page_load_timeout
 
     @property
     def window_handle(self):
@@ -2561,6 +2577,22 @@ class Spydr:
                 return fn(*args, **kwargs)
             except exceptions:
                 return exception_return
+        return wrapper
+
+    def _try_and_timeout(self, fn, seconds=None, exception_return=False):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            timeout_ = self.timeout
+            seconds_ = seconds if seconds is not None else timeout_
+            if timeout_ != seconds_:
+                self.timeout = seconds_
+            try:
+                return fn(*args, **kwargs)
+            except TimeoutException:
+                return exception_return
+            finally:
+                if timeout_ != seconds_:
+                    self.timeout = timeout_
         return wrapper
 
     def __getattribute__(self, fn_name):
