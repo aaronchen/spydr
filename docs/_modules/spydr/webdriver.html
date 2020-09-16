@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.3.7 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.4.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -455,37 +455,6 @@
 <span class="sd">            str: URL of the page</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
-
-<div class="viewcode-block" id="Spydr.date_from_delta"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.date_from_delta">[docs]</a>    <span class="k">def</span> <span class="nf">date_from_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the date by the given delta from today.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            days (int): Delta days from today</span>
-
-<span class="sd">        Keyword Arguments:</span>
-<span class="sd">            format (str): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Delta date from today</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            | date_today() # 2020/12/10</span>
-<span class="sd">            | date_from_delta(1) # 2020/12/11</span>
-<span class="sd">            | date_from_delta(-1) # 2020/12/09</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">delta</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Spydr.date_today"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.date_today">[docs]</a>    <span class="k">def</span> <span class="nf">date_today</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get Today&#39;s date.</span>
-
-<span class="sd">        Keyword Arguments:</span>
-<span class="sd">            format (str): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Today&#39;s date in the given format</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.debug"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log **DEBUG** messages.</span>
@@ -1908,6 +1877,24 @@
 
         <span class="k">return</span> <span class="n">file_</span></div>
 
+<div class="viewcode-block" id="Spydr.timedelta"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the date by the given delta from today.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            days (int): Delta days from today</span>
+<span class="sd">            format (str, optional): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Delta date from today</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            | today() # 2020/12/10</span>
+<span class="sd">            | timedelta(1) # 2020/12/11</span>
+<span class="sd">            | timedelta(-1) # 2020/12/09</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">delta</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Spydr webdriver timeout for implicitly_wait, page_load_timeout, and script_timeout</span>
@@ -1946,6 +1933,17 @@
 <span class="sd">            str: Title of the current page</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+
+<div class="viewcode-block" id="Spydr.today"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.today">[docs]</a>    <span class="k">def</span> <span class="nf">today</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get Today&#39;s date.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            format (str, optional): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Today&#39;s date in the given format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.toggle_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.toggle_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Toggle a Boolean attribute of the given element. (IE not supported)</span>
@@ -3319,7 +3317,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.3.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

@@ -410,37 +410,6 @@ class Spydr:
         """
         return self.driver.current_url
 
-    def date_from_delta(self, days, format=r'%m/%d/%Y'):
-        """Get the date by the given delta from today.
-
-        Args:
-            days (int): Delta days from today
-
-        Keyword Arguments:
-            format (str): Date format. Defaults to '%m/%d/%Y'.
-
-        Returns:
-            str: Delta date from today
-
-        Examples:
-            | date_today() # 2020/12/10
-            | date_from_delta(1) # 2020/12/11
-            | date_from_delta(-1) # 2020/12/09
-        """
-        delta = date.today() + timedelta(days=days)
-        return delta.strftime(format)
-
-    def date_today(self, format=r'%m/%d/%Y'):
-        """Get Today's date.
-
-        Keyword Arguments:
-            format (str): Date format. Defaults to '%m/%d/%Y'.
-
-        Returns:
-            str: Today's date in the given format
-        """
-        return date.today().strftime(format)
-
     def debug(self, message):
         """Log **DEBUG** messages.
 
@@ -1862,6 +1831,24 @@ class Spydr:
 
         return file_
 
+    def timedelta(self, days, format=r'%m/%d/%Y'):
+        """Get the date by the given delta from today.
+
+        Args:
+            days (int): Delta days from today
+            format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+
+        Returns:
+            str: Delta date from today
+
+        Examples:
+            | today() # 2020/12/10
+            | timedelta(1) # 2020/12/11
+            | timedelta(-1) # 2020/12/09
+        """
+        delta = date.today() + timedelta(days=days)
+        return delta.strftime(format)
+
     @property
     def timeout(self):
         """Spydr webdriver timeout for implicitly_wait, page_load_timeout, and script_timeout
@@ -1900,6 +1887,17 @@ class Spydr:
             str: Title of the current page
         """
         return self.driver.title
+
+    def today(self, format=r'%m/%d/%Y'):
+        """Get Today's date.
+
+        Args:
+            format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+
+        Returns:
+            str: Today's date in the given format
+        """
+        return date.today().strftime(format)
 
     def toggle_attribute(self, locator, name):
         """Toggle a Boolean attribute of the given element. (IE not supported)

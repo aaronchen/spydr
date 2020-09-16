@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.3.7 documentation</title>
+    <title>spydr package &#8212; spydr 0.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -606,43 +606,6 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spydr.webdriver.Spydr.date_from_delta">
-<code class="sig-name descname">date_from_delta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">days</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.date_from_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.date_from_delta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the date by the given delta from today.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>days</strong> (<em>int</em>) – Delta days from today</p>
-</dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>format</strong> (<em>str</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>str</em> – Delta date from today</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="line-block">
-<div class="line">date_today() # 2020/12/10</div>
-<div class="line">date_from_delta(1) # 2020/12/11</div>
-<div class="line">date_from_delta(-1) # 2020/12/09</div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt id="spydr.webdriver.Spydr.date_today">
-<code class="sig-name descname">date_today</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.date_today"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.date_today" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get Today’s date.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Keyword Arguments</dt>
-<dd class="field-odd"><p><strong>format</strong> (<em>str</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>str</em> – Today’s date in the given format</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="spydr.webdriver.Spydr.debug">
 <code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.debug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log <strong>DEBUG</strong> messages.</p>
@@ -1138,7 +1101,7 @@ then move to the target offset and releases the mouse button.</p>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>seconds</strong> (<em>int</em>) – Seconds to wait until giving up. Defaults to <cite>self.timeout</cite>.</p>
+<dd class="field-even"><p><strong>seconds</strong> (<em>int</em>) – Seconds to wait until giving up. Defaults to <cite>self.implicitly_wait</cite>.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>bool</em> – Whether the element is displayed</p>
@@ -2240,6 +2203,29 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.timedelta">
+<code class="sig-name descname">timedelta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">days</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.timedelta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.timedelta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the date by the given delta from today.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>days</strong> (<em>int</em>) – Delta days from today</p></li>
+<li><p><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – Delta date from today</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line">today() # 2020/12/10</div>
+<div class="line">timedelta(1) # 2020/12/11</div>
+<div class="line">timedelta(-1) # 2020/12/09</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.timeout">
 <em class="property">property </em><code class="sig-name descname">timeout</code><a class="headerlink" href="#spydr.webdriver.Spydr.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Spydr webdriver timeout for implicitly_wait, page_load_timeout, and script_timeout</p>
@@ -2274,6 +2260,20 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>str</em> – Title of the current page</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.today">
+<code class="sig-name descname">today</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.today"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.today" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Today’s date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – Today’s date in the given format</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3523,7 +3523,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.3.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>
