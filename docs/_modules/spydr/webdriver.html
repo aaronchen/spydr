@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.4.0 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.4.1 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -49,6 +49,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">string</span>
@@ -282,18 +283,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">blur</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Spydr.css_property"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.css_property">[docs]</a>    <span class="k">def</span> <span class="nf">css_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The value of CSS property.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
-<span class="sd">            name (str): CSS property name</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: CSS property value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">css_property</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="Spydr.checkbox_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.checkbox_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">checkbox_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">is_checked</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the checkbox, identified by the locator, to the given state (is_checked).</span>
 
@@ -438,6 +427,35 @@
 <span class="sd">            WebElement: WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">parent_locator</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.copy_and_paste"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.copy_and_paste">[docs]</a>    <span class="k">def</span> <span class="nf">copy_and_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            text (str): Text to paste</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">copy_and_paste</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.copy_to_clipboard"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.copy_to_clipboard">[docs]</a>    <span class="k">def</span> <span class="nf">copy_to_clipboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Copy text to clipboard. (Windows/Mac supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): Text to paste</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">copy_to_clipboard</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.css_property"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.css_property">[docs]</a>    <span class="k">def</span> <span class="nf">css_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The value of CSS property.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            name (str): CSS property name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: CSS property value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">css_property</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.ctrl_click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.ctrl_click">[docs]</a>    <span class="k">def</span> <span class="nf">ctrl_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Ctrl-click the element.</span>
@@ -969,6 +987,15 @@
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">js_click</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.js_send_keys"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.js_send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">js_send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send text to the element using JavaScript.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            text (str): Text to send</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">js_send_keys</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.last_child"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.last_child">[docs]</a>    <span class="k">def</span> <span class="nf">last_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the last child element of the given element.</span>
@@ -2756,6 +2783,26 @@
         <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="n">HOWS</span><span class="p">[</span><span class="s1">&#39;xpath&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;xpath=./ancestor-or-self::</span><span class="si">{</span><span class="n">what</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="SpydrElement.copy_and_paste"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.copy_and_paste">[docs]</a>    <span class="k">def</span> <span class="nf">copy_and_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): Text to paste</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            WebDriverException: Raise an error when OS is not supported</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span>
+        <span class="k">elif</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">Keys</span><span class="o">.</span><span class="n">COMMAND</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OS not supported: </span><span class="si">{</span><span class="n">system</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">Utils</span><span class="o">.</span><span class="n">copy_to_clipboard</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="SpydrElement.css_property"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.css_property">[docs]</a>    <span class="k">def</span> <span class="nf">css_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The value of CSS property.</span>
 
@@ -2974,6 +3021,22 @@
 <div class="viewcode-block" id="SpydrElement.js_click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.js_click">[docs]</a>    <span class="k">def</span> <span class="nf">js_click</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Call `HTMLElement.click()` using JavaScript.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].click();&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpydrElement.js_send_keys"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.js_send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">js_send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send text to input using JavaScript.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): Text to send</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            let element = arguments[0];</span>
+<span class="s1">            let text = arguments[1];</span>
+<span class="s1">            element.value += text;</span>
+<span class="s1">            element.dispatchEvent(new Event(&#39;keydown&#39;, {bubbles: true}));</span>
+<span class="s1">            element.dispatchEvent(new Event(&#39;keypress&#39;, {bubbles: true}));</span>
+<span class="s1">            element.dispatchEvent(new Event(&#39;input&#39;, {bubbles: true}));</span>
+<span class="s1">            element.dispatchEvent(new Event(&#39;keyup&#39;, {bubbles: true}));                              </span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
@@ -3196,7 +3259,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The text of the element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">text_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3317,7 +3380,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

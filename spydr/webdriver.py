@@ -3,6 +3,7 @@ import inspect
 import json
 import logging
 import os
+import platform
 import random
 import re
 import string
@@ -236,18 +237,6 @@ class Spydr:
         """
         self.find_element(locator).blur()
 
-    def css_property(self, locator, name):
-        """The value of CSS property.
-
-        Args:
-            locator (str/WebElement): The locator to identify the element or WebElement
-            name (str): CSS property name
-
-        Returns:
-            str: CSS property value
-        """
-        return self.find_element(locator).css_property(name)
-
     def checkbox_to_be(self, locator, is_checked):
         """Set the checkbox, identified by the locator, to the given state (is_checked).
 
@@ -392,6 +381,35 @@ class Spydr:
             WebElement: WebElement
         """
         return self.find_element(locator).closest(parent_locator)
+
+    def copy_and_paste(self, locator, text):
+        """Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text to paste
+        """
+        self.find_element(locator).copy_and_paste(text)
+
+    def copy_to_clipboard(self, text):
+        """Copy text to clipboard. (Windows/Mac supported)
+
+        Args:
+            text (str): Text to paste
+        """
+        Utils.copy_to_clipboard(text)
+
+    def css_property(self, locator, name):
+        """The value of CSS property.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            name (str): CSS property name
+
+        Returns:
+            str: CSS property value
+        """
+        return self.find_element(locator).css_property(name)
 
     def ctrl_click(self, locator):
         """Ctrl-click the element.
@@ -923,6 +941,15 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
         """
         self.find_element(locator).js_click()
+
+    def js_send_keys(self, locator, text):
+        """Send text to the element using JavaScript.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text to send
+        """
+        self.find_element(locator).js_send_keys(text)
 
     def last_child(self, locator):
         """Get the last child element of the given element.
@@ -2710,6 +2737,26 @@ class SpydrElement(WebElement):
         if how == HOWS['xpath']:
             return self.find_element(f'xpath=./ancestor-or-self::{what.lstrip("/")}')
 
+    def copy_and_paste(self, text):
+        """Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)
+
+        Args:
+            text (str): Text to paste
+
+        Raises:
+            WebDriverException: Raise an error when OS is not supported
+        """
+        system = platform.system()
+        if system == 'Windows':
+            control = Keys.CONTROL
+        elif system == 'Darwin':
+            control = Keys.COMMAND
+        else:
+            raise WebDriverException(f'OS not supported: {system}')
+
+        Utils.copy_to_clipboard(text)
+        self.send_keys(control, 'v')
+
     def css_property(self, name):
         """The value of CSS property.
 
@@ -2928,6 +2975,22 @@ class SpydrElement(WebElement):
     def js_click(self):
         """Call `HTMLElement.click()` using JavaScript."""
         self.parent.execute_script('arguments[0].click();', self)
+
+    def js_send_keys(self, text):
+        """Send text to input using JavaScript.
+
+        Args:
+            text (str): Text to send
+        """
+        self.parent.execute_script('''
+            let element = arguments[0];
+            let text = arguments[1];
+            element.value += text;
+            element.dispatchEvent(new Event('keydown', {bubbles: true}));
+            element.dispatchEvent(new Event('keypress', {bubbles: true}));
+            element.dispatchEvent(new Event('input', {bubbles: true}));
+            element.dispatchEvent(new Event('keyup', {bubbles: true}));                              
+        ''', self, text)
 
     @property
     @_WebElementSpydrify()
@@ -3150,7 +3213,7 @@ class SpydrElement(WebElement):
         Returns:
             str: The text of the element
         """
-        return super().text
+        return super().text.strip()
 
     @property
     def text_content(self):

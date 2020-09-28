@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.4.0 documentation</title>
+    <title>spydr package &#8212; spydr 0.4.1 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -129,6 +129,20 @@
 <dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when <cite>how=what</cite> can not be parsed</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="spydr.utils.Utils.copy_to_clipboard">
+<em class="property">static </em><code class="sig-name descname">copy_to_clipboard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.copy_to_clipboard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.copy_to_clipboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy text to clipboard. (Windows/Mac supported)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to paste</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>WebDriverException</strong> – Raise an error when OS is not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="spydr.utils.Utils.parse_locator">
 <em class="property">static </em><code class="sig-name descname">parse_locator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.parse_locator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.parse_locator" title="Permalink to this definition">¶</a></dt>
@@ -562,6 +576,31 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>WebElement</em> – WebElement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.copy_and_paste">
+<code class="sig-name descname">copy_and_paste</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.copy_and_paste"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.copy_and_paste" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to paste</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.copy_to_clipboard">
+<code class="sig-name descname">copy_to_clipboard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.copy_to_clipboard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.copy_to_clipboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy text to clipboard. (Windows/Mac supported)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to paste</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1190,6 +1229,20 @@ then move to the target offset and releases the mouse button.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.js_send_keys">
+<code class="sig-name descname">js_send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.js_send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.js_send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send text to the element using JavaScript.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to send</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2859,6 +2912,20 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.copy_and_paste">
+<code class="sig-name descname">copy_and_paste</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.copy_and_paste"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.copy_and_paste" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to paste</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>WebDriverException</strong> – Raise an error when OS is not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.css_property">
 <code class="sig-name descname">css_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.css_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.css_property" title="Permalink to this definition">¶</a></dt>
 <dd><p>The value of CSS property.</p>
@@ -3137,6 +3204,17 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 <dt id="spydr.webdriver.SpydrElement.js_click">
 <code class="sig-name descname">js_click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.js_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.js_click" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call <cite>HTMLElement.click()</cite> using JavaScript.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.js_send_keys">
+<code class="sig-name descname">js_send_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.js_send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.js_send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send text to input using JavaScript.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to send</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -3523,7 +3601,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

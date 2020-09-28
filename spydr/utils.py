@@ -1,7 +1,9 @@
 import configparser
 import json
 import os
+import platform
 import re
+import subprocess
 import yaml
 
 from functools import reduce
@@ -163,6 +165,26 @@ class Utils:
         return re.sub(r'(?u)[^-\w.\/]', '', text)
 
     @staticmethod
+    def copy_to_clipboard(text):
+        """Copy text to clipboard. (Windows/Mac supported)
+
+        Args:
+            text (str): Text to paste
+
+        Raises:
+            WebDriverException: Raise an error when OS is not supported
+        """
+        system = platform.system()
+        if system == 'Windows':
+            cmd = ['chcp', '65001', '&&', 'echo', text, "|", 'clip']
+        elif system == 'Darwin':
+            cmd = ['echo', text, '|', 'pbcopy']
+        else:
+            raise WebDriverException(f'OS not supported: {system}')
+
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL)
+
+    @staticmethod
     def to_abspath(filename, suffix=None, root=os.getcwd(), mkdir=True):
         """to_abspath(filename, suffix='.png', root=os.getcwd(), mkdir=True)
         Resolve file to absolute path and create all directories if missing.
@@ -179,7 +201,7 @@ class Utils:
         if suffix and not filename.lower().endswith(suffix):
             filename += suffix
 
-        abspath = os.path.abspath(os.path.join(root, Utils.sanitize(filename)))
+        abspath = os.path.abspath(os.path.join(root, filename))
         dirname = os.path.dirname(abspath)
 
         if mkdir and not os.path.exists(dirname):
