@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.4.1 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.4.2 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -429,7 +429,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">parent_locator</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.copy_and_paste"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.copy_and_paste">[docs]</a>    <span class="k">def</span> <span class="nf">copy_and_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)</span>
+        <span class="sd">&quot;&quot;&quot;Copy text to clipboard and paste it (send_keys) to the element. (Chrome only)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
@@ -438,12 +438,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">copy_and_paste</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.copy_to_clipboard"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.copy_to_clipboard">[docs]</a>    <span class="k">def</span> <span class="nf">copy_to_clipboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Copy text to clipboard. (Windows/Mac supported)</span>
+        <span class="sd">&quot;&quot;&quot;Copy text to clipboard. (Chrome only)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            text (str): Text to paste</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Utils</span><span class="o">.</span><span class="n">copy_to_clipboard</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            let input = document.createElement(&quot;input&quot;);</span>
+<span class="s1">            input.value = `$</span><span class="si">{arguments[0]}</span><span class="s1">`;</span>
+<span class="s1">            input.style.position = &#39;absolute&#39;;</span>
+<span class="s1">            input.style.left = &#39;-9999px&#39;;</span>
+<span class="s1">            document.body.appendChild(input);</span>
+<span class="s1">            input.select();</span>
+<span class="s1">            document.execCommand(&quot;copy&quot;);</span>
+<span class="s1">            document.body.removeChild(input);</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.css_property"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.css_property">[docs]</a>    <span class="k">def</span> <span class="nf">css_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The value of CSS property.</span>
@@ -803,7 +812,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
 <span class="sd">            attribute (str): Attribute name</span>
-<span class="sd">            value (str): value to check</span>
+<span class="sd">            value (bool/str): value to check</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether value is found in the element&#39;s attribute</span>
@@ -1243,6 +1252,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
 
+<div class="viewcode-block" id="Spydr.paste_from_clipboard"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.paste_from_clipboard">[docs]</a>    <span class="k">def</span> <span class="nf">paste_from_clipboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Paste clipboard (send_keys) to the given element. (Chrome only)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">paste_from_clipboard</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Spydr.parent_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.parent_element">[docs]</a>    <span class="k">def</span> <span class="nf">parent_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the parent element of the given element.</span>
 
@@ -1499,6 +1516,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">scroll_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.select_options"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_options">[docs]</a>    <span class="k">def</span> <span class="nf">select_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">filter_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">filter_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get options of an select element.  Filter the options by attribute if `filter_value` is given.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            select_locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            filter_by (str): Filter options by attribute. Defaults to &#39;value&#39;.</span>
+<span class="sd">            filter_value (str): Filter option&#39;s attribute by value. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[WebElement]: All filtered options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">select_locator</span><span class="p">)</span><span class="o">.</span><span class="n">select_options</span><span class="p">(</span><span class="n">filter_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">filter_value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.select_to_be"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.select_to_be">[docs]</a>    <span class="k">def</span> <span class="nf">select_to_be</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select_locator</span><span class="p">,</span> <span class="n">option_value</span><span class="p">,</span> <span class="n">selected</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">option_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set `selected` state of the given `option` in the `select` drop-down menu.</span>
 
@@ -1615,7 +1647,7 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">multiple</span><span class="p">:</span>
                         <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">selectedOptions</span><span class="p">())</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">selected_options</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
@@ -2447,6 +2479,11 @@
             <span class="p">},</span>
             <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;password_manager_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;webkit&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;webprefs&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;javascript_can_access_clipboard&quot;</span><span class="p">:</span> <span class="kc">True</span>
+                <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">})</span>
 
@@ -2521,8 +2558,9 @@
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Browser must be one of </span><span class="si">{</span><span class="n">browsers</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">==</span> <span class="s1">&#39;chrome&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span>
-                <span class="n">executable_path</span><span class="o">=</span><span class="n">ChromeDriverManager</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">install</span><span class="p">(),</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_chrome_options</span><span class="p">())</span>
+            <span class="c1"># https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType</span>
+            <span class="k">return</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span><span class="n">executable_path</span><span class="o">=</span><span class="n">ChromeDriverManager</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">install</span><span class="p">(),</span>
+                                    <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_chrome_options</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">==</span> <span class="s1">&#39;edge&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">EdgeChromiumDriverManager</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">install</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">==</span> <span class="s1">&#39;firefox&#39;</span><span class="p">:</span>
@@ -2784,24 +2822,13 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;xpath=./ancestor-or-self::</span><span class="si">{</span><span class="n">what</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SpydrElement.copy_and_paste"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.copy_and_paste">[docs]</a>    <span class="k">def</span> <span class="nf">copy_and_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)</span>
+        <span class="sd">&quot;&quot;&quot;Copy text to clipboard and paste it (send_keys) to the element. (Chrome only)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            text (str): Text to paste</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            WebDriverException: Raise an error when OS is not supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
-            <span class="n">control</span> <span class="o">=</span> <span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span>
-        <span class="k">elif</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
-            <span class="n">control</span> <span class="o">=</span> <span class="n">Keys</span><span class="o">.</span><span class="n">COMMAND</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OS not supported: </span><span class="si">{</span><span class="n">system</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="n">Utils</span><span class="o">.</span><span class="n">copy_to_clipboard</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">copy_to_clipboard</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paste_from_clipboard</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SpydrElement.css_property"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.css_property">[docs]</a>    <span class="k">def</span> <span class="nf">css_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The value of CSS property.</span>
@@ -2913,12 +2940,20 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            attribute (str): Attribute name</span>
-<span class="sd">            value (str): value to check</span>
+<span class="sd">            value (bool/str): value to check</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether value is found in the element&#39;s attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
+        <span class="c1"># Attribute value can only be None, Boolean, or String</span>
+        <span class="n">attribute_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">attribute_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">attribute_value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span> <span class="o">==</span> <span class="n">attribute_value</span></div>
 
 <div class="viewcode-block" id="SpydrElement.has_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.has_class">[docs]</a>    <span class="k">def</span> <span class="nf">has_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the element has the given CSS class.</span>
@@ -3077,6 +3112,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].parentElement;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
+<div class="viewcode-block" id="SpydrElement.paste_from_clipboard"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.paste_from_clipboard">[docs]</a>    <span class="k">def</span> <span class="nf">paste_from_clipboard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Paste clipboard (send_keys) to the element. (Chrome only)&quot;&quot;&quot;</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">Keys</span><span class="o">.</span><span class="n">COMMAND</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">previous_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3179,8 +3223,32 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].scrollTo(arguments[1], arguments[2]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SpydrElement.selectedOptions"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.selectedOptions">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">selectedOptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SpydrElement.select_options"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.select_options">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">select_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">filter_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get options of an select element.  Filter the options by attribute if `filter_value` is given.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            filter_by (str): Filter options by attribute. Defaults to &#39;value&#39;.</span>
+<span class="sd">            filter_value (str): Filter option&#39;s attribute by value. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidSelectorException: Raise an error when element is not a select element</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[WebElement]: All filtered options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_name</span> <span class="o">!=</span> <span class="s1">&#39;select&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Element is not a select: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="s1">&#39;tag_name=option&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">filter_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">opt</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">options</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">has_attribute_value</span><span class="p">(</span><span class="n">filter_by</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">options</span></div>
+
+<div class="viewcode-block" id="SpydrElement.selected_options"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.selected_options">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">selected_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get select element&#39;s `selectedOptions`.</span>
 
 <span class="sd">        Raises:</span>
@@ -3380,7 +3448,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

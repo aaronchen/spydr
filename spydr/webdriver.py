@@ -383,7 +383,7 @@ class Spydr:
         return self.find_element(locator).closest(parent_locator)
 
     def copy_and_paste(self, locator, text):
-        """Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)
+        """Copy text to clipboard and paste it (send_keys) to the element. (Chrome only)
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -392,12 +392,21 @@ class Spydr:
         self.find_element(locator).copy_and_paste(text)
 
     def copy_to_clipboard(self, text):
-        """Copy text to clipboard. (Windows/Mac supported)
+        """Copy text to clipboard. (Chrome only)
 
         Args:
             text (str): Text to paste
         """
-        Utils.copy_to_clipboard(text)
+        self.execute_script('''
+            let input = document.createElement("input");
+            input.value = `${arguments[0]}`;
+            input.style.position = 'absolute';
+            input.style.left = '-9999px';
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand("copy");
+            document.body.removeChild(input);
+        ''', text)
 
     def css_property(self, locator, name):
         """The value of CSS property.
@@ -757,7 +766,7 @@ class Spydr:
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
             attribute (str): Attribute name
-            value (str): value to check
+            value (bool/str): value to check
 
         Returns:
             bool: Whether value is found in the element's attribute
@@ -1197,6 +1206,14 @@ class Spydr:
         """
         return self.driver.page_source
 
+    def paste_from_clipboard(self, locator):
+        """Paste clipboard (send_keys) to the given element. (Chrome only)
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+        """
+        self.find_element(locator).paste_from_clipboard()
+
     def parent_element(self, locator):
         """Get the parent element of the given element.
 
@@ -1453,6 +1470,21 @@ class Spydr:
         """
         self.find_element(locator).scroll_to(x, y)
 
+    def select_options(self, select_locator, filter_by='value', filter_value=None):
+        """Get options of an select element.  Filter the options by attribute if `filter_value` is given.
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            filter_by (str): Filter options by attribute. Defaults to 'value'.
+            filter_value (str): Filter option's attribute by value. Defaults to None.
+
+        Returns:
+            list[WebElement]: All filtered options
+        """
+        return self.find_element(select_locator).select_options(filter_by='value', filter_value=None)
+
     def select_to_be(self, select_locator, option_value, selected=True, option_by='value'):
         """Set `selected` state of the given `option` in the `select` drop-down menu.
 
@@ -1569,7 +1601,7 @@ class Spydr:
                     if not multiple:
                         break
         else:
-            options.extend(select.selectedOptions())
+            options.extend(select.selected_options())
 
         if by == 'value':
             return [opt.value for opt in options]
@@ -2401,6 +2433,11 @@ class Spydr:
             },
             "profile": {
                 "password_manager_enabled": False
+            },
+            "webkit": {
+                "webprefs": {
+                    "javascript_can_access_clipboard": True
+                }
             }
         })
 
@@ -2475,8 +2512,9 @@ class Spydr:
             raise WebDriverException(f'Browser must be one of {browsers}: {self.browser}')
 
         if self.browser == 'chrome':
-            return webdriver.Chrome(
-                executable_path=ChromeDriverManager(**config).install(), options=self._chrome_options())
+            # https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType
+            return webdriver.Chrome(executable_path=ChromeDriverManager(**config).install(),
+                                    options=self._chrome_options())
         if self.browser == 'edge':
             return webdriver.Edge(EdgeChromiumDriverManager(**config).install())
         if self.browser == 'firefox':
@@ -2738,24 +2776,13 @@ class SpydrElement(WebElement):
             return self.find_element(f'xpath=./ancestor-or-self::{what.lstrip("/")}')
 
     def copy_and_paste(self, text):
-        """Copy text to clipboard and paste it (send_keys) to the element. (Windows/Mac supported)
+        """Copy text to clipboard and paste it (send_keys) to the element. (Chrome only)
 
         Args:
             text (str): Text to paste
-
-        Raises:
-            WebDriverException: Raise an error when OS is not supported
         """
-        system = platform.system()
-        if system == 'Windows':
-            control = Keys.CONTROL
-        elif system == 'Darwin':
-            control = Keys.COMMAND
-        else:
-            raise WebDriverException(f'OS not supported: {system}')
-
-        Utils.copy_to_clipboard(text)
-        self.send_keys(control, 'v')
+        self.spydr.copy_to_clipboard(text)
+        self.paste_from_clipboard()
 
     def css_property(self, name):
         """The value of CSS property.
@@ -2867,12 +2894,20 @@ class SpydrElement(WebElement):
 
         Args:
             attribute (str): Attribute name
-            value (str): value to check
+            value (bool/str): value to check
 
         Returns:
             bool: Whether value is found in the element's attribute
         """
-        return value in self.get_attribute(attribute)
+        # Attribute value can only be None, Boolean, or String
+        attribute_value = self.get_attribute(attribute)
+
+        if attribute_value is None:
+            return False
+        elif isinstance(attribute_value, str):
+            return str(value) in attribute_value
+        else:
+            return value == attribute_value
 
     def has_class(self, class_name):
         """Check if the element has the given CSS class.
@@ -3031,6 +3066,15 @@ class SpydrElement(WebElement):
         """
         return self.parent.execute_script('return arguments[0].parentElement;', self)
 
+    def paste_from_clipboard(self):
+        """Paste clipboard (send_keys) to the element. (Chrome only)"""
+        system = platform.system()
+        if system == 'Darwin':
+            control = Keys.COMMAND
+        else:
+            control = Keys.CONTROL
+        self.send_keys(control, 'v')
+
     @property
     @_WebElementSpydrify()
     def previous_element(self):
@@ -3134,7 +3178,31 @@ class SpydrElement(WebElement):
         self.parent.execute_script('arguments[0].scrollTo(arguments[1], arguments[2]);', self, int(x), int(y))
 
     @_WebElementSpydrify()
-    def selectedOptions(self):
+    def select_options(self, filter_by='value', filter_value=None):
+        """Get options of an select element.  Filter the options by attribute if `filter_value` is given.
+
+        Keyword Arguments:
+            filter_by (str): Filter options by attribute. Defaults to 'value'.
+            filter_value (str): Filter option's attribute by value. Defaults to None.
+
+        Raises:
+            InvalidSelectorException: Raise an error when element is not a select element
+
+        Returns:
+            list[WebElement]: All filtered options
+        """
+        if self.tag_name != 'select':
+            raise InvalidSelectorException(f'Element is not a select: {self}')
+
+        options = self.find_elements('tag_name=option')
+
+        if filter_value is not None:
+            return [opt for opt in options if opt.has_attribute_value(filter_by, filter_value)]
+
+        return options
+
+    @_WebElementSpydrify()
+    def selected_options(self):
         """Get select element's `selectedOptions`.
 
         Raises:
