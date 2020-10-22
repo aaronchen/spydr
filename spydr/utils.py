@@ -38,7 +38,7 @@ class INI:
         self.encoding = encoding
         self.config = configparser.ConfigParser()
 
-        self.config.read(self.file, encoding=self.encoding)
+        self.config.read(Utils.to_abspath(file), encoding=self.encoding)
 
         if self.default_section not in self.config.sections():
             self.config[self.default_section] = {}
