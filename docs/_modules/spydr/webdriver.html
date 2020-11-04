@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.4.3 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.4.4 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -166,22 +166,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_logger</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
 
-<div class="viewcode-block" id="Spydr.abspath"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.abspath">[docs]</a>    <span class="k">def</span> <span class="nf">abspath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;abspath(filename, suffix=&#39;.png&#39;, root=os.getcwd(), mkdir=True)</span>
+<div class="viewcode-block" id="Spydr.abspath"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.abspath">[docs]</a>    <span class="k">def</span> <span class="nf">abspath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isdir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;abspath(path, suffix=&#39;.png&#39;, root=os.getcwd(), mkdir=True, isdir=False)</span>
 <span class="sd">        Resolve file to absolute path and create all directories if missing.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            filename (str): File name</span>
+<span class="sd">            path (str): Path</span>
 
 <span class="sd">        Keyword Arguments:</span>
 <span class="sd">            suffix (str): File suffix. Defaults to None.</span>
 <span class="sd">            root (str): Root directory. Defaults to `os.getcwd()`.</span>
 <span class="sd">            mkdir (bool): Create directores in the path. Defaults to True.</span>
+<span class="sd">            isdir (bool): Whether path is a directory. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: Absolute path of the file</span>
+<span class="sd">            str: Absolute path</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">to_abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="n">mkdir</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">to_abspath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="n">mkdir</span><span class="p">,</span> <span class="n">isdir</span><span class="o">=</span><span class="n">isdir</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.actions"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.actions">[docs]</a>    <span class="k">def</span> <span class="nf">actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize an ActionChains.</span>
@@ -483,6 +484,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
 
+<div class="viewcode-block" id="Spydr.date_sorted"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.date_sorted">[docs]</a>    <span class="k">def</span> <span class="nf">date_sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sort list of date strings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dates (list): List of date strings</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            reverse (bool): Reverse the sorting. Defaults to False.</span>
+<span class="sd">            format (str): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: Sorted list of date strings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">date_sorted</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.debug"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log **DEBUG** messages.</span>
 
@@ -582,6 +598,21 @@
 <span class="sd">            Any applicable return from JavaScript</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_async_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.execute_cdp_cmd"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.execute_cdp_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">execute_cdp_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">cmd_args</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Execute Chrome Devtools Protocol command and get returned result.</span>
+
+<span class="sd">        `cmd` and `cmd_args` should follow Chrome DevTools Protocol.</span>
+<span class="sd">        Refer to: https://chromedevtools.github.io/devtools-protocol/</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd (str): Command name</span>
+<span class="sd">            cmd_args (dict): Command arguments. Defaults to {}.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dict, empty dict {} if there is no result to return.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_cdp_cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.execute_script"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.execute_script">[docs]</a>    <span class="k">def</span> <span class="nf">execute_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Synchronously execute JavaScript in the current window or frame.</span>
@@ -928,7 +959,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Spydr.is_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_located">[docs]</a>    <span class="k">def</span> <span class="nf">is_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.is_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_located">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">is_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the element is located in the given seconds.</span>
 
 <span class="sd">        Args:</span>
@@ -1271,6 +1303,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">parent_element</span></div>
 
+<div class="viewcode-block" id="Spydr.path_exists"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.path_exists">[docs]</a>    <span class="k">def</span> <span class="nf">path_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if path exists.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether path exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">path_exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.previous_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.previous_element">[docs]</a>    <span class="k">def</span> <span class="nf">previous_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the previous element of the given element.</span>
 
@@ -1385,16 +1428,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">remove_class</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Spydr.remove_dir"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.remove_dir">[docs]</a>    <span class="k">def</span> <span class="nf">remove_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove the directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dir (str): Directory path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">remove_dir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Spydr.remove_file"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove the file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            file (str): File path</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.right_click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.right_click">[docs]</a>    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Right-click on the element.</span>
@@ -1680,6 +1728,15 @@
 <span class="sd">            value (str): Attribute name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">set_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.set_download_dir"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.set_download_dir">[docs]</a>    <span class="k">def</span> <span class="nf">set_download_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Download directory (Chrome only)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            download_dir (str): Download directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_cdp_cmd</span><span class="p">(</span><span class="s1">&#39;Browser.setDownloadBehavior&#39;</span><span class="p">,</span>
+                             <span class="p">{</span><span class="s1">&#39;behavior&#39;</span><span class="p">:</span> <span class="s1">&#39;allow&#39;</span><span class="p">,</span> <span class="s1">&#39;downloadPath&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">isdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)})</span></div>
 
 <div class="viewcode-block" id="Spydr.set_ini_key"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.set_ini_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_ini_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the value of the given key in INI.</span>
@@ -2258,6 +2315,24 @@
         <span class="sd">&quot;&quot;&quot;Wait until `document.readyState` is `complete`.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_page_loaded</span><span class="p">())</span></div>
 
+<div class="viewcode-block" id="Spydr.wait_until_page_not_changed"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_page_not_changed">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_page_not_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until page_source not changed (page_source are compared at the interval)</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            seconds (int): Seconds to give up waiting. Defaults to 10.</span>
+<span class="sd">            interval (int): Interval to compare page_source. Defaults to 2.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element is not displayed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">implicitly_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">seconds</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_page_changed_at_interval</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span></div>
+
 <div class="viewcode-block" id="Spydr.wait_until_selected"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_selected">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element is selected.</span>
 
@@ -2617,6 +2692,12 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_is_page_changed_at_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">before_page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+        <span class="n">after_page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_source</span>
+        <span class="k">return</span> <span class="n">before_page</span> <span class="o">!=</span> <span class="n">after_page</span>
 
     <span class="k">def</span> <span class="nf">_is_page_changed_after_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body_text_diff</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">before_page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="s1">&#39;//body&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text_content</span> <span class="k">if</span> <span class="n">body_text_diff</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_source</span>
@@ -3031,6 +3112,32 @@
 <span class="sd">            bool: Whether the element is enabled</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SpydrElement.is_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.is_located">[docs]</a>    <span class="k">def</span> <span class="nf">is_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the element is located in the given seconds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str): The locator to identify the element</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            seconds (int): Seconds to wait until giving up. Defaults to `implicitly_wait`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            False/WebElement: Return False if not located. Return WebElement if located.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">implicitly_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">implicitly_wait</span>
+        <span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="k">if</span> <span class="n">seconds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">implicitly_wait</span>
+
+        <span class="k">if</span> <span class="n">seconds</span> <span class="o">!=</span> <span class="n">implicitly_wait</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">seconds</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">NoSuchWindowException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">,</span> <span class="n">TimeoutException</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">seconds</span> <span class="o">!=</span> <span class="n">implicitly_wait</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span></div>
 
 <div class="viewcode-block" id="SpydrElement.is_selected"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.is_selected">[docs]</a>    <span class="k">def</span> <span class="nf">is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Whether the element is selected.</span>
@@ -3448,7 +3555,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

@@ -120,22 +120,23 @@ class Spydr:
         self.logger = self._get_logger()
         self.timeout = timeout
 
-    def abspath(self, filename, suffix=None, root=os.getcwd(), mkdir=True):
-        """abspath(filename, suffix='.png', root=os.getcwd(), mkdir=True)
+    def abspath(self, path, suffix=None, root=os.getcwd(), mkdir=True, isdir=False):
+        """abspath(path, suffix='.png', root=os.getcwd(), mkdir=True, isdir=False)
         Resolve file to absolute path and create all directories if missing.
 
         Args:
-            filename (str): File name
+            path (str): Path
 
         Keyword Arguments:
             suffix (str): File suffix. Defaults to None.
             root (str): Root directory. Defaults to `os.getcwd()`.
             mkdir (bool): Create directores in the path. Defaults to True.
+            isdir (bool): Whether path is a directory. Defaults to False.
 
         Returns:
-            str: Absolute path of the file
+            str: Absolute path
         """
-        return Utils.to_abspath(filename, suffix=suffix, root=root, mkdir=mkdir)
+        return Utils.to_abspath(path, suffix=suffix, root=root, mkdir=mkdir, isdir=isdir)
 
     def actions(self):
         """Initialize an ActionChains.
@@ -437,6 +438,21 @@ class Spydr:
         """
         return self.driver.current_url
 
+    def date_sorted(self, dates, reverse=False, format=r'%m/%d/%Y'):
+        """Sort list of date strings.
+
+        Args:
+            dates (list): List of date strings
+
+        Keyword Arguments:
+            reverse (bool): Reverse the sorting. Defaults to False.
+            format (str): Date format. Defaults to '%m/%d/%Y'.
+
+        Returns:
+            list: Sorted list of date strings
+        """
+        return Utils.date_sorted(dates, reverse=reverse, format=format)
+
     def debug(self, message):
         """Log **DEBUG** messages.
 
@@ -536,6 +552,21 @@ class Spydr:
             Any applicable return from JavaScript
         """
         return self.driver.execute_async_script(script, *args)
+
+    def execute_cdp_cmd(self, cmd, cmd_args={}):
+        """Execute Chrome Devtools Protocol command and get returned result.
+
+        `cmd` and `cmd_args` should follow Chrome DevTools Protocol.
+        Refer to: https://chromedevtools.github.io/devtools-protocol/
+
+        Args:
+            cmd (str): Command name
+            cmd_args (dict): Command arguments. Defaults to {}.
+
+        Returns:
+            dict: A dict, empty dict {} if there is no result to return.
+        """
+        return self.driver.execute_cdp_cmd(cmd, cmd_args)
 
     def execute_script(self, script, *args):
         """Synchronously execute JavaScript in the current window or frame.
@@ -882,6 +913,7 @@ class Spydr:
         """
         return self.find_element(locator).is_enabled()
 
+    @_WebElementSpydrify()
     def is_located(self, locator, seconds=None):
         """Check if the element is located in the given seconds.
 
@@ -1225,6 +1257,17 @@ class Spydr:
         """
         return self.find_element(locator).parent_element
 
+    def path_exists(self, path):
+        """Check if path exists.
+
+        Args:
+            path (str): Path
+
+        Returns:
+            bool: Whether path exists.
+        """
+        return Utils.path_exists(path)
+
     def previous_element(self, locator):
         """Get the previous element of the given element.
 
@@ -1339,16 +1382,21 @@ class Spydr:
         """
         self.find_element(locator).remove_class(class_name)
 
+    def remove_dir(self, dir):
+        """Remove the directory.
+
+        Args:
+            dir (str): Directory path
+        """
+        Utils.remove_dir(dir)
+
     def remove_file(self, file):
         """Remove the file.
 
         Args:
             file (str): File path
         """
-        file = self.abspath(file, mkdir=False)
-
-        if os.path.exists(file):
-            os.remove(file)
+        Utils.remove_file(file)
 
     def right_click(self, locator):
         """Right-click on the element.
@@ -1634,6 +1682,15 @@ class Spydr:
             value (str): Attribute name
         """
         self.find_element(locator).set_attribute(attribute, value)
+
+    def set_download_dir(self, download_dir):
+        """Set Download directory (Chrome only)
+
+        Args:
+            download_dir (str): Download directory
+        """
+        self.execute_cdp_cmd('Browser.setDownloadBehavior',
+                             {'behavior': 'allow', 'downloadPath': self.abspath(download_dir, isdir=True)})
 
     def set_ini_key(self, key, value, section=None):
         """Set the value of the given key in INI.
@@ -2212,6 +2269,24 @@ class Spydr:
         """Wait until `document.readyState` is `complete`."""
         self.wait_until(lambda _: self.is_page_loaded())
 
+    def wait_until_page_not_changed(self, seconds=10, interval=2):
+        """Wait until page_source not changed (page_source are compared at the interval)
+
+        Keyword Arguments:
+            seconds (int): Seconds to give up waiting. Defaults to 10.
+            interval (int): Interval to compare page_source. Defaults to 2.
+
+        Returns:
+            bool: Whether the element is not displayed
+        """
+        implicitly_wait = self.implicitly_wait
+        self.implicitly_wait = seconds
+
+        try:
+            self.wait(self.driver, seconds).until(lambda _: not self._is_page_changed_at_interval(interval=interval))
+        finally:
+            self.implicitly_wait = implicitly_wait
+
     def wait_until_selected(self, locator):
         """Wait until the element is selected.
 
@@ -2571,6 +2646,12 @@ class Spydr:
             return True
         except NoSuchFrameException:
             return False
+
+    def _is_page_changed_at_interval(self, interval=1):
+        before_page = self.page_source
+        self.sleep(interval)
+        after_page = self.page_source
+        return before_page != after_page
 
     def _is_page_changed_after_refresh(self, body_text_diff=True):
         before_page = self.find_element('//body').text_content if body_text_diff else self.page_source
@@ -2985,6 +3066,32 @@ class SpydrElement(WebElement):
             bool: Whether the element is enabled
         """
         return super().is_enabled()
+
+    def is_located(self, locator, seconds=None):
+        """Check if the element is located in the given seconds.
+
+        Args:
+            locator (str): The locator to identify the element
+
+        Keyword Arguments:
+            seconds (int): Seconds to wait until giving up. Defaults to `implicitly_wait`.
+
+        Returns:
+            False/WebElement: Return False if not located. Return WebElement if located.
+        """
+        implicitly_wait = self.spydr.implicitly_wait
+        seconds = seconds if seconds is not None else implicitly_wait
+
+        if seconds != implicitly_wait:
+            self.spydr.implicitly_wait = seconds
+
+        try:
+            return self._wait_until(lambda _: self.find_element(locator), timeout=seconds)
+        except (NoSuchElementException, NoSuchWindowException, StaleElementReferenceException, TimeoutException):
+            return False
+        finally:
+            if seconds != implicitly_wait:
+                self.spydr.implicitly_wait = implicitly_wait
 
     def is_selected(self):
         """Whether the element is selected.

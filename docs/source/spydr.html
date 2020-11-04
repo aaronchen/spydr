@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.4.3 documentation</title>
+    <title>spydr package &#8212; spydr 0.4.4 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.4 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -130,6 +130,26 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt id="spydr.utils.Utils.date_sorted">
+<em class="property">static </em><code class="sig-name descname">date_sorted</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dates</span></em>, <em class="sig-param"><span class="n">reverse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.date_sorted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.date_sorted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort list of date strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dates</strong> (<em>list</em>) – List of date strings</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>reverse</strong> (<em>bool</em>) – Reverse the sorting. Defaults to False.</p></li>
+<li><p><strong>format</strong> (<em>str</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list</em> – Sorted list of date strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.utils.Utils.parse_locator">
 <em class="property">static </em><code class="sig-name descname">parse_locator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.parse_locator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.parse_locator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse locator with supported <cite>how=what</cite> strategies</p>
@@ -142,6 +162,42 @@
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>(str, str)</em> – (how, what) strategy</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.path_exists">
+<em class="property">static </em><code class="sig-name descname">path_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.path_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.path_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if path exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether path exists.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.remove_dir">
+<em class="property">static </em><code class="sig-name descname">remove_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.remove_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.remove_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dir</strong> (<em>str</em>) – Directory path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.remove_file">
+<em class="property">static </em><code class="sig-name descname">remove_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.remove_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.remove_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – File path</p>
 </dd>
 </dl>
 </dd></dl>
@@ -162,19 +218,36 @@
 
 <dl class="py method">
 <dt id="spydr.utils.Utils.to_abspath">
-<em class="property">static </em><code class="sig-name descname">to_abspath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="o">=</span><span class="default_value">'.png'</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.to_abspath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.to_abspath" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">to_abspath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="o">=</span><span class="default_value">'.png'</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">isdir</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.to_abspath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.to_abspath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve file to absolute path and create all directories if missing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – File name</p></li>
-<li><p><strong>suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – File suffix. Defaults to None.</p></li>
-<li><p><strong>root</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory. Defaults to os.getcwd().</p></li>
-<li><p><strong>mkdir</strong> (<em>bool</em><em>, </em><em>optional</em>) – Create directores in the path. Defaults to True.</p></li>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>suffix</strong> (<em>str</em>) – File suffix. Defaults to None.</p></li>
+<li><p><strong>root</strong> (<em>str</em>) – Root directory. Defaults to os.getcwd().</p></li>
+<li><p><strong>mkdir</strong> (<em>bool</em>) – Create directores in the path. Defaults to True.</p></li>
+<li><p><strong>isdir</strong> (<em>bool</em>) – Whether path is a directory. Defaults to False.</p></li>
 </ul>
 </dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – Absolute path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.true">
+<em class="property">static </em><code class="sig-name descname">true</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.true"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.true" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate object(int/float/str) to Boolean</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>int/float/str</em>) – Object to evaluate</p>
+</dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>str</em> – Absolute path of the file</p>
+<dd class="field-even"><p><em>bool</em> – Whether Object is evaluated to True</p>
 </dd>
 </dl>
 </dd></dl>
@@ -277,21 +350,22 @@ When set to ‘DEBUG’, <cite>debug()</cite>, <cite>info()</cite> and called me
 </dl>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.abspath">
-<code class="sig-name descname">abspath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="o">=</span><span class="default_value">'.png'</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.abspath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.abspath" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">abspath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="o">=</span><span class="default_value">'.png'</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">isdir</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.abspath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.abspath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve file to absolute path and create all directories if missing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – File name</p>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>suffix</strong> (<em>str</em>) – File suffix. Defaults to None.</p></li>
 <li><p><strong>root</strong> (<em>str</em>) – Root directory. Defaults to <cite>os.getcwd()</cite>.</p></li>
 <li><p><strong>mkdir</strong> (<em>bool</em>) – Create directores in the path. Defaults to True.</p></li>
+<li><p><strong>isdir</strong> (<em>bool</em>) – Whether path is a directory. Defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>str</em> – Absolute path of the file</p>
+<dd class="field-odd"><p><em>str</em> – Absolute path</p>
 </dd>
 </dl>
 </dd></dl>
@@ -631,6 +705,26 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.date_sorted">
+<code class="sig-name descname">date_sorted</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dates</span></em>, <em class="sig-param"><span class="n">reverse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.date_sorted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.date_sorted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort list of date strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dates</strong> (<em>list</em>) – List of date strings</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>reverse</strong> (<em>bool</em>) – Reverse the sorting. Defaults to False.</p></li>
+<li><p><strong>format</strong> (<em>str</em>) – Date format. Defaults to ‘%m/%d/%Y’.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list</em> – Sorted list of date strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.debug">
 <code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.debug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log <strong>DEBUG</strong> messages.</p>
@@ -754,6 +848,25 @@ then move to the target offset and releases the mouse button.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Any applicable return from JavaScript</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.execute_cdp_cmd">
+<code class="sig-name descname">execute_cdp_cmd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd</span></em>, <em class="sig-param"><span class="n">cmd_args</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.execute_cdp_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.execute_cdp_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute Chrome Devtools Protocol command and get returned result.</p>
+<p><cite>cmd</cite> and <cite>cmd_args</cite> should follow Chrome DevTools Protocol.
+Refer to: <a class="reference external" href="https://chromedevtools.github.io/devtools-protocol/">https://chromedevtools.github.io/devtools-protocol/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cmd</strong> (<em>str</em>) – Command name</p></li>
+<li><p><strong>cmd_args</strong> (<em>dict</em>) – Command arguments. Defaults to {}.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>dict</em> – A dict, empty dict {} if there is no result to return.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1511,6 +1624,20 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.path_exists">
+<code class="sig-name descname">path_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.path_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.path_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if path exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether path exists.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.previous_element">
 <code class="sig-name descname">previous_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.previous_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.previous_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the previous element of the given element.</p>
@@ -1635,6 +1762,17 @@ Offsets are relative to the top-left corner of the element.</p>
 <li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
 <li><p><strong>class_name</strong> (<em>str</em>) – CSS class name</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.remove_dir">
+<code class="sig-name descname">remove_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.remove_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.remove_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dir</strong> (<em>str</em>) – Directory path</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1942,6 +2080,17 @@ Offsets are relative to the top-left corner of the element.</p>
 <li><p><strong>attribute</strong> (<em>str</em>) – Attribute name</p></li>
 <li><p><strong>value</strong> (<em>str</em>) – Attribute name</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.set_download_dir">
+<code class="sig-name descname">set_download_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">download_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.set_download_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.set_download_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Download directory (Chrome only)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>download_dir</strong> (<em>str</em>) – Download directory</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2653,6 +2802,23 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_page_not_changed">
+<code class="sig-name descname">wait_until_page_not_changed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">interval</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_page_not_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_page_not_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until page_source not changed (page_source are compared at the interval)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> (<em>int</em>) – Seconds to give up waiting. Defaults to 10.</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – Interval to compare page_source. Defaults to 2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element is not displayed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.wait_until_selected">
 <code class="sig-name descname">wait_until_selected</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_selected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until the element is selected.</p>
@@ -3189,6 +3355,23 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.is_located">
+<code class="sig-name descname">is_located</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.is_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.is_located" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the element is located in the given seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>seconds</strong> (<em>int</em>) – Seconds to wait until giving up. Defaults to <cite>implicitly_wait</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>False/WebElement</em> – Return False if not located. Return WebElement if located.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.is_selected">
 <code class="sig-name descname">is_selected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.is_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.is_selected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the element is selected.</p>
@@ -3641,7 +3824,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.4 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

@@ -3,8 +3,10 @@ import json
 import os
 import platform
 import re
+import shutil
 import yaml
 
+from datetime import datetime
 from functools import reduce
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -115,6 +117,46 @@ class Utils:
         WebDriverException: Raise an error when `how=what` can not be parsed
     """
     @staticmethod
+    def date_sorted(dates, reverse=False, format=r'%m/%d/%Y'):
+        """Sort list of date strings.
+
+        Args:
+            dates (list): List of date strings
+
+        Keyword Arguments:
+            reverse (bool): Reverse the sorting. Defaults to False.
+            format (str): Date format. Defaults to '%m/%d/%Y'.
+
+        Returns:
+            list: Sorted list of date strings
+        """
+        return sorted(dates, key=lambda date: datetime.strptime(date, format), reverse=reverse)
+
+    @staticmethod
+    def remove_dir(dir):
+        """Remove the directory.
+
+        Args:
+            dir (str): Directory path
+        """
+        dir = Utils.to_abspath(dir, mkdir=False, isdir=True)
+
+        if os.path.isdir(dir):
+            shutil.rmtree(dir, ignore_errors=True)
+
+    @staticmethod
+    def remove_file(file):
+        """Remove the file.
+
+        Args:
+            file (str): File path
+        """
+        file = Utils.to_abspath(file, mkdir=False)
+
+        if os.path.exists(file):
+            os.remove(file)
+
+    @staticmethod
     def parse_locator(locator):
         """Parse locator with supported `how=what` strategies
 
@@ -151,6 +193,18 @@ class Utils:
         return how, what
 
     @staticmethod
+    def path_exists(path):
+        """Check if path exists.
+
+        Args:
+            path (str): Path
+
+        Returns:
+            bool: Whether path exists.
+        """
+        return os.path.exists(Utils.to_abspath(path, mkdir=False))
+
+    @staticmethod
     def sanitize(text):
         """Sanitize text to be safe for file names.
 
@@ -164,29 +218,55 @@ class Utils:
         return re.sub(r'(?u)[^-\w.\/]', '', text)
 
     @staticmethod
-    def to_abspath(filename, suffix=None, root=os.getcwd(), mkdir=True):
-        """to_abspath(filename, suffix='.png', root=os.getcwd(), mkdir=True)
+    def to_abspath(path, suffix=None, root=os.getcwd(), mkdir=True, isdir=False):
+        """to_abspath(path, suffix='.png', root=os.getcwd(), mkdir=True, isdir=False)
         Resolve file to absolute path and create all directories if missing.
 
         Args:
-            filename (str): File name
-            suffix (str, optional): File suffix. Defaults to None.
-            root (str, optional): Root directory. Defaults to os.getcwd().
-            mkdir (bool, optional): Create directores in the path. Defaults to True.
+            path (str): Path
+
+        Keyword Args:
+            suffix (str): File suffix. Defaults to None.
+            root (str): Root directory. Defaults to os.getcwd().
+            mkdir (bool): Create directores in the path. Defaults to True.
+            isdir (bool): Whether path is a directory. Defaults to False.
 
         Returns:
-            str: Absolute path of the file
+            str: Absolute path
         """
-        if suffix and not filename.lower().endswith(suffix):
-            filename += suffix
+        if suffix and not path.lower().endswith(suffix):
+            path += suffix
 
-        abspath = os.path.abspath(os.path.join(root, filename))
+        abspath = os.path.abspath(os.path.join(root, path))
+
+        if isdir:
+            abspath = os.path.join(abspath, '')
+
         dirname = os.path.dirname(abspath)
 
         if mkdir and not os.path.exists(dirname):
             os.makedirs(dirname)
 
         return abspath
+
+    @staticmethod
+    def true(obj):
+        """Evaluate object(int/float/str) to Boolean
+
+        Args:
+            obj (int/float/str): Object to evaluate
+
+        Returns:
+            bool: Whether Object is evaluated to True
+        """
+        if isinstance(obj, bool):
+            return obj
+        elif isinstance(obj, (int, float)):
+            return obj > 0
+        elif isinstance(obj, str):
+            return obj.lower() in ['true', 'yes', 't', 'y', '1']
+        else:
+            return False
 
 
 class YML:
