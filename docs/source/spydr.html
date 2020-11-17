@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.4.4 documentation</title>
+    <title>spydr package &#8212; spydr 0.4.5 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -181,6 +181,37 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.utils.Utils.random_choice">
+<em class="property">static </em><code class="sig-name descname">random_choice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sequence</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.random_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.random_choice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose a random element from a non-empty sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sequence</strong> (<em>Sequence</em><em>[</em><em>_T</em><em>]</em>) – Sequence</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>_T</em> – A random element in the sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.random_sample">
+<em class="property">static </em><code class="sig-name descname">random_sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.random_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.random_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <cite>k</cite> length list of unique elements chosen from the <cite>population</cite> sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>population</strong> (<em>Sequence</em><em>[</em><em>_T</em><em>]</em>) – Sequence</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Length of the returned list</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>List[_T]</em> – Returns a new list containing elements from the population</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.utils.Utils.remove_dir">
 <em class="property">static </em><code class="sig-name descname">remove_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.remove_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.remove_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the directory.</p>
@@ -212,6 +243,37 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>str</em> – sanitized text</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.strip_multi_spaces">
+<em class="property">static </em><code class="sig-name descname">strip_multi_spaces</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.strip_multi_spaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.strip_multi_spaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strip multiple spaces between words to be single-spaced.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> (<em>srt</em>) – Words</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>str</em> – Single-spaced words</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.strptime">
+<em class="property">static </em><code class="sig-name descname">strptime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.strptime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.strptime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse date string to <cite>datetime.datetime</cite> object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>str</em>) – Date string</p></li>
+<li><p><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – Date format. Defaults to r’%m/%d/%Y’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>datetime.datetime/None</em> – Return datetime.datetime or None if failed to parse date string.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -314,7 +376,7 @@
 <span id="spydr-webdriver-module"></span><h2>spydr.webdriver module<a class="headerlink" href="#module-spydr.webdriver" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="spydr.webdriver.Spydr">
-<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">Spydr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auth_password</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">browser</span><span class="o">=</span><span class="default_value">'chrome'</span></em>, <em class="sig-param"><span class="n">headless</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ini</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">locale</span><span class="o">=</span><span class="default_value">'en'</span></em>, <em class="sig-param"><span class="n">log_indent</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">log_level</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">screen_root</span><span class="o">=</span><span class="default_value">'./screens'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">window_size</span><span class="o">=</span><span class="default_value">'1280,720'</span></em>, <em class="sig-param"><span class="n">yml</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">spydr.webdriver.</code><code class="sig-name descname">Spydr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auth_password</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">browser</span><span class="o">=</span><span class="default_value">'chrome'</span></em>, <em class="sig-param"><span class="n">drivers_root</span><span class="o">=</span><span class="default_value">os.getcwd()</span></em>, <em class="sig-param"><span class="n">headless</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ini</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">locale</span><span class="o">=</span><span class="default_value">'en'</span></em>, <em class="sig-param"><span class="n">log_indent</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">log_level</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">screen_root</span><span class="o">=</span><span class="default_value">'./screens'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">window_size</span><span class="o">=</span><span class="default_value">'1280,720'</span></em>, <em class="sig-param"><span class="n">yml</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Spydr WebDriver</p>
 <dl class="field-list simple">
@@ -324,6 +386,7 @@
 <li><p><strong>auth_password</strong> (<em>str</em>) – Password for HTTP Basic/Digest Auth. Defaults to None.</p></li>
 <li><p><strong>browser</strong> (<em>str</em>) – Browser to drive. Defaults to ‘chrome’.
 Supported browsers: ‘chrome’, ‘edge’, ‘firefox’, ‘ie’, ‘safari’.</p></li>
+<li><p><strong>drivers_root</strong> (<em>str</em>) – Where to download webdrivers. Defaults to <cite>os.getcwd()</cite>.</p></li>
 <li><p><strong>headless</strong> (<em>bool</em>) – Headless mode. Defaults to False.</p></li>
 <li><p><strong>ini</strong> (<em>str/INI</em>) – INI File. Defaults to None.</p></li>
 <li><p><strong>locale</strong> (<em>str</em>) – Browser locale. Defaults to ‘en’.</p></li>
@@ -2374,14 +2437,17 @@ Offsets are relative to the top-left corner of the element.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.text_content">
-<code class="sig-name descname">text_content</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.text_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.text_content" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">text_content</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">strip</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.text_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.text_content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the element’s text. (Works whether the element is in the viewport or not)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>str</em> – The text of the element</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>strip</strong> (<em>bool</em>) – Whether to strip textContent. Defaults to True.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>str</em> – The text of the element</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2450,7 +2516,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Spydr webdriver timeout for implicitly_wait, page_load_timeout, and script_timeout</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>[int]</em> – Spydr webdriver timeout</p>
+<dd class="field-odd"><p><em>int</em> – Spydr webdriver timeout</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3824,7 +3890,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

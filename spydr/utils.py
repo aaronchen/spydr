@@ -2,6 +2,7 @@ import configparser
 import json
 import os
 import platform
+import random
 import re
 import shutil
 import yaml
@@ -130,7 +131,7 @@ class Utils:
         Returns:
             list: Sorted list of date strings
         """
-        return sorted(dates, key=lambda date: datetime.strptime(date, format), reverse=reverse)
+        return sorted(dates, key=lambda date: Utils.strptime(date, format), reverse=reverse)
 
     @staticmethod
     def remove_dir(dir):
@@ -205,6 +206,31 @@ class Utils:
         return os.path.exists(Utils.to_abspath(path, mkdir=False))
 
     @staticmethod
+    def random_choice(sequence):
+        """Choose a random element from a non-empty sequence.
+
+        Args:
+            sequence (Sequence[_T]): Sequence
+
+        Returns:
+            _T: A random element in the sequence
+        """
+        return random.choice(sequence)
+
+    @staticmethod
+    def random_sample(population, k):
+        """Return a `k` length list of unique elements chosen from the `population` sequence.
+
+        Args:
+            population (Sequence[_T]): Sequence
+            k (int): Length of the returned list
+
+        Returns:
+            List[_T]: Returns a new list containing elements from the population
+        """
+        return random.sample(population, k)
+
+    @staticmethod
     def sanitize(text):
         """Sanitize text to be safe for file names.
 
@@ -216,6 +242,34 @@ class Utils:
         """
         text = str(text).strip().replace(' ', '_')
         return re.sub(r'(?u)[^-\w.\/]', '', text)
+
+    @staticmethod
+    def strip_multi_spaces(words):
+        """Strip multiple spaces between words to be single-spaced.
+
+        Args:
+            words (srt): Words
+
+        Returns:
+            str: Single-spaced words
+        """
+        return ' '.join(words.split()).strip()
+
+    @staticmethod
+    def strptime(date, format=r'%m/%d/%Y'):
+        """Parse date string to `datetime.datetime` object
+
+        Args:
+            date (str): Date string
+            format (str, optional): Date format. Defaults to r'%m/%d/%Y'.
+
+        Returns:
+            datetime.datetime/None: Return datetime.datetime or None if failed to parse date string.
+        """
+        try:
+            return datetime.strptime(date, format)
+        except ValueError:
+            return None
 
     @staticmethod
     def to_abspath(path, suffix=None, root=os.getcwd(), mkdir=True, isdir=False):

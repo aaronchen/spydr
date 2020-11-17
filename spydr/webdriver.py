@@ -4,7 +4,6 @@ import json
 import logging
 import os
 import platform
-import random
 import re
 import string
 import urllib.parse
@@ -58,13 +57,28 @@ class _WebElementSpydrify:
 
 
 class Spydr:
-    """Spydr WebDriver
+    """Spydr(auth_username=None, \
+             auth_password=None, \
+             browser='chrome', \
+             drivers_root=os.getcwd(), \
+             headless=False, \
+             ini=None, \
+             locale='en', \
+             log_indent=2, \
+             log_level=None, \
+             screen_root='./screens', \
+             timeout=30, \
+             window_size='1280,720', \
+             yml=None)
+
+    Spydr WebDriver
 
     Keyword Arguments:
         auth_username (str): Username for HTTP Basic/Digest Auth. Defaults to None.
         auth_password (str): Password for HTTP Basic/Digest Auth. Defaults to None.
         browser (str): Browser to drive. Defaults to 'chrome'.
             Supported browsers: 'chrome', 'edge', 'firefox', 'ie', 'safari'.
+        drivers_root (str): Where to download webdrivers. Defaults to `os.getcwd()`.
         headless (bool): Headless mode. Defaults to False.
         ini (str/INI): INI File. Defaults to None.
         locale (str): Browser locale. Defaults to 'en'.
@@ -96,6 +110,7 @@ class Spydr:
                  auth_username=None,
                  auth_password=None,
                  browser='chrome',
+                 drivers_root=os.getcwd(),
                  headless=False,
                  ini=None,
                  locale='en',
@@ -108,6 +123,7 @@ class Spydr:
         self.auth_username = auth_username
         self.auth_password = auth_password
         self.browser = browser.lower()
+        self.drivers_root = Utils.to_abspath(drivers_root, isdir=True)
         self.headless = headless
         self.ini = ini
         self.log_indent = log_indent if isinstance(log_indent, int) else 2
@@ -1332,7 +1348,7 @@ class Spydr:
         if whitespace:
             sequence += ' '
 
-        string_ = ''.join(random.choice(sequence) for _ in range(size))
+        string_ = ''.join(Utils.random_choice(sequence) for _ in range(size))
 
         return string_.upper() if is_upper else string_
 
@@ -1904,16 +1920,20 @@ class Spydr:
         """
         return typecast(self.find_element(locator).text)
 
-    def text_content(self, locator):
+    def text_content(self, locator, strip=True):
         """Get the element's text. (Works whether the element is in the viewport or not)
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
 
+        Keyword Arguments:
+            strip (bool): Whether to strip textContent. Defaults to True.
+
+
         Returns:
             str: The text of the element
         """
-        return self.find_element(locator).text_content
+        return self.find_element(locator).text_content.strip(None if strip else '')
 
     def texts(self, locator, typecast=str):
         """All Elements' text.
@@ -1970,7 +1990,7 @@ class Spydr:
         """Spydr webdriver timeout for implicitly_wait, page_load_timeout, and script_timeout
 
         Returns:
-            [int]: Spydr webdriver timeout
+            int: Spydr webdriver timeout
         """
         return self.__timeout
 
@@ -2581,7 +2601,7 @@ class Spydr:
 
     def _get_webdriver(self):
         browsers = ('chrome', 'edge', 'firefox', 'ie', 'safari')
-        config = {'path': os.getcwd(), 'log_level': 50}
+        config = {'path': self.drivers_root, 'log_level': 50}
 
         if self.browser not in browsers:
             raise WebDriverException(f'Browser must be one of {browsers}: {self.browser}')
@@ -2702,7 +2722,7 @@ class Spydr:
         return how, what
 
     def _random_option(self, options, ignored_options=[None, "", "0"]):
-        option = random.choice(options)
+        option = Utils.random_choice(options)
 
         if option.value in ignored_options:
             options.remove(option)
@@ -2837,7 +2857,7 @@ class SpydrElement(WebElement):
         Returns:
             WebElement: WebElement
         """
-        how, what = self._parse_locator(locator)
+        how, what = self._parse_locator(locator, descendant=False)
 
         if how == HOWS['css']:
             return self.parent.execute_script('return arguments[0].closest(`${arguments[1]}`);', self, what)
@@ -3469,8 +3489,13 @@ class SpydrElement(WebElement):
     def _actions(self):
         return ActionChains(self.parent)
 
-    def _parse_locator(self, locator):
-        return self.spydr._parse_locator(locator)
+    def _parse_locator(self, locator, descendant=True):
+        how, what = self.spydr._parse_locator(locator)
+
+        if how == HOWS['xpath'] and descendant and what.startswith('/'):
+            what = f'descendant-or-self::{what.lstrip("/")}'
+
+        return how, what
 
     def _wait_until(self, method, timeout=None):
         timeout = int(timeout) if timeout is not None else self.spydr.timeout

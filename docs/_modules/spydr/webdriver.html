@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.4.4 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.4.5 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -50,7 +50,6 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
@@ -104,13 +103,28 @@
 
 
 <div class="viewcode-block" id="Spydr"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr">[docs]</a><span class="k">class</span> <span class="nc">Spydr</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Spydr WebDriver</span>
+    <span class="sd">&quot;&quot;&quot;Spydr(auth_username=None, \</span>
+<span class="sd">             auth_password=None, \</span>
+<span class="sd">             browser=&#39;chrome&#39;, \</span>
+<span class="sd">             drivers_root=os.getcwd(), \</span>
+<span class="sd">             headless=False, \</span>
+<span class="sd">             ini=None, \</span>
+<span class="sd">             locale=&#39;en&#39;, \</span>
+<span class="sd">             log_indent=2, \</span>
+<span class="sd">             log_level=None, \</span>
+<span class="sd">             screen_root=&#39;./screens&#39;, \</span>
+<span class="sd">             timeout=30, \</span>
+<span class="sd">             window_size=&#39;1280,720&#39;, \</span>
+<span class="sd">             yml=None)</span>
+
+<span class="sd">    Spydr WebDriver</span>
 
 <span class="sd">    Keyword Arguments:</span>
 <span class="sd">        auth_username (str): Username for HTTP Basic/Digest Auth. Defaults to None.</span>
 <span class="sd">        auth_password (str): Password for HTTP Basic/Digest Auth. Defaults to None.</span>
 <span class="sd">        browser (str): Browser to drive. Defaults to &#39;chrome&#39;.</span>
 <span class="sd">            Supported browsers: &#39;chrome&#39;, &#39;edge&#39;, &#39;firefox&#39;, &#39;ie&#39;, &#39;safari&#39;.</span>
+<span class="sd">        drivers_root (str): Where to download webdrivers. Defaults to `os.getcwd()`.</span>
 <span class="sd">        headless (bool): Headless mode. Defaults to False.</span>
 <span class="sd">        ini (str/INI): INI File. Defaults to None.</span>
 <span class="sd">        locale (str): Browser locale. Defaults to &#39;en&#39;.</span>
@@ -142,6 +156,7 @@
                  <span class="n">auth_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">auth_password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">browser</span><span class="o">=</span><span class="s1">&#39;chrome&#39;</span><span class="p">,</span>
+                 <span class="n">drivers_root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
                  <span class="n">headless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">ini</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">locale</span><span class="o">=</span><span class="s1">&#39;en&#39;</span><span class="p">,</span>
@@ -154,6 +169,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_username</span> <span class="o">=</span> <span class="n">auth_username</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_password</span> <span class="o">=</span> <span class="n">auth_password</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drivers_root</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">to_abspath</span><span class="p">(</span><span class="n">drivers_root</span><span class="p">,</span> <span class="n">isdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="n">headless</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ini</span> <span class="o">=</span> <span class="n">ini</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_indent</span> <span class="o">=</span> <span class="n">log_indent</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_indent</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="mi">2</span>
@@ -1378,7 +1394,7 @@
         <span class="k">if</span> <span class="n">whitespace</span><span class="p">:</span>
             <span class="n">sequence</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span>
 
-        <span class="n">string_</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="n">string_</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">random_choice</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">string_</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_upper</span> <span class="k">else</span> <span class="n">string_</span></div>
 
@@ -1950,16 +1966,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">typecast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Spydr.text_content"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.text_content">[docs]</a>    <span class="k">def</span> <span class="nf">text_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.text_content"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.text_content">[docs]</a>    <span class="k">def</span> <span class="nf">text_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the element&#39;s text. (Works whether the element is in the viewport or not)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
 
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            strip (bool): Whether to strip textContent. Defaults to True.</span>
+
+
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The text of the element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text_content</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text_content</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">strip</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.texts"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.texts">[docs]</a>    <span class="k">def</span> <span class="nf">texts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">typecast</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All Elements&#39; text.</span>
@@ -2016,7 +2036,7 @@
         <span class="sd">&quot;&quot;&quot;Spydr webdriver timeout for implicitly_wait, page_load_timeout, and script_timeout</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            [int]: Spydr webdriver timeout</span>
+<span class="sd">            int: Spydr webdriver timeout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span>
 
@@ -2627,7 +2647,7 @@
 
     <span class="k">def</span> <span class="nf">_get_webdriver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">browsers</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;chrome&#39;</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="s1">&#39;firefox&#39;</span><span class="p">,</span> <span class="s1">&#39;ie&#39;</span><span class="p">,</span> <span class="s1">&#39;safari&#39;</span><span class="p">)</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;log_level&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">drivers_root</span><span class="p">,</span> <span class="s1">&#39;log_level&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">browsers</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Browser must be one of </span><span class="si">{</span><span class="n">browsers</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -2748,7 +2768,7 @@
         <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span>
 
     <span class="k">def</span> <span class="nf">_random_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">ignored_options</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]):</span>
-        <span class="n">option</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">random_choice</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">ignored_options</span><span class="p">:</span>
             <span class="n">options</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
@@ -2883,7 +2903,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            WebElement: WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">descendant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="n">HOWS</span><span class="p">[</span><span class="s1">&#39;css&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].closest(`$</span><span class="si">{arguments[1]}</span><span class="s1">`);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span>
@@ -3515,8 +3535,13 @@
     <span class="k">def</span> <span class="nf">_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ActionChains</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_parse_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_parse_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">descendant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">how</span><span class="p">,</span> <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">_parse_locator</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="n">HOWS</span><span class="p">[</span><span class="s1">&#39;xpath&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">descendant</span> <span class="ow">and</span> <span class="n">what</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;descendant-or-self::</span><span class="si">{</span><span class="n">what</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">return</span> <span class="n">how</span><span class="p">,</span> <span class="n">what</span>
 
     <span class="k">def</span> <span class="nf">_wait_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">spydr</span><span class="o">.</span><span class="n">timeout</span>
@@ -3555,7 +3580,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
