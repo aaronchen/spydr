@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.4.5 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.4.6 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -222,7 +222,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            cookie (dict): A dictionary object.</span>
-<span class="sd">                Required keys are &quot;name&quot; and &quot;value&quot;.</span>
+<span class="sd">                Required keys are &quot;name&quot; and &quot;value&quot;, and  &quot;value&quot; must be string.</span>
 <span class="sd">                Optional keys are &quot;path&quot;, &quot;domain&quot;, &quot;secure&quot;, and &quot;expiry&quot;.</span>
 
 <span class="sd">        Usage:</span>
@@ -371,6 +371,16 @@
 <span class="sd">            wait_until_enabled (bool): Whether to wait until the element `is_enabled()` before clearing and sending keys. Defaults to False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">clear_and_send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">blur</span><span class="o">=</span><span class="n">blur</span><span class="p">,</span> <span class="n">wait_until_enabled</span><span class="o">=</span><span class="n">wait_until_enabled</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.clear_drawings"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.clear_drawings">[docs]</a>    <span class="k">def</span> <span class="nf">clear_drawings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all drawings made by Spydr.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            let elements = window.document.body.querySelectorAll(&#39;[id*=&quot;spydr_&quot;]&#39;);</span>
+<span class="s1">            for (var i = 0; i &lt; elements.length; i++) </span><span class="se">{{</span><span class="s1"></span>
+<span class="s1">                elements[i].remove();</span>
+<span class="s1">            </span><span class="se">}}</span><span class="s1"></span>
+<span class="s1">            return;</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.click"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.click">[docs]</a>    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">switch_to_new_target</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scroll_into_view</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">behavior</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Click the element.</span>
@@ -589,6 +599,95 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">source_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">source_locator</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span><span class="o">.</span><span class="n">drag_and_drop_by_offset</span><span class="p">(</span><span class="n">source_element</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.draw_rectangle"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.draw_rectangle">[docs]</a>    <span class="k">def</span> <span class="nf">draw_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#f33&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draw(Append) a bordered DIV around the given element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            color (str): The color of the bordered DIV. Defaults to &#39;#f33&#39;.</span>
+<span class="sd">            top (int): padding-top of the bordered DIV. Defaults to 4.</span>
+<span class="sd">            right (int): padding-rightof the bordered DIV. Defaults to 8.</span>
+<span class="sd">            bottom (int): padding-bottom of the bordered DIV. Defaults to 4.</span>
+<span class="sd">            left (int): padding-left of the bordered DIV. Defaults to 8.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type]: [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;spydr_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">randomized_string</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            let rectangle = window.document.createElement(&#39;div&#39;);</span>
+<span class="s1">            rectangle.id = &#39;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&#39;;</span>
+<span class="s1">            rectangle.style.border = &#39;3px solid </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">&#39;;</span>
+<span class="s1">            rectangle.style.display = &#39;block&#39;;</span>
+<span class="s1">            rectangle.style.height = (</span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="n">bottom</span><span class="si">}</span><span class="s1">) + &#39;px&#39;;</span>
+<span class="s1">            rectangle.style.left = (</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s1">) + &#39;px&#39;;</span>
+<span class="s1">            rectangle.style.margin = &#39;0px&#39;;</span>
+<span class="s1">            rectangle.style.padding = &#39;0px&#39;;</span>
+<span class="s1">            rectangle.style.position = &#39;absolute&#39;;</span>
+<span class="s1">            rectangle.style.top = (</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s1">) + &#39;px&#39;;</span>
+<span class="s1">            rectangle.style.width = (</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1">) + &#39;px&#39;;</span>
+<span class="s1">            rectangle.style.zIndex = &#39;99999&#39;;</span>
+<span class="s1">            window.document.body.appendChild(rectangle);</span>
+<span class="s1">            return;</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.draw_text"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.draw_text">[docs]</a>    <span class="k">def</span> <span class="nf">draw_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#f33&#39;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draw(Append) a text DIV element to the given element, by locator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+<span class="sd">            text (str): Text</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            color (str): The color of the text. Defaults to &#39;#f33&#39;.</span>
+<span class="sd">            font_size (int): The font size of the text. Defaults to 16.</span>
+<span class="sd">            top (int): CSS style of top. Defaults to 5.</span>
+<span class="sd">            right (int): CSS style of right. Defaults to 20.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            WebElement: The text DIV element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;spydr_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">randomized_string</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            let textbox = window.document.createElement(&#39;div&#39;);</span>
+<span class="s1">            textbox.id = &#39;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&#39;;</span>
+<span class="s1">            textbox.innerText = &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;;</span>
+<span class="s1">            textbox.style.border = &#39;none&#39;;</span>
+<span class="s1">            textbox.style.color = &#39;</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">&#39;;</span>
+<span class="s1">            textbox.style.display = &#39;block&#39;;</span>
+<span class="s1">            textbox.style.fontFamily = &#39;Verdana, sans-serif&#39;;</span>
+<span class="s1">            textbox.style.fontSize = </span><span class="si">{</span><span class="n">font_size</span><span class="si">}</span><span class="s1"> + &#39;px&#39;;</span>
+<span class="s1">            textbox.style.fontWeight= &#39;bold&#39;;</span>
+<span class="s1">            textbox.style.left = </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1"> + &#39;px&#39;;</span>
+<span class="s1">            textbox.style.margin = &#39;0&#39;;</span>
+<span class="s1">            textbox.style.padding = &#39;0&#39;;</span>
+<span class="s1">            textbox.style.position = &#39;absolute&#39;;</span>
+<span class="s1">            textbox.style.right = </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1"> + &#39;px&#39;;</span>
+<span class="s1">            textbox.style.top = (</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s1">) + &#39;px&#39;;</span>
+<span class="s1">            textbox.style.zIndex = &#39;99999&#39;;</span>
+<span class="s1">            window.document.body.appendChild(textbox);</span>
+<span class="s1">            return;</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1982,10 +2081,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text_content</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">strip</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.texts"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.texts">[docs]</a>    <span class="k">def</span> <span class="nf">texts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">typecast</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;All Elements&#39; text.</span>
+        <span class="sd">&quot;&quot;&quot;Texts of all elements located by the locator.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            locator (str): The locator to identify the elements or list[WebElement]</span>
+<span class="sd">            locator (str/list[WebElement]): The locator to identify the elements or list[WebElement]</span>
 
 <span class="sd">        Keyword Arguments:</span>
 <span class="sd">            typecast: Typecast the texts. Defaults to `str`.</span>
@@ -2569,11 +2668,19 @@
         <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s1">&#39;useAutomationExtension&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s2">&quot;prefs&quot;</span><span class="p">,</span> <span class="p">{</span>
             <span class="s2">&quot;credentials_enable_service&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;download&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;prompt_for_download&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;directory_upgrade&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">},</span>
             <span class="s2">&quot;intl&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;accept_languages&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span>
             <span class="p">},</span>
             <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;password_manager_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;safebrowsing_for_trusted_sources_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;safebrowsing&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
             <span class="p">},</span>
             <span class="s2">&quot;webkit&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;webprefs&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -3469,6 +3576,20 @@
     <span class="k">def</span> <span class="nf">text_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].textContent = `$</span><span class="si">{arguments[1]}</span><span class="s1">`;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">text_</span><span class="p">)</span>
 
+<div class="viewcode-block" id="SpydrElement.texts"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.texts">[docs]</a>    <span class="k">def</span> <span class="nf">texts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_locator</span><span class="p">,</span> <span class="n">typecast</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Text of all children elements, located by child_locator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            child_locator (str): The locator to identify children elements.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            typecast: Typecast the texts. Defaults to `str`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: list of texts, by `typecast`, of the given elements</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">typecast</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">child_locator</span><span class="p">)]</span></div>
+
 <div class="viewcode-block" id="SpydrElement.toggle_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.toggle_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Toggle a Boolean attribute. (IE not supported)</span>
 
@@ -3580,7 +3701,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.4.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

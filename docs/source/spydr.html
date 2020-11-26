@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.4.5 documentation</title>
+    <title>spydr package &#8212; spydr 0.4.6 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -465,7 +465,7 @@ When set to ‘DEBUG’, <cite>debug()</cite>, <cite>info()</cite> and called me
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>cookie</strong> (<em>dict</em>) – A dictionary object.
-Required keys are “name” and “value”.
+Required keys are “name” and “value”, and  “value” must be string.
 Optional keys are “path”, “domain”, “secure”, and “expiry”.</p>
 </dd>
 </dl>
@@ -632,6 +632,12 @@ while others are set to <cite>not is_checked</cite>. Defaults to None.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.clear_drawings">
+<code class="sig-name descname">clear_drawings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.clear_drawings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.clear_drawings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear all drawings made by Spydr.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -883,6 +889,54 @@ then move to the target offset and releases the mouse button.</p>
 <li><p><strong>x_offset</strong> (<em>int</em>) – X offset to move to</p></li>
 <li><p><strong>y_offset</strong> (<em>int</em>) – Y offset to move to</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.draw_rectangle">
+<code class="sig-name descname">draw_rectangle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'#f33'</span></em>, <em class="sig-param"><span class="n">top</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">right</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">bottom</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">left</span><span class="o">=</span><span class="default_value">8</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.draw_rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.draw_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw(Append) a bordered DIV around the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>color</strong> (<em>str</em>) – The color of the bordered DIV. Defaults to ‘#f33’.</p></li>
+<li><p><strong>top</strong> (<em>int</em>) – padding-top of the bordered DIV. Defaults to 4.</p></li>
+<li><p><strong>right</strong> (<em>int</em>) – padding-rightof the bordered DIV. Defaults to 8.</p></li>
+<li><p><strong>bottom</strong> (<em>int</em>) – padding-bottom of the bordered DIV. Defaults to 4.</p></li>
+<li><p><strong>left</strong> (<em>int</em>) – padding-left of the bordered DIV. Defaults to 8.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>[type]</em> – [description]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.draw_text">
+<code class="sig-name descname">draw_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">text</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'#f33'</span></em>, <em class="sig-param"><span class="n">font_size</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">top</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">right</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.draw_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.draw_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw(Append) a text DIV element to the given element, by locator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>color</strong> (<em>str</em>) – The color of the text. Defaults to ‘#f33’.</p></li>
+<li><p><strong>font_size</strong> (<em>int</em>) – The font size of the text. Defaults to 16.</p></li>
+<li><p><strong>top</strong> (<em>int</em>) – CSS style of top. Defaults to 5.</p></li>
+<li><p><strong>right</strong> (<em>int</em>) – CSS style of right. Defaults to 20.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>WebElement</em> – The text DIV element</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2473,10 +2527,10 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.texts">
 <code class="sig-name descname">texts</code><span class="sig-paren">(</span><em class="sig-param">locator</em>, <em class="sig-param">typecast=&lt;class 'str'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.texts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.texts" title="Permalink to this definition">¶</a></dt>
-<dd><p>All Elements’ text.</p>
+<dd><p>Texts of all elements located by the locator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the elements or list[WebElement]</p>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/list</em><em>[</em><em>WebElement</em><em>]</em>) – The locator to identify the elements or list[WebElement]</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><p><strong>typecast</strong> – Typecast the texts. Defaults to <cite>str</cite>.</p>
@@ -3760,6 +3814,23 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.texts">
+<code class="sig-name descname">texts</code><span class="sig-paren">(</span><em class="sig-param">child_locator</em>, <em class="sig-param">typecast=&lt;class 'str'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.texts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.texts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Text of all children elements, located by child_locator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>child_locator</strong> (<em>str</em>) – The locator to identify children elements.</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>typecast</strong> – Typecast the texts. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list</em> – list of texts, by <cite>typecast</cite>, of the given elements</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.toggle_attribute">
 <code class="sig-name descname">toggle_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.toggle_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.toggle_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Toggle a Boolean attribute. (IE not supported)</p>
@@ -3890,7 +3961,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

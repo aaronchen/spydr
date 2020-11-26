@@ -178,7 +178,7 @@ sphinx/make html
 
 ```
 cd spydr
-python setup.py bdist_wheel
+python -B setup.py bdist_wheel
 twine upload dist/*
 ```
 

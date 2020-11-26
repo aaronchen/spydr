@@ -176,7 +176,7 @@ class Spydr:
 
         Args:
             cookie (dict): A dictionary object.
-                Required keys are "name" and "value".
+                Required keys are "name" and "value", and  "value" must be string.
                 Optional keys are "path", "domain", "secure", and "expiry".
 
         Usage:
@@ -325,6 +325,16 @@ class Spydr:
             wait_until_enabled (bool): Whether to wait until the element `is_enabled()` before clearing and sending keys. Defaults to False.
         """
         self.find_element(locator).clear_and_send_keys(*keys, blur=blur, wait_until_enabled=wait_until_enabled)
+
+    def clear_drawings(self):
+        """Clear all drawings made by Spydr."""
+        self.execute_script(f'''
+            let elements = window.document.body.querySelectorAll('[id*="spydr_"]');
+            for (var i = 0; i < elements.length; i++) {{
+                elements[i].remove();
+            }}
+            return;
+        ''')
 
     def click(self, locator, switch_to_new_target=False, scroll_into_view=False, behavior='auto'):
         """Click the element.
@@ -543,6 +553,95 @@ class Spydr:
         """
         source_element = self.find_element(source_locator)
         self.actions().drag_and_drop_by_offset(source_element, x_offset, y_offset).perform()
+
+    def draw_rectangle(self, locator, color='#f33', top=4, right=8, bottom=4, left=8):
+        """Draw(Append) a bordered DIV around the given element.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            color (str): The color of the bordered DIV. Defaults to '#f33'.
+            top (int): padding-top of the bordered DIV. Defaults to 4.
+            right (int): padding-rightof the bordered DIV. Defaults to 8.
+            bottom (int): padding-bottom of the bordered DIV. Defaults to 4.
+            left (int): padding-left of the bordered DIV. Defaults to 8.
+
+        Returns:
+            [type]: [description]
+        """
+        rect = self.rect(locator)
+        x = rect.get('x', 0)
+        y = rect.get('y', 0)
+        width = rect.get('width', 0)
+        height = rect.get('height', 0)
+
+        id = 'spydr_' + self.randomized_string()
+
+        self.execute_script(f'''
+            let rectangle = window.document.createElement('div');
+            rectangle.id = '{id}';
+            rectangle.style.border = '3px solid {color}';
+            rectangle.style.display = 'block';
+            rectangle.style.height = ({height} + {top} + {bottom}) + 'px';
+            rectangle.style.left = ({x} - {left}) + 'px';
+            rectangle.style.margin = '0px';
+            rectangle.style.padding = '0px';
+            rectangle.style.position = 'absolute';
+            rectangle.style.top = ({y} - {top}) + 'px';
+            rectangle.style.width = ({width} + {left} + {right}) + 'px';
+            rectangle.style.zIndex = '99999';
+            window.document.body.appendChild(rectangle);
+            return;
+        ''')
+
+        return self.find_element(f'#{id}')
+
+    def draw_text(self, locator, text, color='#f33', font_size=16, top=5, right=20):
+        """Draw(Append) a text DIV element to the given element, by locator.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+            text (str): Text
+
+        Keyword Arguments:
+            color (str): The color of the text. Defaults to '#f33'.
+            font_size (int): The font size of the text. Defaults to 16.
+            top (int): CSS style of top. Defaults to 5.
+            right (int): CSS style of right. Defaults to 20.
+
+        Returns:
+            WebElement: The text DIV element
+        """
+        rect = self.rect(locator)
+        x = rect.get('x', 0)
+        y = rect.get('y', 0)
+        height = rect.get('height', 0)
+
+        id = 'spydr_' + self.randomized_string()
+
+        self.execute_script(f'''
+            let textbox = window.document.createElement('div');
+            textbox.id = '{id}';
+            textbox.innerText = '{text}';
+            textbox.style.border = 'none';
+            textbox.style.color = '{color}';
+            textbox.style.display = 'block';
+            textbox.style.fontFamily = 'Verdana, sans-serif';
+            textbox.style.fontSize = {font_size} + 'px';
+            textbox.style.fontWeight= 'bold';
+            textbox.style.left = {x} + 'px';
+            textbox.style.margin = '0';
+            textbox.style.padding = '0';
+            textbox.style.position = 'absolute';
+            textbox.style.right = {right} + 'px';
+            textbox.style.top = ({y} + {height} + {top}) + 'px';
+            textbox.style.zIndex = '99999';
+            window.document.body.appendChild(textbox);
+            return;
+        ''')
+
+        return self.find_element(f'#{id}')
 
     @property
     def driver(self):
@@ -1936,10 +2035,10 @@ class Spydr:
         return self.find_element(locator).text_content.strip(None if strip else '')
 
     def texts(self, locator, typecast=str):
-        """All Elements' text.
+        """Texts of all elements located by the locator.
 
         Args:
-            locator (str): The locator to identify the elements or list[WebElement]
+            locator (str/list[WebElement]): The locator to identify the elements or list[WebElement]
 
         Keyword Arguments:
             typecast: Typecast the texts. Defaults to `str`.
@@ -2523,11 +2622,19 @@ class Spydr:
         options.add_experimental_option('useAutomationExtension', False)
         options.add_experimental_option("prefs", {
             "credentials_enable_service": False,
+            "download": {
+                "prompt_for_download": False,
+                "directory_upgrade": True,
+            },
             "intl": {
                 "accept_languages": self.locale
             },
             "profile": {
                 "password_manager_enabled": False
+            },
+            "safebrowsing_for_trusted_sources_enabled": False,
+            "safebrowsing": {
+                "enabled": False
             },
             "webkit": {
                 "webprefs": {
@@ -3422,6 +3529,20 @@ class SpydrElement(WebElement):
     @text_content.setter
     def text_content(self, text_):
         self.parent.execute_script('return arguments[0].textContent = `${arguments[1]}`;', self, text_)
+
+    def texts(self, child_locator, typecast=str):
+        """Text of all children elements, located by child_locator.
+
+        Args:
+            child_locator (str): The locator to identify children elements.
+
+        Keyword Arguments:
+            typecast: Typecast the texts. Defaults to `str`.
+
+        Returns:
+            list: list of texts, by `typecast`, of the given elements
+        """
+        return [typecast(element.text) for element in self.find_elements(child_locator)]
 
     def toggle_attribute(self, name):
         """Toggle a Boolean attribute. (IE not supported)
