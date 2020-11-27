@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.4.6 documentation</title>
+    <title>spydr package &#8212; spydr 0.4.7 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -2088,7 +2088,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>selected</strong> (<em>bool</em>) – Option <cite>selected</cite> state to be</p></li>
-<li><p><strong>option_by</strong> (<em>str</em>) – The method to identify the option. One of <cite>value</cite>, <cite>text</cite>, or <cite>index</cite>. Defaults to ‘value’.</p></li>
+<li><p><strong>option_by</strong> (<em>str</em>) – The method to identify the options. One of <cite>value</cite>, <cite>text</cite>, <cite>index</cite>, or ‘attribute_name’. Defaults to ‘value’.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Raises</dt>
@@ -2101,6 +2101,8 @@ Offsets are relative to the top-left corner of the element.</p>
 <div class="line">select_to_be(‘#group’, 3, selected=False)</div>
 <div class="line"># Select option: &lt;option value=”5”&gt;Volvo&lt;/option&gt;</div>
 <div class="line">select_to_be(‘#car’, ‘Volvo’, option_by=’text’)</div>
+<div class="line"># Select option: &lt;option id=”18”&gt;Peyton Manning&lt;/option&gt;</div>
+<div class="line">select_to_be(‘#qb’, 18, option_by=’id’)</div>
 </div>
 </dd></dl>
 
@@ -2139,6 +2141,33 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error if failing to randomly select an option</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.select_to_be_some">
+<code class="sig-name descname">select_to_be_some</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">select_locator</span></em>, <em class="sig-param"><span class="n">option_values</span></em>, <em class="sig-param"><span class="n">selected</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">option_by</span><span class="o">=</span><span class="default_value">'value'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.select_to_be_some"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.select_to_be_some" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set <cite>selected</cite> state on the given options, by <cite>option_values</cite>, in a <cite>multiple</cite> select element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>select_locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p></li>
+<li><p><strong>option_values</strong> (<em>list</em>) – The list of values to identify the options by using <cite>option_by</cite> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>selected</strong> (<em>bool</em>) – Option <cite>selected</cite> state to be</p></li>
+<li><p><strong>option_by</strong> (<em>str</em>) – The method to identify the options. One of <cite>value</cite>, <cite>text</cite>, <cite>index</cite>, or ‘attribute_name’. Defaults to ‘value’.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>InvalidSelectorException</strong> – Raise an error when the element is not a select</p></li>
+<li><p><strong>WebDriverException</strong> – Raise an error if select_locator is not <cite>multiple</cite></p></li>
+<li><p><strong>WebDriverException</strong> – Raise an error if option_values is not a <cite>list</cite></p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -3477,10 +3506,10 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 <dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.is_located">
 <code class="sig-name descname">is_located</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.is_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.is_located" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the element is located in the given seconds.</p>
+<dd><p>Check if the child element is located in the given seconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the element</p>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str</em>) – The locator to identify the child element</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><p><strong>seconds</strong> (<em>int</em>) – Seconds to wait until giving up. Defaults to <cite>implicitly_wait</cite>.</p>
@@ -3961,7 +3990,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

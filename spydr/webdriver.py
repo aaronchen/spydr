@@ -1657,7 +1657,7 @@ class Spydr:
 
         Keyword Arguments:
             selected (bool): Option `selected` state to be
-            option_by (str): The method to identify the option. One of `value`, `text`, or `index`. Defaults to 'value'.
+            option_by (str): The method to identify the options. One of `value`, `text`, `index`, or 'attribute_name'. Defaults to 'value'.
 
         Raises:
             InvalidSelectorException: Raise an error when the element is not a select
@@ -1667,53 +1667,12 @@ class Spydr:
             | select_to_be('#group', 3, selected=False)
             | # Select option: <option value="5">Volvo</option>
             | select_to_be('#car', 'Volvo', option_by='text')
-        """
-        select = self.wait_until(lambda _: self._is_selectable(select_locator))
-        option = None
-
-        if not select:
-            raise WebDriverException(f'Select has no option: {select_locator}')
-
-        if option_by == 'value':
-            option = select.find_element(f'[value="{option_value}"]')
-        elif option_by == 'text':
-            option = select.find_element(f'//*[text()="{option_value}"]')
-        elif option_by == 'index':
-            options = select.find_elements('tag_name=option')
-            index = int(option_value)
-            option = options[index] if index < len(options) else None
-
-        if not option:
-            raise WebDriverException(f'Cannot using "{option_by}" to identify the option: {option_value}')
-
-        if option.is_selected() != selected:
-            self.click(option)
-
-    def select_to_be_random(self, select_locator, ignored_options=[None, "", "0"]):
-        """Randomly select an `option` in the `select` menu
-
-        Args:
-            select_locator (str/WebElement): The locator to identify the element or WebElement
-
-        Keyword Arguments:
-            ignored_options (list): Options to exlcude from selection. Defaults to [None, "", "0"].
-
-        Raises:
-            WebDriverException: Raise an error if failing to randomly select an option
+            | # Select option: <option id="18">Peyton Manning</option>
+            | select_to_be('#qb', 18, option_by='id')
         """
         select = self.wait_until(lambda _: self._is_selectable(select_locator))
 
-        if not select:
-            raise WebDriverException(f'Select has no option: {select_locator}')
-
-        options = select.find_elements('css=option')
-
-        random_option = self._random_option(options, ignored_options=ignored_options)
-
-        if random_option:
-            random_option.click()
-        else:
-            raise WebDriverException(f'Cannot randomly select an option in: {select_locator}')
+        self._option_to_be(select, option_value, selected, option_by)
 
     def select_to_be_all(self, select_locator):
         """Select all `option` in a **multiple** `select` drop-down menu.
@@ -1732,6 +1691,56 @@ class Spydr:
         """
         select = self.find_element(select_locator)
         self._multiple_select_to_be(select, False)
+
+    def select_to_be_random(self, select_locator, ignored_options=[None, "", "0"]):
+        """Randomly select an `option` in the `select` menu
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            ignored_options (list): Options to exlcude from selection. Defaults to [None, "", "0"].
+
+        Raises:
+            WebDriverException: Raise an error if failing to randomly select an option
+        """
+        select = self.wait_until(lambda _: self._is_selectable(select_locator))
+
+        options = select.find_elements('css=option')
+
+        random_option = self._random_option(options, ignored_options=ignored_options)
+
+        if random_option:
+            random_option.click()
+        else:
+            raise WebDriverException(f'Cannot randomly select an option in: {select_locator}')
+
+    def select_to_be_some(self, select_locator, option_values, selected=True, option_by='value'):
+        """Set `selected` state on the given options, by `option_values`, in a `multiple` select element.
+
+        Args:
+            select_locator (str/WebElement): The locator to identify the element or WebElement
+            option_values (list): The list of values to identify the options by using `option_by` method.
+
+        Keyword Arguments:
+            selected (bool): Option `selected` state to be
+            option_by (str): The method to identify the options. One of `value`, `text`, `index`, or 'attribute_name'. Defaults to 'value'.
+
+        Raises:
+            InvalidSelectorException: Raise an error when the element is not a select
+            WebDriverException: Raise an error if select_locator is not `multiple`
+            WebDriverException: Raise an error if option_values is not a `list`
+        """
+        select = self.wait_until(lambda _: self._is_selectable(select_locator))
+
+        if not select.get_attribute('multiple'):
+            raise WebDriverException(f'select is not multiple: {select_locator}')
+
+        if not isinstance(option_values, list):
+            raise WebDriverException(f'option_values is not a list: {option_values}')
+
+        for option_value in option_values:
+            self._option_to_be(select, option_value, selected, option_by, multiple=True)
 
     def selected_options(self, select_locator, by='value'):
         """Get values of **selected** `option` in a `select` drop-down menu.
@@ -2816,6 +2825,29 @@ class Spydr:
         else:
             raise WebDriverException(f'Element is not a multiple select: {element}')
 
+    def _option_to_be(self, select, option_value, selected, option_by, multiple=False):
+        option = None
+
+        if option_by == 'value':
+            option = select.find_element(f'[value="{option_value}"]')
+        elif option_by == 'text':
+            option = select.find_element(f'//*[text()="{option_value}"]')
+        elif option_by == 'index':
+            options = select.find_elements('tag_name=option')
+            index = int(option_value)
+            option = options[index] if index < len(options) else None
+        else:
+            option = select.find_element(f'[{option_by}="{option_value}"]')
+
+        if not option:
+            raise WebDriverException(f'Cannot using "{option_by}" to identify the option: {option_value}')
+
+        if option.is_selected() != selected:
+            if multiple:
+                option.click()
+            else:
+                self.click(option)
+
     def _parse_locator(self, locator):
         how, what = Utils.parse_locator(locator)
 
@@ -3195,10 +3227,10 @@ class SpydrElement(WebElement):
         return super().is_enabled()
 
     def is_located(self, locator, seconds=None):
-        """Check if the element is located in the given seconds.
+        """Check if the child element is located in the given seconds.
 
         Args:
-            locator (str): The locator to identify the element
+            locator (str): The locator to identify the child element
 
         Keyword Arguments:
             seconds (int): Seconds to wait until giving up. Defaults to `implicitly_wait`.
