@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.4.7 documentation</title>
+    <title>spydr package &#8212; spydr 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -129,6 +129,27 @@
 <dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when <cite>how=what</cite> can not be parsed</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="spydr.utils.Utils.compact">
+<em class="property">static </em><code class="sig-name descname">compact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">function</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.compact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.compact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter items, by <cite>function</cite>, in list/set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterable</strong> (<em>list/set</em>) – Iterable</p></li>
+<li><p><strong>function</strong> – Function to filter. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list</em> – Filtered list</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line">compact([‘’, ‘a’, ‘’, ‘b’, 0, None, 1]) =&gt; [a’, b’, 1]</div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt id="spydr.utils.Utils.date_sorted">
 <em class="property">static </em><code class="sig-name descname">date_sorted</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dates</span></em>, <em class="sig-param"><span class="n">reverse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.date_sorted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.date_sorted" title="Permalink to this definition">¶</a></dt>
@@ -231,6 +252,29 @@
 <dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – File path</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.same_set">
+<em class="property">static </em><code class="sig-name descname">same_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string_1</span></em>, <em class="sig-param"><span class="n">string_2</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">',?\\s+'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.same_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.same_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if <cite>string_1</cite> and <cite>string_2</cite> are the same set after being split by <cite>sep</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string_1</strong> (<em>str</em>) – String 1</p></li>
+<li><p><strong>string_2</strong> (<em>str</em>) – String 2</p></li>
+<li><p><strong>sep</strong> (<em>regexp</em><em>, </em><em>optional</em>) – Regex separator. Defaults to r’,?s+’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether string_1 and string_2 are the same</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line">same_set(‘Bruce Lee’, ‘Lee, Bruce’) =&gt; True</div>
+<div class="line">same_set(‘Bruce Lee’, ‘Lee Bruce’) =&gt; True</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -638,6 +682,18 @@ while others are set to <cite>not is_checked</cite>. Defaults to None.</p>
 <dt id="spydr.webdriver.Spydr.clear_drawings">
 <code class="sig-name descname">clear_drawings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.clear_drawings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.clear_drawings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear all drawings made by Spydr.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.clear_local_storage">
+<code class="sig-name descname">clear_local_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.clear_local_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.clear_local_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear localStorage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.clear_session_storage">
+<code class="sig-name descname">clear_session_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.clear_session_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.clear_session_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear sessionStorage.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1133,6 +1189,20 @@ Refer to: <a class="reference external" href="https://chromedevtools.github.io/d
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.get_local_storage_item">
+<code class="sig-name descname">get_local_storage_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.get_local_storage_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.get_local_storage_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get item’s value from localStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Item name in localStorage</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Item’s value from localStorage. (Deserialized with <cite>json.loads</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.get_property">
 <code class="sig-name descname">get_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.get_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.get_property" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the given property of the element.</p>
@@ -1182,6 +1252,20 @@ Refer to: <a class="reference external" href="https://chromedevtools.github.io/d
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>bytes</em> – Binary data of the screenshot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.get_session_storage_item">
+<code class="sig-name descname">get_session_storage_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.get_session_storage_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.get_session_storage_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get item’s value from sessionStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Item name in sessionStorage</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Item’s value from sessionStorage. (Deserialized with <cite>json.loads</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1492,6 +1576,58 @@ Refer to: <a class="reference external" href="https://chromedevtools.github.io/d
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – File name</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line"># cookies.json file</div>
+<div class="line">[</div>
+<div class="line-block">
+<div class="line">{ “name”: “name1”, “value”: “true” },</div>
+<div class="line">{ “name”: “name2”, “value”: “false” },</div>
+</div>
+<div class="line">]</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.load_local_storage">
+<code class="sig-name descname">load_local_storage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.load_local_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.load_local_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load JSON file to localStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – File name</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line"># local_storage.json file</div>
+<div class="line">{</div>
+<div class="line-block">
+<div class="line">“name1”: “true”,</div>
+<div class="line">“name2”: “false”</div>
+</div>
+<div class="line">}</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.load_session_storage">
+<code class="sig-name descname">load_session_storage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.load_session_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.load_session_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load JSON file to sessionStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – File name</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line"># session_storage.json file</div>
+<div class="line">{</div>
+<div class="line-block">
+<div class="line">“name1”: “true”,</div>
+<div class="line">“name2”: “false”</div>
+</div>
+<div class="line">}</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2251,6 +2387,34 @@ Offsets are relative to the top-left corner of the element.</p>
 <li><p><strong>key</strong> (<em>str</em>) – Key name</p></li>
 <li><p><strong>value</strong> – Value (any data type JSON supports)</p></li>
 <li><p><strong>section</strong> – INI section. Defaults to the default section.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.set_local_storage_item">
+<code class="sig-name descname">set_local_storage_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.set_local_storage_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.set_local_storage_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Item and its value to localStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Item name in localStorage</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – Item’s value. Non-string value is auto serialized with <cite>json.dumps</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.set_session_storage_item">
+<code class="sig-name descname">set_session_storage_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.set_session_storage_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.set_session_storage_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Item and its value to sessionStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Item name in sessionStorage</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – Item’s value. Non-string value is auto-serialized with <cite>json.dumps</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -3990,7 +4154,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

@@ -36,6 +36,70 @@ from webdriver_manager.microsoft import IEDriverManager, EdgeChromiumDriverManag
 from .utils import INI, HOWS, Utils, YML
 
 
+# localStorage and sessionStorage
+class _Storage:
+    def __init__(self, driver, storage):
+        if storage not in ['localStorage', 'sessionStorage']:
+            raise WebDriverException(f'localStorage and sessionStorage are the only supported storages: {storage}')
+
+        self.driver = driver
+        self.storage = storage
+
+    def __len__(self):
+        return self.driver.execute_script(f'return window.{self.storage}.length;')
+
+    def items(self):
+        return self.driver.execute_script(f'''
+            let storage = window.{self.storage};
+            let items = {{}};
+            Object.keys(storage).forEach(function (key) {{ 
+                items[keys] = storage.getItem(key);
+            }});
+            return items;
+        ''')
+
+    def keys(self):
+        return self.driver.execute_script(f'return Object.keys(window.{self.storage});')
+
+    def get(self, name):
+        value = self.driver.execute_script(f'return window.{self.storage}.getItem(arguments[0]);', name)
+
+        if isinstance(value, str):
+            value = json.loads(value)
+
+        return value
+
+    def set(self, name, value):
+        if not isinstance(value, str):
+            value = json.dumps(value)
+
+        self.driver.execute_script(f'window.{self.storage}.setItem(arguments[0], arguments[1]);', name, value)
+
+    def has(self, name):
+        return name in self.keys()
+
+    def remove(self, name):
+        self.driver.execute_script(f'window.{self.storage}.removeItem(arguments[0]);', name)
+
+    def clear(self):
+        self.driver.execute_script(f'window.{self.storage}.clear();')
+
+    def __getitem__(self, name):
+        return self.get(name)
+
+    def __setitem__(self, name, value):
+        self.set(name, value)
+
+    def __contains__(self, name):
+        return name in self.keys()
+
+    def __iter__(self):
+        return self.items().__iter__()
+
+    def __repr__(self):
+        return self.items().__str__()
+
+
 # Spydrify WebElement
 class _WebElementSpydrify:
     def __call__(self, fn):
@@ -135,6 +199,8 @@ class Spydr:
         self.driver = self._get_webdriver()
         self.logger = self._get_logger()
         self.timeout = timeout
+        self.local_storage = _Storage(self.driver, 'localStorage')
+        self.session_storage = _Storage(self.driver, 'sessionStorage')
 
     def abspath(self, path, suffix=None, root=os.getcwd(), mkdir=True, isdir=False):
         """abspath(path, suffix='.png', root=os.getcwd(), mkdir=True, isdir=False)
@@ -335,6 +401,14 @@ class Spydr:
             }}
             return;
         ''')
+
+    def clear_local_storage(self):
+        """Clear localStorage."""
+        self.local_storage.clear()
+
+    def clear_session_storage(self):
+        """Clear sessionStorage."""
+        self.session_storage.clear()
 
     def click(self, locator, switch_to_new_target=False, scroll_into_view=False, behavior='auto'):
         """Click the element.
@@ -820,6 +894,17 @@ class Spydr:
         if self.ini:
             return self.ini.get_key(key, section)
 
+    def get_local_storage_item(self, name):
+        """Get item's value from localStorage.
+
+        Args:
+            name (str): Item name in localStorage
+
+        Returns:
+            Item's value from localStorage. (Deserialized with `json.loads`)
+        """
+        return self.local_storage.get(name)
+
     def get_property(self, locator, name):
         """Get the given property of the element.
 
@@ -863,6 +948,17 @@ class Spydr:
         """
         self.wait_until_page_loaded()
         return self.driver.get_screenshot_as_png()
+
+    def get_session_storage_item(self, name):
+        """Get item's value from sessionStorage.
+
+        Args:
+            name (str): Item name in sessionStorage
+
+        Returns:
+            Item's value from sessionStorage. (Deserialized with `json.loads`)
+        """
+        return self.session_storage.get(name)
 
     def get_window_position(self, window_handle='current'):
         """Get the x and y position of the given window.
@@ -1123,12 +1219,57 @@ class Spydr:
 
         Args:
             filename (str): File name
+
+        Examples:
+            | # cookies.json file
+            | [
+            |   { "name": "name1", "value": "true" },
+            |   { "name": "name2", "value": "false" },
+            | ]
         """
         file_ = self.abspath(filename, suffix='.json', mkdir=False)
         with open(file_, "r") as cookie_file:
             cookies = json.load(cookie_file)
             for cookie in cookies:
                 self.add_cookie(cookie)
+
+    def load_local_storage(self, filename):
+        """Load JSON file to localStorage.
+
+        Args:
+            filename (str): File name
+
+        Examples:
+            | # local_storage.json file
+            | {
+            |   "name1": "true",
+            |   "name2": "false"
+            | }
+        """
+        file_ = self.abspath(filename, suffix='.json', mkdir=False)
+        with open(file_, "r") as storage_file:
+            storage = json.load(storage_file)
+            for name, value in storage.items():
+                self.set_local_storage_item(name, value)
+
+    def load_session_storage(self, filename):
+        """Load JSON file to sessionStorage.
+
+        Args:
+            filename (str): File name
+
+        Examples:
+            | # session_storage.json file
+            | {
+            |   "name1": "true",
+            |   "name2": "false"
+            | }
+        """
+        file_ = self.abspath(filename, suffix='.json', mkdir=False)
+        with open(file_, "r") as storage_file:
+            storage = json.load(storage_file)
+            for name, value in storage.items():
+                self.set_session_storage_item(name, value)
 
     def location(self, locator):
         """The location of the element in the renderable canvas.
@@ -1826,6 +1967,24 @@ class Spydr:
         """
         if self.ini:
             self.ini.set_key(key, value, section)
+
+    def set_local_storage_item(self, name, value):
+        """Set Item and its value to localStorage.
+
+        Args:
+            name (str): Item name in localStorage
+            value (str): Item's value. Non-string value is auto serialized with `json.dumps`.
+        """
+        self.local_storage.set(name, value)
+
+    def set_session_storage_item(self, name, value):
+        """Set Item and its value to sessionStorage.
+
+        Args:
+            name (str): Item name in sessionStorage
+            value (str): Item's value. Non-string value is auto-serialized with `json.dumps`.
+        """
+        self.session_storage.set(name, value)
 
     def set_window_position(self, x, y, window_handle='current'):
         """Set the x and y position of the current window

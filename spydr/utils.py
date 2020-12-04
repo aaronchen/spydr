@@ -118,6 +118,22 @@ class Utils:
         WebDriverException: Raise an error when `how=what` can not be parsed
     """
     @staticmethod
+    def compact(iterable, function=None):
+        """Filter items, by `function`, in list/set. 
+
+        Args:
+            iterable (list/set): Iterable
+            function: Function to filter. Defaults to None.
+
+        Returns:
+            list: Filtered list
+
+        Examples:
+            | compact(['', 'a', '', 'b', 0, None, 1]) => [a', b', 1]
+        """
+        return list(filter(function, iterable))
+
+    @staticmethod
     def date_sorted(dates, reverse=False, format=r'%m/%d/%Y'):
         """Sort list of date strings.
 
@@ -156,6 +172,26 @@ class Utils:
 
         if os.path.exists(file):
             os.remove(file)
+
+    @staticmethod
+    def same_set(string_1, string_2, sep=r',?\s+'):
+        """Check if `string_1` and `string_2` are the same set after being split by `sep`.
+
+        Args:
+            string_1 (str): String 1
+            string_2 (str): String 2
+            sep (regexp, optional): Regex separator. Defaults to r',?\s+'.
+
+        Returns:
+            bool: Whether string_1 and string_2 are the same
+
+        Examples:
+            | same_set('Bruce Lee', 'Lee, Bruce') => True
+            | same_set('Bruce Lee', 'Lee Bruce') => True
+        """
+        string_1_set = set(re.split(sep, string_1))
+        string_2_set = set(re.split(sep, string_2))
+        return string_1_set == string_2_set
 
     @staticmethod
     def parse_locator(locator):
