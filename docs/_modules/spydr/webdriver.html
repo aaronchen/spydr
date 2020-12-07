@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.5.0 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -178,6 +178,7 @@
 <span class="sd">             log_level=None, \</span>
 <span class="sd">             screen_root=&#39;./screens&#39;, \</span>
 <span class="sd">             timeout=30, \</span>
+<span class="sd">             whitelist=None, \</span>
 <span class="sd">             window_size=&#39;1280,720&#39;, \</span>
 <span class="sd">             yml=None)</span>
 
@@ -198,6 +199,7 @@
 <span class="sd">            When set to &#39;DEBUG&#39;, `debug()`, `info()` and called methods will be shown.</span>
 <span class="sd">        screen_root (str): The directory of saved screenshots. Defaults to &#39;./screens&#39;.</span>
 <span class="sd">        timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.</span>
+<span class="sd">        whitelist (str): URLs to whitelist (only Chrome/Firefox). An example of whitelist is &#39;google.com, apple.com&#39;. Defaults to None.</span>
 <span class="sd">        window_size (str): The size of the window when headless. Defaults to &#39;1280,720&#39;.</span>
 <span class="sd">        yml (str/bytes/os.PathLike/YML): YAML File. Defaults to None.</span>
 
@@ -228,6 +230,7 @@
                  <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">screen_root</span><span class="o">=</span><span class="s1">&#39;./screens&#39;</span><span class="p">,</span>
                  <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                 <span class="n">whitelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">window_size</span><span class="o">=</span><span class="s1">&#39;1280,720&#39;</span><span class="p">,</span>
                  <span class="n">yml</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_username</span> <span class="o">=</span> <span class="n">auth_username</span>
@@ -239,6 +242,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log_indent</span> <span class="o">=</span> <span class="n">log_indent</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_indent</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="mi">2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span> <span class="k">if</span> <span class="n">log_level</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;INFO&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">50</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">screen_root</span> <span class="o">=</span> <span class="n">screen_root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span> <span class="o">=</span> <span class="n">whitelist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yml</span> <span class="o">=</span> <span class="n">yml</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_locale</span><span class="p">(</span><span class="n">locale</span><span class="p">)</span>
@@ -2832,6 +2836,9 @@
         <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ignore-certificate-errors&#39;</span><span class="p">)</span>
         <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;ignore-ssl-errors=yes&#39;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;auth-server-whitelist=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_whitelist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span><span class="p">,</span> <span class="n">wildcard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s2">&quot;excludeSwitches&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;enable-automation&#39;</span><span class="p">,</span> <span class="s1">&#39;enable-logging&#39;</span><span class="p">])</span>
         <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s1">&#39;useAutomationExtension&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s2">&quot;prefs&quot;</span><span class="p">,</span> <span class="p">{</span>
@@ -2885,8 +2892,10 @@
         <span class="n">profile</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">FirefoxProfile</span><span class="p">()</span>
         <span class="n">profile</span><span class="o">.</span><span class="n">accept_untrusted_certs</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">profile</span><span class="o">.</span><span class="n">assume_untrusted_cert_issuer</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="c1"># profile.set_preference(&#39;network.automatic-ntlm-auth.trusted-uris&#39;, &#39;.companyname.com&#39;)</span>
         <span class="n">profile</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s1">&#39;intl.accept_languages&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span><span class="p">:</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s1">&#39;network.automatic-ntlm-auth.trusted-uris&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_whitelist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span><span class="p">))</span>
 
         <span class="n">options</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">FirefoxOptions</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
@@ -2941,6 +2950,16 @@
             <span class="k">return</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Ie</span><span class="p">(</span><span class="n">executable_path</span><span class="o">=</span><span class="n">IEDriverManager</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">install</span><span class="p">(),</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ie_options</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">==</span> <span class="s1">&#39;safari&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Safari</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_whitelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;,?\s+&#39;</span><span class="p">,</span> <span class="n">wildcard</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">url_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">,</span> <span class="n">urls</span><span class="p">):</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">netloc</span> <span class="o">=</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">netloc</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;*.&#39;</span><span class="p">)</span>
+            <span class="n">url_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;*.</span><span class="si">{</span><span class="n">netloc</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">wildcard</span> <span class="k">else</span> <span class="n">netloc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ie_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">options</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">IeOptions</span><span class="p">()</span>
@@ -3892,7 +3911,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

@@ -132,6 +132,7 @@ class Spydr:
              log_level=None, \
              screen_root='./screens', \
              timeout=30, \
+             whitelist=None, \
              window_size='1280,720', \
              yml=None)
 
@@ -152,6 +153,7 @@ class Spydr:
             When set to 'DEBUG', `debug()`, `info()` and called methods will be shown.
         screen_root (str): The directory of saved screenshots. Defaults to './screens'.
         timeout (int): Timeout for implicitly_wait, page_load_timeout, and script_timeout. Defaults to 30.
+        whitelist (str): URLs to whitelist (only Chrome/Firefox). An example of whitelist is 'google.com, apple.com'. Defaults to None.
         window_size (str): The size of the window when headless. Defaults to '1280,720'.
         yml (str/bytes/os.PathLike/YML): YAML File. Defaults to None.
 
@@ -182,6 +184,7 @@ class Spydr:
                  log_level=None,
                  screen_root='./screens',
                  timeout=30,
+                 whitelist=None,
                  window_size='1280,720',
                  yml=None):
         self.auth_username = auth_username
@@ -193,6 +196,7 @@ class Spydr:
         self.log_indent = log_indent if isinstance(log_indent, int) else 2
         self.log_level = logging.getLevelName(log_level) if log_level in ['DEBUG', 'INFO'] else 50
         self.screen_root = screen_root
+        self.whitelist = whitelist
         self.window_size = window_size
         self.yml = yml
         self.locale = self._format_locale(locale)
@@ -2786,6 +2790,9 @@ class Spydr:
         options.add_argument('ignore-certificate-errors')
         options.add_argument('ignore-ssl-errors=yes')
 
+        if self.whitelist:
+            options.add_argument(f'auth-server-whitelist={self._get_whitelist(self.whitelist, wildcard=True)}')
+
         options.add_experimental_option("excludeSwitches", ['enable-automation', 'enable-logging'])
         options.add_experimental_option('useAutomationExtension', False)
         options.add_experimental_option("prefs", {
@@ -2839,8 +2846,10 @@ class Spydr:
         profile = webdriver.FirefoxProfile()
         profile.accept_untrusted_certs = True
         profile.assume_untrusted_cert_issuer = False
-        # profile.set_preference('network.automatic-ntlm-auth.trusted-uris', '.companyname.com')
         profile.set_preference('intl.accept_languages', self.locale)
+
+        if self.whitelist:
+            profile.set_preference('network.automatic-ntlm-auth.trusted-uris', self._get_whitelist(self.whitelist))
 
         options = webdriver.FirefoxOptions()
         options.profile = profile
@@ -2895,6 +2904,16 @@ class Spydr:
             return webdriver.Ie(executable_path=IEDriverManager(**config).install(), options=self._ie_options())
         if self.browser == 'safari':
             return webdriver.Safari()
+
+    def _get_whitelist(self, urls, sep=r',?\s+', wildcard=False):
+        url_list = []
+
+        for url in re.split(sep, urls):
+            o = urllib.parse.urlparse(url)
+            netloc = (o.netloc or o.path).lstrip('*.')
+            url_list.append(f'*.{netloc}' if wildcard else netloc)
+
+        return ','.join(url_list)
 
     def _ie_options(self):
         options = webdriver.IeOptions()
