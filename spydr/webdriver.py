@@ -78,6 +78,18 @@ class _Storage:
     def has(self, name):
         return name in self.keys()
 
+    def has_storage(self):
+        return self.driver.execute_script(f'''
+            try {{
+                let uid = new Date;
+                window.{self.storage}.setItem(uid, uid);
+                window.{self.storage}.removeItem(uid);
+                return true;
+            }} catch (exception) {{
+                return false;
+            }}
+        ''')
+
     def remove(self, name):
         self.driver.execute_script(f'window.{self.storage}.removeItem(arguments[0]);', name)
 
@@ -1030,6 +1042,22 @@ class Spydr:
             bool: Whether the CSS class exists
         """
         return self.find_element(locator).has_class(class_name)
+
+    def has_local_storage(self):
+        """Check access to localStorage.
+
+        Returns:
+            bool: Whether has access to localStorage or not
+        """
+        return self.local_storage.has_storage()
+
+    def has_session_storage(self):
+        """Check access to sessionStorage.
+
+        Returns:
+            bool: Whether has access to sessionStorage or not
+        """
+        return self.session_storage.has_storage()
 
     def has_text(self, locator, text):
         """Check if the element contains the given `text`.
@@ -2365,7 +2393,7 @@ class Spydr:
         """Create a WebDriverWait instance and wait until the given method is evaluated to not False.
 
         Args:
-            method (callable): Method to call
+            method (callable): Method to call, and the method takes WebDriver instance as the parameter.
 
         Keyword Arguments:
             timeout (int): Timeout. Defaults to `self.timeout`.
@@ -2374,6 +2402,9 @@ class Spydr:
 
         Returns:
             Any applicable return from the method call
+
+        Examples:
+            | wait_until(lambda wd: method(wd), timeout=5)
         """
         timeout = int(timeout) if timeout is not None else self.timeout
         return self.wait(self.driver, timeout, poll_frequency, ignored_exceptions).until(method)

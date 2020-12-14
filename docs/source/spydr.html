@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.5.1 documentation</title>
+    <title>spydr package &#8212; spydr 0.5.2 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -131,7 +131,7 @@
 </dl>
 <dl class="py method">
 <dt id="spydr.utils.Utils.compact">
-<em class="property">static </em><code class="sig-name descname">compact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">function</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.compact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.compact" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">compact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">function</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sorting</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.compact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.compact" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter items, by <cite>function</cite>, in list/set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -140,8 +140,14 @@
 <li><p><strong>function</strong> – Function to filter. Defaults to None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>list</em> – Filtered list</p>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>sorting</strong> (<em>bool</em>) – Whether to sort the returned list.</p></li>
+<li><p><strong>unique</strong> (<em>bool</em>) – Whether to remove duplicates in the returned list</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>list</em> – Filtered list</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1358,6 +1364,28 @@ Refer to: <a class="reference external" href="https://chromedevtools.github.io/d
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>bool</em> – Whether the CSS class exists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.has_local_storage">
+<code class="sig-name descname">has_local_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.has_local_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.has_local_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check access to localStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em> – Whether has access to localStorage or not</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.has_session_storage">
+<code class="sig-name descname">has_session_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.has_session_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.has_session_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check access to sessionStorage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em> – Whether has access to sessionStorage or not</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2899,7 +2927,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd><p>Create a WebDriverWait instance and wait until the given method is evaluated to not False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>method</strong> (<em>callable</em>) – Method to call</p>
+<dd class="field-odd"><p><strong>method</strong> (<em>callable</em>) – Method to call, and the method takes WebDriver instance as the parameter.</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
@@ -2912,6 +2940,10 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd class="field-odd"><p>Any applicable return from the method call</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="line-block">
+<div class="line">wait_until(lambda wd: method(wd), timeout=5)</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -4155,7 +4187,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

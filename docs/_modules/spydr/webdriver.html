@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.5.1 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.5.2 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -123,6 +123,18 @@
 
     <span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">has_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            try </span><span class="se">{{</span><span class="s1"></span>
+<span class="s1">                let uid = new Date;</span>
+<span class="s1">                window.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="si">}</span><span class="s1">.setItem(uid, uid);</span>
+<span class="s1">                window.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="si">}</span><span class="s1">.removeItem(uid);</span>
+<span class="s1">                return true;</span>
+<span class="s1">            </span><span class="se">}}</span><span class="s1"> catch (exception) </span><span class="se">{{</span><span class="s1"></span>
+<span class="s1">                return false;</span>
+<span class="s1">            </span><span class="se">}}</span><span class="s1"></span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;window.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="si">}</span><span class="s1">.removeItem(arguments[0]);&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -1076,6 +1088,22 @@
 <span class="sd">            bool: Whether the CSS class exists</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">has_class</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.has_local_storage"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.has_local_storage">[docs]</a>    <span class="k">def</span> <span class="nf">has_local_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check access to localStorage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether has access to localStorage or not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_storage</span><span class="o">.</span><span class="n">has_storage</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.has_session_storage"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.has_session_storage">[docs]</a>    <span class="k">def</span> <span class="nf">has_session_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check access to sessionStorage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether has access to sessionStorage or not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_storage</span><span class="o">.</span><span class="n">has_storage</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Spydr.has_text"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.has_text">[docs]</a>    <span class="k">def</span> <span class="nf">has_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the element contains the given `text`.</span>
@@ -2411,7 +2439,7 @@
         <span class="sd">&quot;&quot;&quot;Create a WebDriverWait instance and wait until the given method is evaluated to not False.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            method (callable): Method to call</span>
+<span class="sd">            method (callable): Method to call, and the method takes WebDriver instance as the parameter.</span>
 
 <span class="sd">        Keyword Arguments:</span>
 <span class="sd">            timeout (int): Timeout. Defaults to `self.timeout`.</span>
@@ -2420,6 +2448,9 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Any applicable return from the method call</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            | wait_until(lambda wd: method(wd), timeout=5)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">method</span><span class="p">)</span></div>
@@ -3911,7 +3942,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

@@ -118,12 +118,16 @@ class Utils:
         WebDriverException: Raise an error when `how=what` can not be parsed
     """
     @staticmethod
-    def compact(iterable, function=None):
+    def compact(iterable, function=None, sorting=False, unique=False):
         """Filter items, by `function`, in list/set. 
 
         Args:
             iterable (list/set): Iterable
             function: Function to filter. Defaults to None.
+
+        Keyword Arguments:
+            sorting (bool): Whether to sort the returned list.
+            unique (bool): Whether to remove duplicates in the returned list
 
         Returns:
             list: Filtered list
@@ -131,7 +135,9 @@ class Utils:
         Examples:
             | compact(['', 'a', '', 'b', 0, None, 1]) => [a', b', 1]
         """
-        return list(filter(function, iterable))
+        filtered = filter(function, iterable)
+        sort = sorted if sorting else list
+        return sort(dict.fromkeys(filtered) if unique else filtered)
 
     @staticmethod
     def date_sorted(dates, reverse=False, format=r'%m/%d/%Y'):
