@@ -50,7 +50,7 @@ s.quit()
 from spydr.webdriver import Spydr
 
 s = Spydr(browser='firefox', headless=True, log_level='INFO', window_size='1920,1080')
-s.info('JSFiddle: Test "Open New Tab/Winodw"')
+s.info('JSFiddle: Test "Open New Tab/Window"')
 s.maximize_window()
 s.open('https://jsfiddle.net/s7gcx1du/')
 s.switch_to_frame('name=result')

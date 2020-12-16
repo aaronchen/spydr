@@ -433,7 +433,7 @@ class Spydr:
             locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            switch_to_new_target (bool): Whether to switch to a newly-opened window after clicking. Defautls to False.
+            switch_to_new_target (bool): Whether to switch to a newly-opened window after clicking. Defaults to False.
             scroll_into_view (bool): Whether to scroll the element into view before clicking. Defaults to False.
             behavior (str): Defines the transition animation for `scroll_into_view`.
                 One of `auto` or `smooth`. Defaults to 'auto'.
@@ -653,7 +653,7 @@ class Spydr:
         Keyword Arguments:
             color (str): The color of the bordered DIV. Defaults to '#f33'.
             top (int): padding-top of the bordered DIV. Defaults to 4.
-            right (int): padding-rightof the bordered DIV. Defaults to 8.
+            right (int): padding-right of the bordered DIV. Defaults to 8.
             bottom (int): padding-bottom of the bordered DIV. Defaults to 4.
             left (int): padding-left of the bordered DIV. Defaults to 8.
 
@@ -1207,7 +1207,7 @@ class Spydr:
         return self.find_element(locator).is_selected()
 
     def is_text_matched(self, locator, text):
-        """Whether the given text matches the elememnt's text.
+        """Whether the given text matches the element's text.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1797,7 +1797,7 @@ class Spydr:
         self.find_element(locator).scroll_into_view(behavior=behavior, block=block, inline=inline)
 
     def scroll_to(self, locator, x, y):
-        """Scroll the elment to the given x- and y-coordinates. (IE not supported)
+        """Scroll the element to the given x- and y-coordinates. (IE not supported)
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -1872,7 +1872,7 @@ class Spydr:
             select_locator (str/WebElement): The locator to identify the element or WebElement
 
         Keyword Arguments:
-            ignored_options (list): Options to exlcude from selection. Defaults to [None, "", "0"].
+            ignored_options (list): Options to exclude from selection. Defaults to [None, "", "0"].
 
         Raises:
             WebDriverException: Raise an error if failing to randomly select an option
@@ -2141,7 +2141,7 @@ class Spydr:
         """
         self.driver.switch_to.frame(self.find_element(frame_locator))
 
-    def switch_to_frame_and_wait_until_elment_located_in_frame(self, frame_locator, element_locator):
+    def switch_to_frame_and_wait_until_element_located_in_frame(self, frame_locator, element_locator):
         """Switch to the given frame and wait until the element is located within the frame.
 
         Args:
@@ -2344,7 +2344,7 @@ class Spydr:
         self.find_element(locator).toggle_attribute(name)
 
     def toggle_class(self, locator, class_name):
-        """Toggole the given CSS class of the element.
+        """Toggle the given CSS class of the element.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -2465,7 +2465,7 @@ class Spydr:
         """
         return self.wait_until(lambda _: self.is_displayed(locator))
 
-    def wait_until_displayed_and_get_elmement(self, locator):
+    def wait_until_displayed_and_get_element(self, locator):
         """Wait until the element is displayed and return the element.
 
         Args:
@@ -2542,6 +2542,17 @@ class Spydr:
         finally:
             self.implicitly_wait = implicitly_wait
 
+    def wait_until_located(self, locator):
+        """Wait until the element is located.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Returns:
+            bool: Whether the element is located
+        """
+        return self.wait_until(lambda _: self.is_located(locator))
+
     def wait_until_not(self, method):
         """Create a WebDriverWait instance and wait until the given method is evaluated to False.
 
@@ -2571,8 +2582,10 @@ class Spydr:
 
         try:
             return self.wait(self.driver, seconds).until(lambda wd: not wd.find_element(how, what))
-        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
+        except (NoSuchElementException, StaleElementReferenceException):
             return True
+        except TimeoutException:
+            return False
         finally:
             self.implicitly_wait = implicitly_wait
 
@@ -2599,13 +2612,15 @@ class Spydr:
             interval (int): Interval to compare page_source. Defaults to 2.
 
         Returns:
-            bool: Whether the element is not displayed
+            bool: Whether page_source not changed
         """
         implicitly_wait = self.implicitly_wait
         self.implicitly_wait = seconds
 
         try:
             self.wait(self.driver, seconds).until(lambda _: not self._is_page_changed_at_interval(interval=interval))
+        except TimeoutException:
+            return True
         finally:
             self.implicitly_wait = implicitly_wait
 
@@ -3472,7 +3487,7 @@ class SpydrElement(WebElement):
         return super().is_selected()
 
     def is_text_matched(self, text):
-        """Whether the given text matches the elememnt's text.
+        """Whether the given text matches the element's text.
 
         Args:
             text (str): Text to match
@@ -3517,7 +3532,7 @@ class SpydrElement(WebElement):
         """The location of the element in the renderable canvas.
 
         Returns:
-            dict: The coordonate of the element as dict: {'x': 0, 'y': 0}
+            dict: The coordinate of the element as dict: {'x': 0, 'y': 0}
         """
         return super().location
 
@@ -3644,7 +3659,7 @@ class SpydrElement(WebElement):
                 self, behavior, block, inline)
 
     def scroll_to(self, x, y):
-        """Scroll the elment to the given x- and y-coordinates. (IE not supported)
+        """Scroll the element to the given x- and y-coordinates. (IE not supported)
 
         Args:
             x (int): x-coordinate
@@ -3794,7 +3809,7 @@ class SpydrElement(WebElement):
         self.parent.execute_script('return arguments[0].toggleAttribute(arguments[1]);', self, name)
 
     def toggle_class(self, class_name):
-        """Toggole the given CSS class of the element.
+        """Toggle the given CSS class of the element.
 
         Args:
             class_name (str): CSS class name

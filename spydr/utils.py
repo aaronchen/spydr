@@ -112,7 +112,7 @@ class INI:
 
 
 class Utils:
-    """Utilites for Spydr WebDriver
+    """Utilities for Spydr WebDriver
 
     Raises:
         WebDriverException: Raise an error when `how=what` can not be parsed
@@ -366,7 +366,7 @@ class Utils:
 
 
 class YML:
-    """Access YAML configuration file using dot notataion.
+    """Access YAML configuration file using dot notation.
 
     Args:
         file (str/bytes/os.PathLike): YAML file

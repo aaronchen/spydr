@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.5.2 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.5.3 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -479,7 +479,7 @@
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
 
 <span class="sd">        Keyword Arguments:</span>
-<span class="sd">            switch_to_new_target (bool): Whether to switch to a newly-opened window after clicking. Defautls to False.</span>
+<span class="sd">            switch_to_new_target (bool): Whether to switch to a newly-opened window after clicking. Defaults to False.</span>
 <span class="sd">            scroll_into_view (bool): Whether to scroll the element into view before clicking. Defaults to False.</span>
 <span class="sd">            behavior (str): Defines the transition animation for `scroll_into_view`.</span>
 <span class="sd">                One of `auto` or `smooth`. Defaults to &#39;auto&#39;.</span>
@@ -699,7 +699,7 @@
 <span class="sd">        Keyword Arguments:</span>
 <span class="sd">            color (str): The color of the bordered DIV. Defaults to &#39;#f33&#39;.</span>
 <span class="sd">            top (int): padding-top of the bordered DIV. Defaults to 4.</span>
-<span class="sd">            right (int): padding-rightof the bordered DIV. Defaults to 8.</span>
+<span class="sd">            right (int): padding-right of the bordered DIV. Defaults to 8.</span>
 <span class="sd">            bottom (int): padding-bottom of the bordered DIV. Defaults to 4.</span>
 <span class="sd">            left (int): padding-left of the bordered DIV. Defaults to 8.</span>
 
@@ -1253,7 +1253,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Spydr.is_text_matched"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_text_matched">[docs]</a>    <span class="k">def</span> <span class="nf">is_text_matched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Whether the given text matches the elememnt&#39;s text.</span>
+        <span class="sd">&quot;&quot;&quot;Whether the given text matches the element&#39;s text.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
@@ -1843,7 +1843,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">scroll_into_view</span><span class="p">(</span><span class="n">behavior</span><span class="o">=</span><span class="n">behavior</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="n">inline</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.scroll_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.scroll_to">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Scroll the elment to the given x- and y-coordinates. (IE not supported)</span>
+        <span class="sd">&quot;&quot;&quot;Scroll the element to the given x- and y-coordinates. (IE not supported)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
@@ -1918,7 +1918,7 @@
 <span class="sd">            select_locator (str/WebElement): The locator to identify the element or WebElement</span>
 
 <span class="sd">        Keyword Arguments:</span>
-<span class="sd">            ignored_options (list): Options to exlcude from selection. Defaults to [None, &quot;&quot;, &quot;0&quot;].</span>
+<span class="sd">            ignored_options (list): Options to exclude from selection. Defaults to [None, &quot;&quot;, &quot;0&quot;].</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            WebDriverException: Raise an error if failing to randomly select an option</span>
@@ -2187,7 +2187,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">frame_locator</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Spydr.switch_to_frame_and_wait_until_elment_located_in_frame"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.switch_to_frame_and_wait_until_elment_located_in_frame">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_frame_and_wait_until_elment_located_in_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_locator</span><span class="p">,</span> <span class="n">element_locator</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.switch_to_frame_and_wait_until_element_located_in_frame"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.switch_to_frame_and_wait_until_element_located_in_frame">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_frame_and_wait_until_element_located_in_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_locator</span><span class="p">,</span> <span class="n">element_locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Switch to the given frame and wait until the element is located within the frame.</span>
 
 <span class="sd">        Args:</span>
@@ -2390,7 +2390,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">toggle_attribute</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.toggle_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.toggle_class">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Toggole the given CSS class of the element.</span>
+        <span class="sd">&quot;&quot;&quot;Toggle the given CSS class of the element.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
@@ -2511,7 +2511,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Spydr.wait_until_displayed_and_get_elmement"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_displayed_and_get_elmement">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_displayed_and_get_elmement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.wait_until_displayed_and_get_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_displayed_and_get_element">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_displayed_and_get_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element is displayed and return the element.</span>
 
 <span class="sd">        Args:</span>
@@ -2588,6 +2588,17 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span></div>
 
+<div class="viewcode-block" id="Spydr.wait_until_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_located">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the element is located.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the element is located</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_located</span><span class="p">(</span><span class="n">locator</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="Spydr.wait_until_not"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_not">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a WebDriverWait instance and wait until the given method is evaluated to False.</span>
 
@@ -2617,8 +2628,10 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="ow">not</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">))</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">,</span> <span class="n">TimeoutException</span><span class="p">):</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span></div>
 
@@ -2645,13 +2658,15 @@
 <span class="sd">            interval (int): Interval to compare page_source. Defaults to 2.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether the element is not displayed</span>
+<span class="sd">            bool: Whether page_source not changed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">implicitly_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">seconds</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_page_changed_at_interval</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span></div>
 
@@ -3518,7 +3533,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SpydrElement.is_text_matched"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.is_text_matched">[docs]</a>    <span class="k">def</span> <span class="nf">is_text_matched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Whether the given text matches the elememnt&#39;s text.</span>
+        <span class="sd">&quot;&quot;&quot;Whether the given text matches the element&#39;s text.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            text (str): Text to match</span>
@@ -3563,7 +3578,7 @@
         <span class="sd">&quot;&quot;&quot;The location of the element in the renderable canvas.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dict: The coordonate of the element as dict: {&#39;x&#39;: 0, &#39;y&#39;: 0}</span>
+<span class="sd">            dict: The coordinate of the element as dict: {&#39;x&#39;: 0, &#39;y&#39;: 0}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">location</span>
 
@@ -3690,7 +3705,7 @@
                 <span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">inline</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SpydrElement.scroll_to"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.scroll_to">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Scroll the elment to the given x- and y-coordinates. (IE not supported)</span>
+        <span class="sd">&quot;&quot;&quot;Scroll the element to the given x- and y-coordinates. (IE not supported)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            x (int): x-coordinate</span>
@@ -3840,7 +3855,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return arguments[0].toggleAttribute(arguments[1]);&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SpydrElement.toggle_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.toggle_class">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Toggole the given CSS class of the element.</span>
+        <span class="sd">&quot;&quot;&quot;Toggle the given CSS class of the element.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            class_name (str): CSS class name</span>
@@ -3942,7 +3957,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

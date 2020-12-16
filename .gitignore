@@ -130,3 +130,6 @@ dmypy.json
 
 # Sample scripts
 sample*.py
+
+# VSCode
+.vscode
