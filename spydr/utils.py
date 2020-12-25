@@ -33,13 +33,17 @@ class INI:
     Args:
         file (str): Ini file
         default_section (str): Default section name.  Defaults to 'Spydr'.
+
+    Keyword Arguments:
+        encoding (str): File Encoding. Defaults to 'utf-8'.
+        interpolation: Value interpolation. Can be BasicInterpolation or ExtendedInterpolation. Defaults to None.
     """
 
-    def __init__(self, file, default_section='Spydr', encoding='utf-8'):
+    def __init__(self, file, default_section='Spydr', encoding='utf-8', interpolation=None):
         self.file = file
         self.default_section = default_section
         self.encoding = encoding
-        self.config = configparser.ConfigParser()
+        self.config = configparser.ConfigParser(interpolation=interpolation)
 
         self.config.read(Utils.to_abspath(file), encoding=self.encoding)
 

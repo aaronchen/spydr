@@ -16,6 +16,7 @@ from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import InvalidSelectorException
+from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
@@ -2415,7 +2416,8 @@ class Spydr:
         Returns:
             False/Alert: Return False if not present. Return Alert if present.
         """
-        return self.wait_until(lambda _: expected_conditions.alert_is_present)
+
+        return self.wait_until(lambda _: self._alert_is_present())
 
     def wait_until_attribute_contains(self, locator, attribute, value):
         """Wait until the element's attribute contains the given value.
@@ -2518,6 +2520,31 @@ class Spydr:
         finally:
             self.timeout = _timeout
 
+    def wait_until_listdir_equal_to(self, directory, number, sleep=2):
+        """Wait until the directory has the given number of files.
+
+        Args:
+            directory (str): Directory
+            number (int): Number of files in the directory
+
+        Keyword Arguments:
+            sleep (int): Seconds to sleep after number of files matched. Defaults to 2.
+
+        Raises:
+            WebDriverException: Raise an error when `directory` is not a directory or when number of files not matched.
+        """
+        abs_dir = self.abspath(directory, mkdir=False, isdir=True)
+
+        if not os.path.isdir(abs_dir):
+            raise WebDriverException(f'Not a directory: {directory}')
+
+        try:
+            self.wait_until(lambda _: len(os.listdir(abs_dir)) == number)
+        except TimeoutException:
+            raise WebDriverException(f'Number of files ({len(os.listdir(abs_dir))}) not equal to {number}.')
+
+        self.sleep(sleep)
+
     def wait_until_loading_finished(self, locator, seconds=2):
         """Wait until `loading-liking` element shows up and then disappears.
 
@@ -2582,10 +2609,8 @@ class Spydr:
 
         try:
             return self.wait(self.driver, seconds).until(lambda wd: not wd.find_element(how, what))
-        except (NoSuchElementException, StaleElementReferenceException):
+        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
-        except TimeoutException:
-            return False
         finally:
             self.implicitly_wait = implicitly_wait
 
@@ -2774,6 +2799,12 @@ class Spydr:
             scale (float/str): Zoom factor: 0.8, 1.5, or '150%'
         """
         self.execute_script('document.body.style.zoom = arguments[0];', scale)
+    
+    def _alert_is_present(self):
+        try:
+            return self.switch_to_alert()
+        except NoAlertPresentException:
+            return False
 
     def _auth_extension_as_base64(self, username, password):
         bytes_ = self._auth_extension_as_bytes(username, password)
@@ -3862,6 +3893,17 @@ class SpydrElement(WebElement):
             bool: Whether the element is not displayed
         """
         return self._wait_until(lambda _: not self.is_displayed(), timeout=timeout)
+
+    def wait_until_not_enabled(self, timeout=None):
+        """Wait until the element is not enabled.
+
+        Keyword Args:
+            timeout (int, optional): Wait timeout. Defaults to Spydr driver timeout.
+
+        Returns:
+            bool: Whether the element is not enabled
+        """
+        return self._wait_until(lambda _: not self.is_enabled(), timeout=timeout)
 
     def _actions(self):
         return ActionChains(self.parent)

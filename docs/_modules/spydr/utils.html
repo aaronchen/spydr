@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.utils &#8212; spydr 0.5.3 documentation</title>
+    <title>spydr.utils &#8212; spydr 0.5.4 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.utils</a></li> 
       </ul>
@@ -79,13 +79,17 @@
 <span class="sd">    Args:</span>
 <span class="sd">        file (str): Ini file</span>
 <span class="sd">        default_section (str): Default section name.  Defaults to &#39;Spydr&#39;.</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        encoding (str): File Encoding. Defaults to &#39;utf-8&#39;.</span>
+<span class="sd">        interpolation: Value interpolation. Can be BasicInterpolation or ExtendedInterpolation. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">default_section</span><span class="o">=</span><span class="s1">&#39;Spydr&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">default_section</span><span class="o">=</span><span class="s1">&#39;Spydr&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_section</span> <span class="o">=</span> <span class="n">default_section</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">to_abspath</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
 
@@ -507,7 +511,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.utils</a></li> 
       </ul>

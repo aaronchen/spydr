@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.5.3 documentation</title>
+    <title>spydr package &#8212; spydr 0.5.4 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.4 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -57,7 +57,7 @@
 
 <dl class="py class">
 <dt id="spydr.utils.INI">
-<em class="property">class </em><code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">INI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">default_section</span><span class="o">=</span><span class="default_value">'Spydr'</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">'utf-8'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#INI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.INI" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">spydr.utils.</code><code class="sig-name descname">INI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">default_section</span><span class="o">=</span><span class="default_value">'Spydr'</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">'utf-8'</span></em>, <em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#INI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.INI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Access INI <cite>key=value</cite> using JSON serialization.</p>
 <dl class="field-list simple">
@@ -65,6 +65,12 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> (<em>str</em>) – Ini file</p></li>
 <li><p><strong>default_section</strong> (<em>str</em>) – Default section name.  Defaults to ‘Spydr’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>encoding</strong> (<em>str</em>) – File Encoding. Defaults to ‘utf-8’.</p></li>
+<li><p><strong>interpolation</strong> – Value interpolation. Can be BasicInterpolation or ExtendedInterpolation. Defaults to None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -3080,6 +3086,26 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.wait_until_listdir_equal_to">
+<code class="sig-name descname">wait_until_listdir_equal_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">directory</span></em>, <em class="sig-param"><span class="n">number</span></em>, <em class="sig-param"><span class="n">sleep</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_listdir_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_listdir_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the directory has the given number of files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>str</em>) – Directory</p></li>
+<li><p><strong>number</strong> (<em>int</em>) – Number of files in the directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>sleep</strong> (<em>int</em>) – Seconds to sleep after number of files matched. Defaults to 2.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when <cite>directory</cite> is not a directory or when number of files not matched.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.wait_until_loading_finished">
 <code class="sig-name descname">wait_until_loading_finished</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_loading_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_loading_finished" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until <cite>loading-liking</cite> element shows up and then disappears.</p>
@@ -4145,6 +4171,20 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.wait_until_not_enabled">
+<code class="sig-name descname">wait_until_not_enabled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#SpydrElement.wait_until_not_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.SpydrElement.wait_until_not_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the element is not enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – Wait timeout. Defaults to Spydr driver timeout.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the element is not enabled</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -4201,7 +4241,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.4 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>
