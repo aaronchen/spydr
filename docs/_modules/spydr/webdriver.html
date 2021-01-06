@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.5.4 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.5.5 documentation</title>
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -1076,7 +1076,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether value is found in the element&#39;s attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">has_attribute_value</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">has_attribute_value</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.has_class"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.has_class">[docs]</a>    <span class="k">def</span> <span class="nf">has_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the element has the given CSS class.</span>
@@ -1202,6 +1202,17 @@
 <span class="sd">            bool: Whether the element is enabled</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Spydr.is_file"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_file">[docs]</a>    <span class="k">def</span> <span class="nf">is_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wether the file exists.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_path (str): File Path</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Wether the file exists</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Utils</span><span class="o">.</span><span class="n">is_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.is_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.is_located">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">is_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -2409,7 +2420,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.value"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">typecast</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the value of the element.</span>
+        <span class="sd">&quot;&quot;&quot;Get the value of the element using `get_property`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
@@ -2421,6 +2432,20 @@
 <span class="sd">            The value, by `typecast`, of the element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">typecast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.value_now"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.value_now">[docs]</a>    <span class="k">def</span> <span class="nf">value_now</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">typecast</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the current value of the element using `get_attribute`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the element or WebElement</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            typecast: Typecast the value. Defaults to `str`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The value, by `typecast`, of the element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">typecast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">value_now</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.values"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">typecast</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the values of the elements.</span>
@@ -2476,7 +2501,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether value is found in the element&#39;s attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_value_in_element_attribute</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+        <span class="n">try_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_and_catch</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_attribute_value</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">try_fn</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_class_contains"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_class_contains">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_class_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element contains the given CSS class.</span>
@@ -2591,14 +2617,15 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Spydr.wait_until_loading_finished"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_loading_finished">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_loading_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wait until `loading-liking` element shows up and then disappears.</span>
+<div class="viewcode-block" id="Spydr.wait_until_loading_finished"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_loading_finished">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_loading_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sleep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait the given `seconds` until loading-like element shows up. If/when shown, wait until not displayed.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            locator (str/WebElement): The locator to identify the element</span>
+<span class="sd">            locator (str/WebElement): The locator to identify the loading-like element</span>
 
 <span class="sd">        Keyword Arguments:</span>
-<span class="sd">            seconds (int): Seconds to give up waiting. Defaults to 2.</span>
+<span class="sd">            seconds (int): Seconds to wait for loading-like element to show. Defaults to 2.</span>
+<span class="sd">            sleep (int): Seconds to sleep after loading finished. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether the element is not displayed</span>
@@ -2609,11 +2636,20 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">))</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="ow">not</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">implicitly_wait</span><span class="p">)</span><span class="o">.</span><span class="n">until_not</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s1">&#39;Loading element not disappeared before timeout.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">,</span> <span class="n">TimeoutException</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span>
+
+            <span class="k">if</span> <span class="n">sleep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_located"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_located">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element is located.</span>
@@ -2845,7 +2881,7 @@
 <span class="sd">            scale (float/str): Zoom factor: 0.8, 1.5, or &#39;150%&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;document.body.style.zoom = arguments[0];&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
-    
+
     <span class="k">def</span> <span class="nf">_alert_is_present</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">switch_to_alert</span><span class="p">()</span>
@@ -3908,7 +3944,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the value of the element.</span>
+        <span class="sd">&quot;&quot;&quot;Get the value of the element using `get_property`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            typecast: Typecast the value. Defaults to `str`.</span>
@@ -3917,6 +3953,18 @@
 <span class="sd">            The value, by `typecast`, of the element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value_now</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the current value of the element using `get_attribute`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            typecast: Typecast the value. Defaults to `str`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The value, by `typecast`, of the element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SpydrElement.wait_until_displayed"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.SpydrElement.wait_until_displayed">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until the element is displayed.</span>
@@ -3999,7 +4047,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

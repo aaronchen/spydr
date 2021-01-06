@@ -160,6 +160,20 @@ class Utils:
         return sorted(dates, key=lambda date: Utils.strptime(date, format), reverse=reverse)
 
     @staticmethod
+    def is_file(file_path):
+        """Wether the file exists.
+
+        Args:
+            file_path (str): File Path
+
+        Returns:
+            bool: Wether the file exists
+        """
+        file = Utils.to_abspath(file_path, mkdir=False)
+
+        return os.path.exists(file)
+
+    @staticmethod
     def remove_dir(dir):
         """Remove the directory.
 

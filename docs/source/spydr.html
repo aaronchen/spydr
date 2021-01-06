@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr package &#8212; spydr 0.5.4 documentation</title>
+    <title>spydr package &#8212; spydr 0.5.5 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -178,6 +178,20 @@
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>list</em> – Sorted list of date strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.utils.Utils.is_file">
+<em class="property">static </em><code class="sig-name descname">is_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/utils.html#Utils.is_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.utils.Utils.is_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wether the file exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – File Path</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Wether the file exists</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1493,6 +1507,20 @@ Refer to: <a class="reference external" href="https://chromedevtools.github.io/d
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>bool</em> – Whether the element is enabled</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.is_file">
+<code class="sig-name descname">is_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.is_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.is_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wether the file exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – File Path</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Wether the file exists</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2890,7 +2918,24 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.value">
 <code class="sig-name descname">value</code><span class="sig-paren">(</span><em class="sig-param">locator</em>, <em class="sig-param">typecast=&lt;class 'str'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the value of the element.</p>
+<dd><p>Get the value of the element using <cite>get_property</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>typecast</strong> – Typecast the value. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The value, by <cite>typecast</cite>, of the element</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.value_now">
+<code class="sig-name descname">value_now</code><span class="sig-paren">(</span><em class="sig-param">locator</em>, <em class="sig-param">typecast=&lt;class 'str'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.value_now"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.value_now" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current value of the element using <cite>get_attribute</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element or WebElement</p>
@@ -3107,14 +3152,17 @@ Offsets are relative to the top-left corner of the element.</p>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.wait_until_loading_finished">
-<code class="sig-name descname">wait_until_loading_finished</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_loading_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_loading_finished" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait until <cite>loading-liking</cite> element shows up and then disappears.</p>
+<code class="sig-name descname">wait_until_loading_finished</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">sleep</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_loading_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_loading_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait the given <cite>seconds</cite> until loading-like element shows up. If/when shown, wait until not displayed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the element</p>
+<dd class="field-odd"><p><strong>locator</strong> (<em>str/WebElement</em>) – The locator to identify the loading-like element</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>seconds</strong> (<em>int</em>) – Seconds to give up waiting. Defaults to 2.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>seconds</strong> (<em>int</em>) – Seconds to wait for loading-like element to show. Defaults to 2.</p></li>
+<li><p><strong>sleep</strong> (<em>int</em>) – Seconds to sleep after loading finished. Defaults to None.</p></li>
+</ul>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>bool</em> – Whether the element is not displayed</p>
@@ -4132,7 +4180,21 @@ Will return itself or the matching ancestor. (IE not supported)</p>
 <dl class="py method">
 <dt id="spydr.webdriver.SpydrElement.value">
 <em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the value of the element.</p>
+<dd><p>Get the value of the element using <cite>get_property</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>typecast</strong> – Typecast the value. Defaults to <cite>str</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value, by <cite>typecast</cite>, of the element</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.SpydrElement.value_now">
+<em class="property">property </em><code class="sig-name descname">value_now</code><a class="headerlink" href="#spydr.webdriver.SpydrElement.value_now" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current value of the element using <cite>get_attribute</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>typecast</strong> – Typecast the value. Defaults to <cite>str</cite>.</p>
@@ -4241,7 +4303,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.5 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

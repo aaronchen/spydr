@@ -1030,7 +1030,7 @@ class Spydr:
         Returns:
             bool: Whether value is found in the element's attribute
         """
-        return value in self.find_element(locator).has_attribute_value(attribute, value)
+        return self.find_element(locator).has_attribute_value(attribute, value)
 
     def has_class(self, locator, class_name):
         """Check if the element has the given CSS class.
@@ -1156,6 +1156,17 @@ class Spydr:
             bool: Whether the element is enabled
         """
         return self.find_element(locator).is_enabled()
+
+    def is_file(self, file_path):
+        """Wether the file exists.
+
+        Args:
+            file_path (str): File Path
+
+        Returns:
+            bool: Wether the file exists
+        """
+        return Utils.is_file(file_path)
 
     @_WebElementSpydrify()
     def is_located(self, locator, seconds=None):
@@ -2363,7 +2374,7 @@ class Spydr:
         self.find_element(locator).trigger(event)
 
     def value(self, locator, typecast=str):
-        """Get the value of the element.
+        """Get the value of the element using `get_property`.
 
         Args:
             locator (str/WebElement): The locator to identify the element or WebElement
@@ -2375,6 +2386,20 @@ class Spydr:
             The value, by `typecast`, of the element
         """
         return typecast(self.find_element(locator).value)
+
+    def value_now(self, locator, typecast=str):
+        """Get the current value of the element using `get_attribute`.
+
+        Args:
+            locator (str/WebElement): The locator to identify the element or WebElement
+
+        Keyword Arguments:
+            typecast: Typecast the value. Defaults to `str`.
+
+        Returns:
+            The value, by `typecast`, of the element
+        """
+        return typecast(self.find_element(locator).value_now)
 
     def values(self, locator, typecast=str):
         """Get the values of the elements.
@@ -2430,7 +2455,8 @@ class Spydr:
         Returns:
             bool: Whether value is found in the element's attribute
         """
-        return self.wait_until(lambda _: self.is_value_in_element_attribute(locator, attribute, value))
+        try_fn = self._try_and_catch(lambda: self.has_attribute_value(locator, attribute, value))
+        return self.wait_until(lambda _: try_fn())
 
     def wait_until_class_contains(self, locator, class_name):
         """Wait until the element contains the given CSS class.
@@ -2545,14 +2571,15 @@ class Spydr:
 
         self.sleep(sleep)
 
-    def wait_until_loading_finished(self, locator, seconds=2):
-        """Wait until `loading-liking` element shows up and then disappears.
+    def wait_until_loading_finished(self, locator, seconds=2, sleep=None):
+        """Wait the given `seconds` until loading-like element shows up. If/when shown, wait until not displayed.
 
         Args:
-            locator (str/WebElement): The locator to identify the element
+            locator (str/WebElement): The locator to identify the loading-like element
 
         Keyword Arguments:
-            seconds (int): Seconds to give up waiting. Defaults to 2.
+            seconds (int): Seconds to wait for loading-like element to show. Defaults to 2.
+            sleep (int): Seconds to sleep after loading finished. Defaults to None.
 
         Returns:
             bool: Whether the element is not displayed
@@ -2563,11 +2590,20 @@ class Spydr:
 
         try:
             self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what))
-            return self.wait(self.driver, seconds).until(lambda wd: not wd.find_element(how, what))
+            self.implicitly_wait = 0
+            try:
+                return self.wait(self.driver, implicitly_wait).until_not(lambda wd: wd.find_element(how, what).is_displayed())
+            except (NoSuchElementException, StaleElementReferenceException):
+                return True
+            except TimeoutException:
+                raise WebDriverException('Loading element not disappeared before timeout.')
         except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return True
         finally:
             self.implicitly_wait = implicitly_wait
+
+            if sleep is not None:
+                self.sleep(sleep)
 
     def wait_until_located(self, locator):
         """Wait until the element is located.
@@ -2799,7 +2835,7 @@ class Spydr:
             scale (float/str): Zoom factor: 0.8, 1.5, or '150%'
         """
         self.execute_script('document.body.style.zoom = arguments[0];', scale)
-    
+
     def _alert_is_present(self):
         try:
             return self.switch_to_alert()
@@ -3862,7 +3898,7 @@ class SpydrElement(WebElement):
 
     @property
     def value(self):
-        """Get the value of the element.
+        """Get the value of the element using `get_property`.
 
         Args:
             typecast: Typecast the value. Defaults to `str`.
@@ -3871,6 +3907,18 @@ class SpydrElement(WebElement):
             The value, by `typecast`, of the element
         """
         return self.get_property('value')
+
+    @property
+    def value_now(self):
+        """Get the current value of the element using `get_attribute`.
+
+        Args:
+            typecast: Typecast the value. Defaults to `str`.
+
+        Returns:
+            The value, by `typecast`, of the element
+        """
+        return self.get_attribute('value')
 
     def wait_until_displayed(self, timeout=None):
         """Wait until the element is displayed.
