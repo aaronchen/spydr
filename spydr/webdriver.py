@@ -2572,7 +2572,8 @@ class Spydr:
         self.sleep(sleep)
 
     def wait_until_loading_finished(self, locator, seconds=2, sleep=None):
-        """Wait the given `seconds` until loading-like element shows up. If/when shown, wait until not displayed.
+        """Wait the given `seconds` until loading/spinning element, by `locator` shows up.
+        If/when shown, wait until not displayed. If not, this is equivalent to sleep the given `seconds`.
 
         Args:
             locator (str/WebElement): The locator to identify the loading-like element
@@ -2589,7 +2590,7 @@ class Spydr:
         self.implicitly_wait = seconds
 
         try:
-            self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what))
+            self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what).is_displayed())
             self.implicitly_wait = 0
             try:
                 return self.wait(self.driver, implicitly_wait).until_not(lambda wd: wd.find_element(how, what).is_displayed())
