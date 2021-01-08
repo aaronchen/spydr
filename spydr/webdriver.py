@@ -9,7 +9,8 @@ import string
 import urllib.parse
 import zipfile
 
-from datetime import date, timedelta
+from datetime import datetime, timedelta
+from dateutil import tz
 from functools import wraps
 from io import BytesIO
 from selenium import webdriver
@@ -2278,12 +2279,15 @@ class Spydr:
 
         return file_
 
-    def timedelta(self, days, format=r'%m/%d/%Y'):
+    def timedelta(self, days, format=r'%m/%d/%Y', timezone=None):
         """Get the date by the given delta from today.
 
         Args:
             days (int): Delta days from today
             format (str, optional): Date format. Defaults to '%m/%d/%Y'.
+
+        Keyword Arguments:
+            timezone (str): Timezone name, such as 'Asia/Taipei'. Name is handled by `dateutil.tz.gettz()`. Defaults to None.
 
         Returns:
             str: Delta date from today
@@ -2293,7 +2297,7 @@ class Spydr:
             | timedelta(1) # 2020/12/11
             | timedelta(-1) # 2020/12/09
         """
-        delta = date.today() + timedelta(days=days)
+        delta = datetime.now(tz.gettz(timezone)) + timedelta(days=days)
         return delta.strftime(format)
 
     @property
@@ -2335,16 +2339,19 @@ class Spydr:
         """
         return self.driver.title
 
-    def today(self, format=r'%m/%d/%Y'):
+    def today(self, format=r'%m/%d/%Y', timezone=None):
         """Get Today's date.
 
         Args:
             format (str, optional): Date format. Defaults to '%m/%d/%Y'.
 
+        Keyword Arguments:
+            timezone (str): Timezone name, such as 'Asia/Taipei'. Name is handled by `dateutil.tz.gettz()`. Defaults to None.
+
         Returns:
             str: Today's date in the given format
         """
-        return date.today().strftime(format)
+        return datetime.now(tz.gettz(timezone)).strftime(format)
 
     def toggle_attribute(self, locator, name):
         """Toggle a Boolean attribute of the given element. (IE not supported)
@@ -2572,7 +2579,7 @@ class Spydr:
         self.sleep(sleep)
 
     def wait_until_loading_finished(self, locator, seconds=2, sleep=None):
-        """Wait the given `seconds` until loading/spinning element, by `locator` shows up.
+        """Wait the given `seconds` until loading/spinning element, by `locator`, shows up.
         If/when shown, wait until not displayed. If not, this is equivalent to sleep the given `seconds`.
 
         Args:

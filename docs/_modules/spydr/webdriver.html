@@ -5,20 +5,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spydr.webdriver &#8212; spydr 0.5.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spydr.webdriver &#8212; spydr 0.5.7 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -32,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -55,7 +54,8 @@
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
@@ -2324,12 +2324,15 @@
 
         <span class="k">return</span> <span class="n">file_</span></div>
 
-<div class="viewcode-block" id="Spydr.timedelta"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.timedelta"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the date by the given delta from today.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            days (int): Delta days from today</span>
 <span class="sd">            format (str, optional): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            timezone (str): Timezone name, such as &#39;Asia/Taipei&#39;. Name is handled by `dateutil.tz.gettz()`. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Delta date from today</span>
@@ -2339,7 +2342,7 @@
 <span class="sd">            | timedelta(1) # 2020/12/11</span>
 <span class="sd">            | timedelta(-1) # 2020/12/09</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">delta</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -2381,16 +2384,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 
-<div class="viewcode-block" id="Spydr.today"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.today">[docs]</a>    <span class="k">def</span> <span class="nf">today</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.today"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.today">[docs]</a>    <span class="k">def</span> <span class="nf">today</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get Today&#39;s date.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            format (str, optional): Date format. Defaults to &#39;%m/%d/%Y&#39;.</span>
 
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            timezone (str): Timezone name, such as &#39;Asia/Taipei&#39;. Name is handled by `dateutil.tz.gettz()`. Defaults to None.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Today&#39;s date in the given format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.toggle_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.toggle_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Toggle a Boolean attribute of the given element. (IE not supported)</span>
@@ -2618,7 +2624,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Spydr.wait_until_loading_finished"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_loading_finished">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_loading_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sleep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wait the given `seconds` until loading/spinning element, by `locator` shows up.</span>
+        <span class="sd">&quot;&quot;&quot;Wait the given `seconds` until loading/spinning element, by `locator`, shows up.</span>
 <span class="sd">        If/when shown, wait until not displayed. If not, this is equivalent to sleep the given `seconds`.</span>
 
 <span class="sd">        Args:</span>
@@ -4048,14 +4054,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Aaron Chen.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
   </body>
 </html>

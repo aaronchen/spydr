@@ -163,6 +163,7 @@ pip install -e .
 pip install autopep8
 pip install pylint
 pip install twine
+pip install wheel
 pip install sphinx
 pip install sphinxcontrib-napoleon
 ```

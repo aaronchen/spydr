@@ -36,6 +36,6 @@ $(window).resize(function(){
         $("li.nav-item-0 a").text("Top");
     }
     else {
-        $("li.nav-item-0 a").text("spydr 0.5.6 documentation");
+        $("li.nav-item-0 a").text("spydr 0.5.7 documentation");
     }
 });
