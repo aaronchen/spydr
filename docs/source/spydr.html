@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spydr package &#8212; spydr 0.5.7 documentation</title>
+    <title>spydr package &#8212; spydr 0.6.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.6.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>  
@@ -1083,6 +1083,25 @@ Refer to: <a class="reference external" href="https://chromedevtools.github.io/d
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Any applicable return from JavaScript</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spydr.webdriver.Spydr.explicitly_run">
+<code class="sig-name descname">explicitly_run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seconds</span></em>, <em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.explicitly_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.explicitly_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly run the given method for the given seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> (<em>int</em>) – Seconds to run before timing out</p></li>
+<li><p><strong>method</strong> (<em>callable</em>) – Method to call</p></li>
+<li><p><strong>*args</strong> – Any applicable arguments</p></li>
+<li><p><strong>*kwargs</strong> – Any applicable keyword arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return the result of the given method.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2592,6 +2611,26 @@ Offsets are relative to the top-left corner of the element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spydr.webdriver.Spydr.strptime">
+<code class="sig-name descname">strptime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date_string</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'%m/%d/%Y %H:%M:%S'</span></em>, <em class="sig-param"><span class="n">timezone</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.strptime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.strptime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse date string to a <cite>datetime</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date_string</strong> (<em>str</em>) – Date string.</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – Date format. Defaults to r’%m/%d/%Y %H:%M:%S’.</p></li>
+<li><p><strong>timezone</strong> (<em>str</em>) – Timezone name, such as ‘Asia/Taipei’. Name is handled by <cite>dateutil.tz.gettz()</cite>. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>datetime</em> – <cite>datetime</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spydr.webdriver.Spydr.submit">
 <code class="sig-name descname">submit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.submit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit a form.</p>
@@ -2873,7 +2912,7 @@ Offsets are relative to the top-left corner of the element.</p>
 <dd class="field-even"><p><strong>timezone</strong> (<em>str</em>) – Timezone name, such as ‘Asia/Taipei’. Name is handled by <cite>dateutil.tz.gettz()</cite>. Defaults to None.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>str</em> – Today’s date in the given format</p>
+<dd class="field-odd"><p><em>str/datetime</em> – Today’s date in the given format.  When <cite>format</cite> is None, it returns as <cite>datetime</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3152,12 +3191,15 @@ Offsets are relative to the top-left corner of the element.</p>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><strong>WebDriverException</strong> – Raise an error when <cite>directory</cite> is not a directory or when number of files not matched.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>bool</em> – Whether the directory has the given number of files</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="spydr.webdriver.Spydr.wait_until_loading_finished">
-<code class="sig-name descname">wait_until_loading_finished</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">sleep</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_loading_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_loading_finished" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">wait_until_loading_finished</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">locator</span></em>, <em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">loading_wait</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sleep</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spydr/webdriver.html#Spydr.wait_until_loading_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spydr.webdriver.Spydr.wait_until_loading_finished" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait the given <cite>seconds</cite> until loading/spinning element, by <cite>locator</cite>, shows up.
 If/when shown, wait until not displayed. If not, this is equivalent to sleep the given <cite>seconds</cite>.</p>
 <dl class="field-list simple">
@@ -3167,6 +3209,8 @@ If/when shown, wait until not displayed. If not, this is equivalent to sleep the
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>seconds</strong> (<em>int</em>) – Seconds to wait for loading-like element to show. Defaults to 2.</p></li>
+<li><p><strong>loading_wait</strong> (<em>int</em>) – Seconds to wait for the loading-like element to disappear.
+When None, it is default to <cite>implicit_wait</cite>.  Defaults to None.</p></li>
 <li><p><strong>sleep</strong> (<em>int</em>) – Seconds to sleep after loading finished. Defaults to None.</p></li>
 </ul>
 </dd>
@@ -4309,7 +4353,7 @@ Will return itself or the matching ancestor. (IE not supported)</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.5.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">spydr 0.6.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr package</a></li> 
       </ul>
     </div>

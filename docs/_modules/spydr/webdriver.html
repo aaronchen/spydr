@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spydr.webdriver &#8212; spydr 0.5.7 documentation</title>
+    <title>spydr.webdriver &#8212; spydr 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>
@@ -831,6 +831,26 @@
 <span class="sd">            Any applicable return from JavaScript</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Spydr.explicitly_run"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.explicitly_run">[docs]</a>    <span class="k">def</span> <span class="nf">explicitly_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Explicitly run the given method for the given seconds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            seconds (int): Seconds to run before timing out</span>
+<span class="sd">            method (callable): Method to call</span>
+<span class="sd">            *args: Any applicable arguments</span>
+<span class="sd">            *kwargs: Any applicable keyword arguments</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Return the result of the given method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">seconds</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span></div>
 
 <div class="viewcode-block" id="Spydr.find_element"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.find_element">[docs]</a>    <span class="nd">@_WebElementSpydrify</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
@@ -2163,6 +2183,22 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
+<div class="viewcode-block" id="Spydr.strptime"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.strptime">[docs]</a>    <span class="k">def</span> <span class="nf">strptime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_string</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y %H:%M:%S&#39;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse date string to a `datetime` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            date_string (str): Date string.  </span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            format (str, optional): Date format. Defaults to r&#39;%m/%d/%Y %H:%M:%S&#39;.</span>
+<span class="sd">            timezone (str): Timezone name, such as &#39;Asia/Taipei&#39;. Name is handled by `dateutil.tz.gettz()`. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            datetime: `datetime`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">now</span> <span class="k">if</span> <span class="n">timezone</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">now</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="Spydr.submit"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Submit a form.</span>
 
@@ -2394,9 +2430,10 @@
 <span class="sd">            timezone (str): Timezone name, such as &#39;Asia/Taipei&#39;. Name is handled by `dateutil.tz.gettz()`. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: Today&#39;s date in the given format</span>
+<span class="sd">            str/datetime: Today&#39;s date in the given format.  When `format` is None, it returns as `datetime`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span></div>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">format</span> <span class="k">else</span> <span class="n">now</span></div>
 
 <div class="viewcode-block" id="Spydr.toggle_attribute"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.toggle_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Toggle a Boolean attribute of the given element. (IE not supported)</span>
@@ -2610,6 +2647,9 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            WebDriverException: Raise an error when `directory` is not a directory or when number of files not matched.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the directory has the given number of files</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">abs_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">isdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -2618,12 +2658,13 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wait_until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">))</span> <span class="o">==</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sleep</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of files (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">))</span><span class="si">}</span><span class="s1">) not equal to </span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of files (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">))</span><span class="si">}</span><span class="s1">) not equal to </span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span></div>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Spydr.wait_until_loading_finished"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_loading_finished">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_loading_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sleep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Spydr.wait_until_loading_finished"><a class="viewcode-back" href="../../source/spydr.html#spydr.webdriver.Spydr.wait_until_loading_finished">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_loading_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">loading_wait</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sleep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait the given `seconds` until loading/spinning element, by `locator`, shows up.</span>
 <span class="sd">        If/when shown, wait until not displayed. If not, this is equivalent to sleep the given `seconds`.</span>
 
@@ -2632,6 +2673,8 @@
 
 <span class="sd">        Keyword Arguments:</span>
 <span class="sd">            seconds (int): Seconds to wait for loading-like element to show. Defaults to 2.</span>
+<span class="sd">            loading_wait (int): Seconds to wait for the loading-like element to disappear.</span>
+<span class="sd">                                When None, it is default to `implicit_wait`.  Defaults to None.</span>
 <span class="sd">            sleep (int): Seconds to sleep after loading finished. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
@@ -2641,11 +2684,14 @@
         <span class="n">implicitly_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="n">seconds</span>
 
+        <span class="k">if</span> <span class="n">loading_wait</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loading_wait</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">loading_wait</span> <span class="o">=</span> <span class="n">implicitly_wait</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">implicitly_wait</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">implicitly_wait</span><span class="p">)</span><span class="o">.</span><span class="n">until_not</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">loading_wait</span><span class="p">)</span><span class="o">.</span><span class="n">until_not</span><span class="p">(</span><span class="k">lambda</span> <span class="n">wd</span><span class="p">:</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
@@ -4054,7 +4100,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.5.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">spydr 0.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">spydr.webdriver</a></li> 
       </ul>

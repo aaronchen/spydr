@@ -787,6 +787,26 @@ class Spydr:
         """
         return self.driver.execute_script(script, *args)
 
+    def explicitly_run(self, seconds, method, *args, **kwargs):
+        """Explicitly run the given method for the given seconds.
+
+        Args:
+            seconds (int): Seconds to run before timing out
+            method (callable): Method to call
+            *args: Any applicable arguments
+            *kwargs: Any applicable keyword arguments
+
+        Returns:
+            Return the result of the given method.
+        """
+        timeout = self.timeout
+        self.timeout = seconds
+
+        try:
+            return method(*args, **kwargs)
+        finally:
+            self.timeout = timeout
+
     @_WebElementSpydrify()
     def find_element(self, locator):
         """Find the element by the given locator.
@@ -2118,6 +2138,22 @@ class Spydr:
         except:
             pass
 
+    def strptime(self, date_string, format=r'%m/%d/%Y %H:%M:%S', timezone=None):
+        """Parse date string to a `datetime` object.
+
+        Args:
+            date_string (str): Date string.  
+
+        Keyword Arguments:
+            format (str, optional): Date format. Defaults to r'%m/%d/%Y %H:%M:%S'.
+            timezone (str): Timezone name, such as 'Asia/Taipei'. Name is handled by `dateutil.tz.gettz()`. Defaults to None.
+
+        Returns:
+            datetime: `datetime`
+        """
+        now = datetime.strptime(date_string, format)
+        return now if timezone is None else now.replace(tzinfo=tz.gettz(timezone))
+
     def submit(self, locator):
         """Submit a form.
 
@@ -2349,9 +2385,10 @@ class Spydr:
             timezone (str): Timezone name, such as 'Asia/Taipei'. Name is handled by `dateutil.tz.gettz()`. Defaults to None.
 
         Returns:
-            str: Today's date in the given format
+            str/datetime: Today's date in the given format.  When `format` is None, it returns as `datetime`.
         """
-        return datetime.now(tz.gettz(timezone)).strftime(format)
+        now = datetime.now(tz.gettz(timezone))
+        return now.strftime(format) if format else now
 
     def toggle_attribute(self, locator, name):
         """Toggle a Boolean attribute of the given element. (IE not supported)
@@ -2565,6 +2602,9 @@ class Spydr:
 
         Raises:
             WebDriverException: Raise an error when `directory` is not a directory or when number of files not matched.
+
+        Returns:
+            bool: Whether the directory has the given number of files
         """
         abs_dir = self.abspath(directory, mkdir=False, isdir=True)
 
@@ -2573,12 +2613,13 @@ class Spydr:
 
         try:
             self.wait_until(lambda _: len(os.listdir(abs_dir)) == number)
+            if isinstance(sleep, int):
+                self.sleep(sleep)
+            return True
         except TimeoutException:
             raise WebDriverException(f'Number of files ({len(os.listdir(abs_dir))}) not equal to {number}.')
 
-        self.sleep(sleep)
-
-    def wait_until_loading_finished(self, locator, seconds=2, sleep=None):
+    def wait_until_loading_finished(self, locator, seconds=2, loading_wait=None, sleep=None):
         """Wait the given `seconds` until loading/spinning element, by `locator`, shows up.
         If/when shown, wait until not displayed. If not, this is equivalent to sleep the given `seconds`.
 
@@ -2587,6 +2628,8 @@ class Spydr:
 
         Keyword Arguments:
             seconds (int): Seconds to wait for loading-like element to show. Defaults to 2.
+            loading_wait (int): Seconds to wait for the loading-like element to disappear.
+                                When None, it is default to `implicit_wait`.  Defaults to None.
             sleep (int): Seconds to sleep after loading finished. Defaults to None.
 
         Returns:
@@ -2596,11 +2639,14 @@ class Spydr:
         implicitly_wait = self.implicitly_wait
         self.implicitly_wait = seconds
 
+        if loading_wait is None or not isinstance(loading_wait, int):
+            loading_wait = implicitly_wait
+
         try:
             self.wait(self.driver, seconds).until(lambda wd: wd.find_element(how, what).is_displayed())
             self.implicitly_wait = 0
             try:
-                return self.wait(self.driver, implicitly_wait).until_not(lambda wd: wd.find_element(how, what).is_displayed())
+                return self.wait(self.driver, loading_wait).until_not(lambda wd: wd.find_element(how, what).is_displayed())
             except (NoSuchElementException, StaleElementReferenceException):
                 return True
             except TimeoutException:
