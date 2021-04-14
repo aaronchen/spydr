@@ -1179,13 +1179,13 @@ class Spydr:
         return self.find_element(locator).is_enabled()
 
     def is_file(self, file_path):
-        """Wether the file exists.
+        """Whether the file exists.
 
         Args:
             file_path (str): File Path
 
         Returns:
-            bool: Wether the file exists
+            bool: Whether the file exists
         """
         return Utils.is_file(file_path)
 
